@@ -1,10 +1,10 @@
 const Welcome = () => {
   return (
-    <div className="px-72 py-20 gap-6 flex flex-col items-center bg-slate-300">
+    <div className="flex flex-col items-center gap-6 bg-slate-300 px-72 py-20">
       <div className="flex flex-col text-center">
         <div className="text-5xl">The Full Onyx Experience</div>
         <div className="text-3xl">
-          "More Than Just a Wash. It’s a Restoration of Pride."
+          &rdquo;More Than Just a Wash. It&apos;s a Restoration of Pride.&rdquo;
         </div>
       </div>
       <div className="text-3xl">

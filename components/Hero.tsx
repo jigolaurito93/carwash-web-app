@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const Hero = () => {
   return (
-    <section className="relative w-full h-screen overflow-hidden">
+    <section className="relative h-screen w-full overflow-hidden">
       <Image
         src="/images/carwash-1.jpg"
         alt="Carwash Image"
@@ -11,8 +11,8 @@ const Hero = () => {
         className="object-cover object-top"
       />
       {/* Optional Overlay to make text readable */}
-      <div className="absolute inset-0 bg-black/30 flex items-center px-16">
-        <h2 className="text-white text-8xl font-bold">Onyx Premium Carwash</h2>
+      <div className="absolute inset-0 flex items-center bg-black/30 px-16">
+        <h2 className="text-8xl font-bold text-white">Onyx Premium Carwash</h2>
       </div>
     </section>
   );
