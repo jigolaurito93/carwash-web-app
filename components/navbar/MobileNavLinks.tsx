@@ -14,7 +14,7 @@ const MobileNaveLinks = ({ isOpen, setIsOpen }: MobileNavProps) => {
         className="absolute top-8 left-8 cursor-pointer text-4xl text-white"
         onClick={() => setIsOpen(false)} // Sets it specifically to closed
       />
-      <div className="flex h-full w-full flex-col items-center justify-center gap-16 text-4xl font-medium">
+      <div className="flex h-full w-full flex-col items-center justify-center gap-16 font-lexend text-4xl font-medium">
         <div>Home</div>
         <div>About</div>
         <div>Services</div>

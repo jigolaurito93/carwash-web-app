@@ -4,6 +4,7 @@ import Link from "next/link";
 import { RxHamburgerMenu } from "react-icons/rx";
 import MobileNaveLinks from "./MobileNavLinks";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -16,7 +17,6 @@ const navLinks = [
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [bgOpacity, setBgOpacity] = useState(0.2);
-  const navTitle: string = "ONYX";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,19 +47,31 @@ const Navbar = () => {
       <MobileNaveLinks isOpen={isOpen} setIsOpen={setIsOpen} />
 
       <div
-        className="flex h-full w-full items-center justify-center text-white lg:justify-between lg:px-12 2xl:px-28"
+        className="flex h-full w-full items-center justify-start px-8 text-white lg:justify-between lg:px-12 2xl:px-28"
         style={{ backgroundColor: `rgba(0,0,0,${bgOpacity})` }}
       >
-        <h1 className="flex h-full w-full items-center justify-center text-3xl font-bold xl:pl-10 xl:text-left">
-          {navTitle}
-        </h1>
+        <div className="flex h-full w-fit items-center justify-center gap-2 px-3 text-3xl font-bold lg:gap-5 xl:pl-10 xl:text-left">
+          <Image
+            alt="logo"
+            src="/images/logo.png"
+            width={70}
+            height={70}
+            className="rounded-full"
+          />
+          <div className="flex flex-col items-center justify-center">
+            <div className="font-bungee">ONYX</div>
+            <div className="font-lexend text-[10px] italic">
+              PREMIUM CARWASH
+            </div>
+          </div>
+        </div>
         {/* Desktop NavLinks */}
-        <div className="hidden h-full justify-center text-2xl font-medium lg:flex">
+        <div className="hidden h-full justify-center text-lg font-medium lg:flex">
           {navLinks.map((link) => (
             <button key={link.name}>
               <Link
                 href={link.href}
-                className="flex h-full items-center px-6 transition-colors duration-300 ease-in-out hover:bg-white/20"
+                className="flex h-full items-center px-6 font-lexend transition-colors duration-300 ease-in-out hover:bg-white/20"
               >
                 {link.name}
               </Link>
