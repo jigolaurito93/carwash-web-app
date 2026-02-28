@@ -3,7 +3,13 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 
+@theme inline {
+  --font-bungee: var(--font-bungee-hairline);
+  --font-lexend: var(--font-lexend-giga);
+  --font-tera: var(--font-lexend-tera);
+}
+
+/*
 :root {
   --background: #ffffff;
   --foreground: #171717;
