@@ -1,6 +1,6 @@
 const Welcome = () => {
   return (
-    <div className="flex flex-col items-center gap-6 bg-slate-300 xl:px-72 py-20">
+    <div className="flex flex-col items-center gap-6 bg-slate-300 py-20 xl:px-72">
       <div className="flex flex-col text-center">
         <div className="text-5xl">The Full Onyx Experience</div>
         <div className="text-3xl">
