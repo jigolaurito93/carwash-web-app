@@ -37,9 +37,9 @@ const lexendTera = Lexend_Tera({
 });
 
 const questrial = Questrial({
-  variable: "--font-questrial",
+  weight: "400", // Questrial only has weight 400
   subsets: ["latin"],
-  weight: "400",
+  variable: "--font-questrial", // Optional: for Tailwind use
 });
 
 export const metadata: Metadata = {
@@ -55,9 +55,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${bungeeHairline.variable} ${lexendGiga.variable} ${lexendTera.variable} ${questrial.variable}`}
+      className={`${geistSans.variable} ${geistMono.variable} ${bungeeHairline.variable} ${lexendGiga.variable} ${lexendTera.variable} ${questrial.variable} antialiased`}
     >
-      <body className="antialiased">
+      <body>
         <Navbar />
         {children}
       </body>
