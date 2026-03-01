@@ -53,10 +53,10 @@ const Navbar = () => {
         <div className="flex h-full w-fit items-center justify-center gap-2 px-3 text-3xl font-bold lg:gap-5 xl:pl-10 xl:text-left">
           <Image
             alt="logo"
-            src="/images/logo.png"
-            width={70}
-            height={70}
-            className="rounded-full"
+            src="/images/Untitled.png"
+            width={80}
+            height={80}
+            className="rounded-full bg-black p-1"
           />
           <div className="flex flex-col items-center justify-center">
             <div className="font-bungee">ONYX</div>
