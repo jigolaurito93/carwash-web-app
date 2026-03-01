@@ -47,29 +47,31 @@ export const servicesList = [
   },
 ];
 
-export const addOnsList = {
-  "Spray Wax": "5.00",
-  "Armor All Tires": "4.00",
-  "Leather Conditioning": "8.00",
-  "Engine Bay Cleaning": "25.00",
-  "Pet Hair Removal": "10.00",
-  "Headlight Restoration": "30.00",
-};
+export const addOnsList = [
+  { service: "Spray Wax", price: "5.00" },
+  { service: "Armor All Tires", price: "4.00" },
+  { service: "Leather Conditioning", price: "8.00" },
+  { service: "Engine Bay Cleaning", price: "25.00" },
+  { service: "Pet Hair Removal", price: "10.00" },
+  { service: "Headlight Restoration", price: "30.00" },
+];
 
 export const detailList = [
   {
     service: "Interior Detail",
-    price: "$120+",
-    description: "Deep steam cleaning, stain removal, leather nourishment, and every crevice cleaned."
+    price: "120+",
+    description:
+      "Deep steam cleaning, stain removal, leather nourishment, and every crevice cleaned.",
   },
   {
     service: "Exterior Detail",
-    price: "$$150+",
-    description: "Full paint decontamination, machine polish / buffing, and high - grade ceramic sealant."
+    price: "150+",
+    description:
+      "Full paint decontamination, machine polish / buffing, and high - grade ceramic sealant.",
   },
   {
     service: "Full Onyx Restoration",
-    price: "$250+",
-    description: "The ultimate combo of Interior and Exterior detailing."
+    price: "250+",
+    description: "The ultimate combo of Interior and Exterior detailing.",
   },
-]
+];
