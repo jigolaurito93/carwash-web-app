@@ -2,6 +2,9 @@ import {
   servicesList,
   addOnsList,
   otherWashList,
+  paintProtectionList,
+  waxList,
+  engineBayCleaningList,
 } from "@/data/services";
 import ServicesCard from "@/components/services/ServicesCard";
 import ServicesCard2 from "@/components/services/ServicesCard2";
@@ -22,9 +25,16 @@ const ServicesPage = () => {
       </div>
       {/* Services and Pricing End */}
 
-      <div className="item-stretch flex flex-wrap justify-center gap-7 pt-10">
+      <div className="mx-auto py-10 font-lexend text-lg">Other Services</div>
+      <div className="item-stretch flex flex-wrap justify-center gap-7">
         {/* Add-Ons List */}
         <ServicesCard serviceCard={addOnsList} />
+        {/* Paint Protection List */}
+        <ServicesCard serviceCard={paintProtectionList} />
+        {/* Hand Wax List */}
+        <ServicesCard serviceCard={waxList} />
+        {/* Engine Bay Cleaning List */}
+        <ServicesCard serviceCard={engineBayCleaningList} />
         {/* Detailing List */}
         {/* <ServicesCard serviceCard={detailList} /> */}
       </div>
