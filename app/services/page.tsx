@@ -66,14 +66,14 @@ const ServicesPage = () => {
             {/* Professional Car Detailing */}
             <div className="mx-auto my-10 rounded-md">
                 <div className="mx-auto font-lexend text-lg">
-                    Extras Services (Add-on)
+                    Professional Car Detailing
                 </div>
                 <div className="mx-auto font-lexend text-sm">
-                    (Available for any wash package)
+                    (Deep cleaning for those who want a "New Car" feel)
                 </div>
                 <div className="my-4 flex flex-col gap-3 rounded-md border border-black/30 px-6 py-4">
-                    {Object.entries(addOnsList).map(([service, price]) => (
-                        <div key={service} className="flex justify-between font-questrial">
+                    {addOnsList.map((addOn) => (
+                        <div key={addOn} className="flex justify-between font-questrial">
                             <div>{service}</div>
                             <div>${price}</div>
                         </div>

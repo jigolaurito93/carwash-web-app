@@ -55,3 +55,21 @@ export const addOnsList = {
   "Pet Hair Removal": "10.00",
   "Headlight Restoration": "30.00",
 };
+
+export const detailList = [
+  {
+    service: "Interior Detail",
+    price: "$120+",
+    description: "Deep steam cleaning, stain removal, leather nourishment, and every crevice cleaned."
+  },
+  {
+    service: "Exterior Detail",
+    price: "$$150+",
+    description: "Full paint decontamination, machine polish / buffing, and high - grade ceramic sealant."
+  },
+  {
+    service: "Full Onyx Restoration",
+    price: "$250+",
+    description: "The ultimate combo of Interior and Exterior detailing."
+  },
+]
