@@ -5,6 +5,10 @@ import {
   paintProtectionList,
   waxList,
   engineBayCleaningList,
+  completeDetailList,
+  interiorDetailList,
+  exteriorDetailList,
+  miniDetailList,
 } from "@/data/services";
 import ServicesCard from "@/components/services/ServicesCard";
 import ServicesCard2 from "@/components/services/ServicesCard2";
@@ -37,6 +41,16 @@ const ServicesPage = () => {
         <ServicesCard serviceCard={engineBayCleaningList} />
         {/* Detailing List */}
         {/* <ServicesCard serviceCard={detailList} /> */}
+      </div>
+
+      <div className="mx-auto py-10 font-lexend text-lg">
+        Detailing Services
+      </div>
+      <div className="item-stretch flex flex-wrap justify-center gap-7">
+        <ServicesCard2 serviceCard={completeDetailList} />
+        <ServicesCard2 serviceCard={interiorDetailList} />
+        <ServicesCard2 serviceCard={exteriorDetailList} />
+        <ServicesCard2 serviceCard={miniDetailList} />
       </div>
     </div>
   );

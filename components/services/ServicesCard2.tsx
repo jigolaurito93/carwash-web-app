@@ -18,7 +18,7 @@ const ServicesCard2 = ({ serviceCard }: ServicesItemProps) => {
         <div className="text-center font-lexend text-xl">
           {serviceCard.title}
         </div>
-        <div className="text-center font-lexend text-sm">
+        <div className="px-2 text-center font-lexend text-xs">
           {serviceCard.description}
         </div>
       </div>

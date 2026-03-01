@@ -154,6 +154,82 @@ export const waxList = {
   ],
 };
 
+export const completeDetailList = {
+  title: "Complete Detail",
+  description: "Full interior and exterior care for a like-new finish",
+  features: [
+    "Clay Bar Treatment",
+    "Buff & Wax",
+    "Engine Bay Cleaning & Sealing",
+    "Leather Conditioning",
+    "Full Upholstery & Carpet Cleaning",
+    "Dashboard & Console Detailing",
+    "Trunk & Vents Cleaned",
+  ],
+  vehicles: {
+    "Most Cars / Sedans": 220.0,
+    "Mid-Size / Crossover": 260.0,
+    "Full-Size / Large": 300.0,
+  },
+};
+
+export const interiorDetailList = {
+  title: "Interior Detail",
+  description:
+    "Restore your vehicle’s interior to pristine condition with detailed cleaning",
+  features: [
+    "Full Upholstery & Carpet Cleaning",
+    "Leather Conditioning & Cleaning",
+    "Dashboard & Door Panel Detailing",
+    "Center Console & Cup Holder Cleaning",
+    "Vents, Sun Visors & Headliner Cleaning",
+    "Trunk & Glove Box Detailing",
+  ],
+  vehicles: {
+    "Most Cars / Sedans": 155.0,
+    "Mid-Size / Crossover": 180.0,
+    "Full-Size / Large": 200.0,
+  },
+};
+export const exteriorDetailList = {
+  title: "Exterior Detail",
+  description:
+    "Give your car a sleek, shiny finish with an exterior detail package",
+  features: [
+    "Exterior Hand Wash",
+    "Clay Bar Treatment",
+    "Tire Dressing & Wheel Cleaning",
+    "Undercarriage Cleaning",
+    "Buff & Polish",
+    "Protective Wax Application",
+  ],
+  vehicles: {
+    "Most Cars / Sedans": 170.0,
+    "Mid-Size / Crossover": 190.0,
+    "Full-Size / Large": 210.0,
+  },
+};
+
+export const miniDetailList = {
+  title: "Mini Detail",
+  description: "Quick, efficient detailing to keep your car looking fresh",
+  features: [
+    "Exterior Hand Wash",
+    "Express Wax Application",
+    "Undercarriage Wash",
+    "Tire Dressing",
+    "1 Set of Floor Mats Shampooed",
+    "Leather Seats Cleaned & Conditioned",
+    "Cloth Seat Spot Cleaning",
+    "Interior Express Cleaning",
+  ],
+  vehicles: {
+    "Most Cars / Sedans": 95.0,
+    "Mid-Size / Crossover": 110.0,
+    "Full-Size / Large": 135.0,
+  },
+};
+
 // export const detailList = {
 //   title: "Professional Car Detailing",
 //   subtitle: 'Deep cleaning for those who want a "New Car" feel',
