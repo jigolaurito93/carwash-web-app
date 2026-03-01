@@ -1,3 +1,20 @@
+export const otherWashList = {
+  title: "Exterior Wash",
+  description: "",
+  features: [
+    "Pre-Wash Rinse",
+    "Hand Wash",
+    "Wheel and Tire Cleaning",
+    "Wheel Well Cleaning",
+    "Glass Cleaning",
+  ],
+  vehicles: {
+    "Most Cars / Sedans": 14.99,
+    "Mid-Size / Crossover": 19.99,
+    "Full-Size / Large": 24.99,
+  },
+};
+
 export const servicesList = [
   {
     title: "Regular Wash",
@@ -47,31 +64,39 @@ export const servicesList = [
   },
 ];
 
-export const addOnsList = [
-  { service: "Spray Wax", price: "5.00" },
-  { service: "Armor All Tires", price: "4.00" },
-  { service: "Leather Conditioning", price: "8.00" },
-  { service: "Engine Bay Cleaning", price: "25.00" },
-  { service: "Pet Hair Removal", price: "10.00" },
-  { service: "Headlight Restoration", price: "30.00" },
-];
+export const addOnsList = {
+  title: "Add-On Services",
+  description: "Boost your wash with these premium add-ons",
+  services: [
+    { service: "Spray Wax", price: "5.00" },
+    { service: "Armor All Tires", price: "4.00" },
+    { service: "Leather Conditioning", price: "8.00" },
+    { service: "Engine Bay Cleaning", price: "25.00" },
+    { service: "Pet Hair Removal", price: "10.00" },
+    { service: "Headlight Restoration", price: "30.00" },
+  ],
+};
 
-export const detailList = [
-  {
-    service: "Interior Detail",
-    price: "120+",
-    description:
-      "Deep steam cleaning, stain removal, leather nourishment, and every crevice cleaned.",
-  },
-  {
-    service: "Exterior Detail",
-    price: "150+",
-    description:
-      "Full paint decontamination, machine polish / buffing, and high - grade ceramic sealant.",
-  },
-  {
-    service: "Full Onyx Restoration",
-    price: "250+",
-    description: "The ultimate combo of Interior and Exterior detailing.",
-  },
-];
+// export const detailList = {
+//   title: "Professional Car Detailing",
+//   subtitle: 'Deep cleaning for those who want a "New Car" feel',
+//   services: [
+//     {
+//       service: "Interior Detail",
+//       price: "120+",
+//       description:
+//         "Deep steam cleaning, stain removal, leather nourishment, and every crevice cleaned.",
+//     },
+//     {
+//       service: "Exterior Detail",
+//       price: "150+",
+//       description:
+//         "Full paint decontamination, machine polish / buffing, and high - grade ceramic sealant.",
+//     },
+//     {
+//       service: "Full Onyx Restoration",
+//       price: "250+",
+//       description: "The ultimate combo of Interior and Exterior detailing.",
+//     },
+//   ],
+// };
