@@ -1,4 +1,4 @@
-import { MdLocalCarWash } from "react-icons/md";
+import { FaCheck } from "react-icons/fa";
 
 interface ServiceItem {
   title: string;
@@ -24,8 +24,8 @@ const ServicesCard2 = ({ serviceCard }: ServicesItemProps) => {
       </div>
       <div className="flex min-h-0 flex-1 flex-col gap-2">
         {serviceCard.features.map((feature) => (
-          <div key={feature} className="flex items-center gap-3">
-            <MdLocalCarWash className="shrink-0 text-xl text-blue-900" />
+          <div key={feature} className="flex items-center gap-3 pl-3">
+            <FaCheck className="shrink-0 text-xl text-yellow-500" />
             <div className="font-questrial text-sm">{feature}</div>
           </div>
         ))}
