@@ -47,7 +47,7 @@ const Navbar = () => {
       <MobileNaveLinks isOpen={isOpen} setIsOpen={setIsOpen} />
 
       <div
-        className="flex h-full w-full items-center justify-start px-8 text-white lg:justify-between lg:px-12 2xl:px-28"
+        className="flex h-full w-full items-center justify-center px-8 text-white lg:justify-between lg:px-12 2xl:px-28"
         style={{ backgroundColor: `rgba(0,0,0,${bgOpacity})` }}
       >
         <div className="flex h-full w-fit items-center justify-center gap-2 px-3 text-3xl font-bold lg:gap-5 xl:pl-10 xl:text-left">
