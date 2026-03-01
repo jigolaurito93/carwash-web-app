@@ -5,6 +5,7 @@ import {
   Bungee_Hairline,
   Lexend_Giga,
   Lexend_Tera,
+  Questrial,
 } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
@@ -35,6 +36,12 @@ const lexendTera = Lexend_Tera({
   subsets: ["latin"],
 });
 
+const questrial = Questrial({
+  variable: "--font-questrial",
+  subsets: ["latin"],
+  weight: "400",
+});
+
 export const metadata: Metadata = {
   title: "Onyx Premium Carwash",
   description: "High Quality Car Wash",
@@ -48,7 +55,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${bungeeHairline.variable} ${lexendGiga.variable} ${lexendTera.variable}`}
+      className={`${geistSans.variable} ${geistMono.variable} ${bungeeHairline.variable} ${lexendGiga.variable} ${lexendTera.variable} ${questrial.variable}`}
     >
       <body className="antialiased">
         <Navbar />
