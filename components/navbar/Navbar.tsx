@@ -54,8 +54,8 @@ const Navbar = () => {
           <Image
             alt="logo"
             src="/images/Untitled.png"
-            width={80}
-            height={80}
+            width={60}
+            height={60}
             className="rounded-full bg-black p-1"
           />
           <div className="flex flex-col items-center justify-center">
