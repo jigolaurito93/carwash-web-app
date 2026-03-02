@@ -22,7 +22,7 @@ const ServicesPage = () => {
       <div className="mx-auto py-10 font-lexend text-xl md:text-3xl">
         Services and Pricing
       </div>
-      <div className="flex flex-wrap items-stretch justify-center gap-7">
+      <div className="max-w-9xl mx-auto grid gap-7 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
         <ServicesCard2 serviceCard={servicesList[0]} />
         <ServicesCard2 serviceCard={servicesList[1]} />
         <ServicesCard2 serviceCard={servicesList[2]} />
@@ -34,7 +34,7 @@ const ServicesPage = () => {
       <div className="mx-auto py-10 font-lexend text-xl md:text-3xl">
         Other Services
       </div>
-      <div className="item-stretch flex flex-wrap justify-center gap-7">
+      <div className="max-w-9xl mx-auto grid gap-7 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
         <ServicesCard serviceCard={addOnsList} />
         <ServicesCard serviceCard={paintProtectionList} />
         <ServicesCard serviceCard={waxList} />
@@ -46,7 +46,7 @@ const ServicesPage = () => {
       <div className="mx-auto py-10 font-lexend text-xl md:text-3xl">
         Detailing Services
       </div>
-      <div className="item-stretch flex flex-wrap justify-center gap-7">
+      <div className="max-w-9xl mx-auto grid gap-7 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
         <ServicesCard2 serviceCard={completeDetailList} />
         <ServicesCard2 serviceCard={interiorDetailList} />
         <ServicesCard2 serviceCard={exteriorDetailList} />
