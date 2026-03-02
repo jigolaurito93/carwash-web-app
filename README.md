@@ -1,8 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Onyx Premium Carwash – Web App
+
+A modern, responsive marketing site for **Onyx Premium Carwash**, built with **Next.js** and **Tailwind CSS**. It showcases services, pricing, gallery, contact information, and operating hours with a clean, mobile‑first design.
+
+---
+
+## Tech Stack
+
+- **Framework**: Next.js (App Router, TypeScript)
+- **Styling**: Tailwind CSS
+- **Icons**: `react-icons`
+- **Fonts**: Google Fonts via `next/font`
+- **Deployment**: Any Node/Next-compatible host (e.g. Vercel)
+
+---
+
+## Features
+
+- **Responsive layout** for mobile, tablet, and desktop
+- **Sticky navbar** with scroll‑based translucent background
+- **Services page** with cards for:
+  - Core wash packages
+  - Add‑ons & specialty services
+  - Detailing options
+- **Hours & Contact section** with adaptive layout (stacked on mobile, side‑by‑side on desktop)
+- **Footer** with quick links and shop info
+- **SEO-ready** metadata (`title`, `description`)
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- **Node.js** (LTS recommended, e.g. 18+)
+- **npm** or **yarn** or **pnpm**
+
+### Installation
+
+```bash
+# clone this repo
+git clone <your-repo-url> carwash-web-app
+cd carwash-web-app
+
+# install dependencies
+npm install
+# or
+yarn
+# or
+pnpm install
+```
+
+### Development
 
 ```bash
 npm run dev
@@ -10,27 +58,59 @@ npm run dev
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open `http://localhost:3000` in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Available Scripts
 
-## Learn More
+- **`npm run dev`** – Start the development server
+- **`npm run build`** – Create an optimized production build
+- **`npm start`** – Run the production build
+- **`npm run lint`** – Run linting
 
-To learn more about Next.js, take a look at the following resources:
+(Replace `npm` with `yarn`/`pnpm` as needed.)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure (high level)
 
-## Deploy on Vercel
+- `app/`
+  - `layout.tsx` – Root layout (navbar, footer, global fonts)
+  - `page.tsx` – Home page
+  - `services/page.tsx` – Services & pricing page
+- `components/`
+  - `navbar/` – `Navbar`, `MobileNavLinks`
+  - `ServicesSection`, `ServicesCard`, `ServicesCard2`
+  - `HoursOpenSection`
+  - `ShopInfoSection`
+  - `Welcome`
+  - `Footer`
+- `data/`
+  - `services.ts` – Configuration for service cards
+- `public/images/` – Static images (logo, gallery, etc.)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Styling & Layout Notes
+
+- **Layout** uses Tailwind utility classes with `flex` and `grid` for responsive behavior.
+- The **navbar** is fixed at the top; some pages (e.g. Services) add extra top padding or a black bar to avoid content being hidden.
+- Sections like **Hours & Contact** use responsive flex layouts: stacked on mobile, side‑by‑side on wider screens.
+
+---
+
+## Customization
+
+- Update text, prices, and offerings in `data/services.ts`.
+- Swap images in `public/images/`.
+- Adjust colors, spacing, and fonts in Tailwind config or directly in component class names.
+- Modify `<metadata>` in `app/layout.tsx` for SEO (title, description).
+
+---
+
+## License
+
+This project is currently unlicensed. Add a license file (e.g. MIT) here if you intend to open‑source it.
