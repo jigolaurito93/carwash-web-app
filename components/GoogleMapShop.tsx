@@ -27,7 +27,7 @@ const ShopMap = () => {
 
   return (
     <div className="space-y-3">
-      <div className="overflow-hidden rounded-lg border border-gray-300">
+      <div className="overflow-hidden">
         <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={15}>
           <Marker position={center} />
         </GoogleMap>
