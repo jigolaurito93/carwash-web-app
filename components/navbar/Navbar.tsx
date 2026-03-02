@@ -40,20 +40,27 @@ const Navbar = () => {
   return (
     // Add z-50 and top-0 here
     <nav className="fixed top-0 left-0 z-10 flex h-20 w-full">
+      {/* For Nav Mobile */}
       <RxHamburgerMenu
         className="absolute top-8 right-7 cursor-pointer text-4xl text-white lg:hidden"
         onClick={() => setIsOpen(true)}
       />
       <MobileNaveLinks isOpen={isOpen} setIsOpen={setIsOpen} />
+      {/* For Nav Mobile */}
 
+      {/* For Desktop  */}
       <div
         className="flex h-full w-full items-center justify-center px-8 text-white lg:justify-between lg:px-12 2xl:px-28"
         style={{ backgroundColor: `rgba(0,0,0,${bgOpacity})` }}
       >
-        <div className="flex h-full w-fit items-center justify-center gap-2 px-3 text-3xl font-bold lg:gap-5 xl:pl-10 xl:text-left">
+        <Link
+          href={"/"}
+          className="flex h-full w-fit items-center justify-center gap-2 px-3 text-3xl font-bold lg:gap-5 xl:pl-10 xl:text-left"
+        >
+          {/* Nav Logo */}
           <Image
             alt="logo"
-            src="/images/Untitled.png"
+            src="/images/nav-logo-icon.png"
             width={60}
             height={60}
             className="rounded-full bg-black p-1"
@@ -64,7 +71,9 @@ const Navbar = () => {
               PREMIUM CARWASH
             </div>
           </div>
-        </div>
+        </Link>
+        {/* Nav Logo */}
+
         {/* Desktop NavLinks */}
         <div className="hidden h-full justify-center text-lg font-medium lg:flex">
           {navLinks.map((link) => (
