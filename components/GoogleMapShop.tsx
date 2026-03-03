@@ -4,7 +4,7 @@ import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 
 const containerStyle = {
   width: "100%",
-  height: "500px",
+  height: "300px",
 };
 
 const center = {
@@ -34,13 +34,15 @@ const ShopMap = () => {
       </div>
 
       <div className="font-questrial text-sm text-gray-100">
-        <div className="font-semibold text-white">Onyx Premium Carwash</div>
+        <div className="text-lg font-semibold text-white">
+          Onyx Premium Carwash
+        </div>
         <div>{shopAddress}</div>
         <a
           href={directionsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-2 inline-block rounded bg-blue-600 px-3 py-1 text-xs font-semibold text-white hover:bg-blue-500"
+          className="mt-4 inline-block rounded bg-blue-600 px-3 py-1 font-semibold text-white hover:bg-blue-500"
         >
           Get Directions
         </a>
