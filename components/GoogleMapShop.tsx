@@ -26,7 +26,7 @@ const ShopMap = () => {
   if (!isLoaded) return <div>Loading map...</div>;
 
   return (
-    <div className="space-y-3">
+    <div className="mx-auto flex h-[450px] w-full max-w-[750px] flex-col space-y-3 sm:h-[550px]">
       <div className="overflow-hidden">
         <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={15}>
           <Marker position={center} />
@@ -34,15 +34,15 @@ const ShopMap = () => {
       </div>
 
       <div className="font-questrial text-sm text-gray-100">
-        <div className="text-lg font-semibold text-white">
+        <div className="text-lg font-semibold text-yellow-400 sm:text-2xl">
           Onyx Premium Carwash
         </div>
-        <div>{shopAddress}</div>
+        <div className="sm:text-lg">{shopAddress}</div>
         <a
           href={directionsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-4 inline-block rounded bg-blue-600 px-3 py-1 font-semibold text-white hover:bg-blue-500"
+          className="mt-5 inline-block rounded bg-blue-600 px-3 py-1 font-questrial font-semibold text-white hover:bg-blue-500 sm:px-6 sm:text-lg"
         >
           Get Directions
         </a>

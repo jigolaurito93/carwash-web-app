@@ -22,6 +22,7 @@ const Contact = () => {
 
   return (
     <div>
+      {/* Section 1 - Hero */}
       <div className="relative h-screen w-full overflow-hidden">
         <Image
           alt="carwash image"
@@ -31,7 +32,6 @@ const Contact = () => {
           className="object-cover object-top"
         />
 
-        {/* Section 1 - Hero */}
         <div className="absolute inset-0 flex items-center justify-center bg-black/30">
           <div className="flex w-full flex-col items-center text-center">
             <div className="font-lexend text-5xl font-extrabold tracking-tighter text-yellow-400 drop-shadow-2xl sm:text-7xl md:text-8xl lg:text-9xl">
@@ -62,24 +62,24 @@ const Contact = () => {
             {/* Call to action buttons */}
           </div>
         </div>
-        {/* Section 1 - Hero */}
       </div>
-      <div className="">
-        <div>
-          {/* Section 2 */}
-          <ShopInfoSection2 />
-          {/* Section 2 */}
+      {/* Section 1 - Hero */}
+
+      <div>
+        {/* Section 2 */}
+        <ShopInfoSection2 />
+        {/* Section 2 */}
+      </div>
+
+      {/* Section 3 */}
+      <div className="flex flex-col justify-center space-y-5 bg-black px-7 py-12 md:px-14 md:py-20">
+        <div className="mb-8 text-center font-lexend text-xl text-white md:mb-14 md:text-2xl">
+          Find Our Location
         </div>
 
-        {/* Section 3 */}
-        <div className="space-y-5 sm:px-16">
-          <div className="text-center font-lexend text-xl md:text-2xl">
-            Find Our Location
-          </div>
-          <ShopMap />
-        </div>
-        {/* Section 3 */}
+        <ShopMap />
       </div>
+      {/* Section 3 */}
 
       <div>Contact Form</div>
     </div>
