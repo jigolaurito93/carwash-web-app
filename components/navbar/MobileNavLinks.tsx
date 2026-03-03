@@ -30,8 +30,11 @@ const MobileNaveLinks = ({ isOpen, setIsOpen }: MobileNavProps) => {
         <Link href={"/services"} onClick={handleCloseNav}>
           Services
         </Link>
-        <Link href={"/"} onClick={handleCloseNav}>
-          Home
+        <Link href={"/gallery"} onClick={handleCloseNav}>
+          Gallery
+        </Link>
+        <Link href={"/contact"} onClick={handleCloseNav}>
+          Contact
         </Link>
       </div>
     </div>
