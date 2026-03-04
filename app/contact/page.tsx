@@ -81,8 +81,10 @@ const Contact = () => {
         <ShopMap />
       </div>
       {/* Section 3 */}
-
-      <ContactForm />
+      <div className="flex flex-col items-center py-10">
+        <div className="font-lexend text-2xl">Have a Question?</div>
+        <ContactForm />
+      </div>
     </div>
   );
 };
