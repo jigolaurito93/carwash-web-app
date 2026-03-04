@@ -1,5 +1,6 @@
 "use client";
 
+import ContactForm from "@/components/ContactForm";
 import ShopMap from "@/components/GoogleMapShop";
 import ShopInfoSection2 from "@/components/ShopInfoSection2";
 import Image from "next/image";
@@ -81,7 +82,7 @@ const Contact = () => {
       </div>
       {/* Section 3 */}
 
-      <div>Contact Form</div>
+      <ContactForm />
     </div>
   );
 };
