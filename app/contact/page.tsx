@@ -81,7 +81,7 @@ const Contact = () => {
         <ShopMap />
       </div>
       {/* Section 3 */}
-      <div className="mx-auto flex max-w-[500px] flex-col items-center gap-4 p-10 font-questrial md:max-w-[600px] lg:max-w-[700px]">
+      <div className="mx-auto flex max-w-125 flex-col items-center gap-4 p-10 font-questrial md:max-w-150 lg:max-w-175">
         <div className="font-lexend text-2xl">Have a Question?</div>
         <div className="text-center">
           Fill out the form below and our team will get back to you as soon as
