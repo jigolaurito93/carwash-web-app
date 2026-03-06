@@ -84,6 +84,57 @@ const About = () => {
         </div>
       </div>
       {/* Mission */}
+
+      {/* Why choose us */}
+      <div className="space-y-10 bg-black/90 px-9 py-10 text-white md:px-24 md:py-20 lg:px-36">
+        <div className="flex flex-col items-center justify-center gap-4 text-center font-lexend text-5xl font-bold md:flex-row lg:text-6xl">
+          <div className="tracking-tighter">Why Choose Us</div>
+          <PiTargetBold />
+        </div>
+        <div className="mx-auto mt-8 space-y-8 text-center font-questrial md:text-2xl lg:mt-16 lg:max-w-220 lg:text-3xl">
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-center gap-3 text-2xl font-extrabold">
+              <div>Hand Washed Only</div>
+              <PiTargetBold />
+            </div>
+            <div>
+              Every vehicle is washed by hand to prevent scratches and ensure a
+              deeper clean.
+            </div>
+          </div>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-center gap-3 text-2xl font-extrabold">
+              <div>Attention to Detail</div>
+              <PiTargetBold />
+            </div>
+            <div>
+              We clean areas many automated washes miss — wheels, trim, and
+              finishing touches.
+            </div>
+          </div>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-center gap-3 text-2xl font-extrabold">
+              <div>Paint-Safe Products</div>
+              <PiTargetBold />
+            </div>
+            <div>
+              We use high-quality soaps and microfiber materials designed to
+              protect your vehicle&apos;s finish.
+            </div>
+          </div>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-center gap-3 text-2xl font-extrabold">
+              <div>Customer First Service</div>
+              <PiTargetBold />
+            </div>
+            <div>
+              Your satisfaction is our priority, and we take pride in every
+              vehicle we wash.
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Why choose us */}
     </div>
   );
 };
