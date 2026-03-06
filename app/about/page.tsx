@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { PiTargetBold } from "react-icons/pi";
 
 const About = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -42,7 +43,7 @@ const About = () => {
         <div className="text-center font-lexend text-5xl font-bold lg:text-6xl">
           Owner Story
         </div>
-        <div className="mx-auto mt-10 flex flex-col items-center justify-center gap-5 font-questrial md:text-2xl lg:mt-16 lg:max-w-220 lg:text-3xl">
+        <div className="mx-auto mt-8 flex flex-col items-center justify-center gap-5 font-questrial md:text-2xl lg:mt-16 lg:max-w-220 lg:text-3xl">
           <div>
             Hi, my name is{" "}
             <span className="text-2xl font-bold text-yellow-400 lg:text-4xl">
@@ -70,7 +71,19 @@ const About = () => {
       </div>
       {/* Story */}
 
-      {/* Missions */}
+      {/* Mission */}
+      <div className="px-9 py-10 md:px-24 md:py-20 lg:px-36">
+        <div className="flex flex-col items-center justify-center gap-4 text-center font-lexend text-5xl font-bold md:flex-row lg:text-6xl">
+          <div>Our Mission</div>
+          <PiTargetBold />
+        </div>
+        <div className="mx-auto mt-8 text-center font-questrial md:text-2xl lg:mt-16 lg:max-w-220 lg:text-3xl">
+          Our mission is to deliver a premium hand wash experience that protects
+          your vehicle while providing unmatched attention to detail. We focus
+          on quality, consistency, and customer satisfaction every time.
+        </div>
+      </div>
+      {/* Mission */}
     </div>
   );
 };
