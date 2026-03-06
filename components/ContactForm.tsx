@@ -36,13 +36,13 @@ const ContactForm = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="mx-auto w-full max-w-90 space-y-6 md:w-100"
+      className="mx-auto w-full max-w-90 space-y-6 md:w-100 lg:w-125 lg:max-w-none"
     >
       <div>
         <input
           {...register("name")}
           placeholder="Full Name"
-          className="w-full rounded-md border px-4 py-3"
+          className="w-full rounded-sm border border-black/30 px-4 py-3"
         />
         {errors.name && (
           <p className="mt-1 text-sm text-red-500">{errors.name.message}</p>
@@ -53,7 +53,7 @@ const ContactForm = () => {
         <input
           {...register("email")}
           placeholder="Email Address"
-          className="w-full rounded-md border px-4 py-3"
+          className="w-full rounded-sm border border-black/30 px-4 py-3"
         />
         {errors.email && (
           <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
@@ -64,7 +64,7 @@ const ContactForm = () => {
         <input
           {...register("phone")}
           placeholder="Phone Number (Optional)"
-          className="w-full rounded-md border px-4 py-3"
+          className="w-full rounded-sm border border-black/30 px-4 py-3"
         />
       </div>
 
@@ -73,7 +73,7 @@ const ContactForm = () => {
           {...register("message")}
           placeholder="Your Message"
           rows={4}
-          className="w-full rounded-md border px-4 py-3"
+          className="w-full rounded-sm border border-black/30 px-4 py-3"
         />
         {errors.message && (
           <p className="mt-1 text-sm text-red-500">{errors.message.message}</p>
@@ -83,7 +83,7 @@ const ContactForm = () => {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full rounded-md bg-teal-500 py-3 text-white transition hover:bg-teal-600"
+        className="w-full rounded-sm bg-teal-500 py-3 text-white transition hover:bg-teal-600"
       >
         {isSubmitting ? "Sending..." : "Send Message"}
       </button>
