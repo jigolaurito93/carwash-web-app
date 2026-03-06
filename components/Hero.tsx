@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const Hero = () => {
   return (
@@ -21,6 +22,11 @@ const Hero = () => {
         <div className="text-center font-lexend text-sm text-white sm:text-lg lg:text-xl">
           &rdquo;The Gold Standard of Clean&rdquo;
         </div>
+        <Link href={"/contact"}>
+          <div className="mt-14 cursor-pointer rounded-full bg-white px-8 py-4 font-lexend text-xs shadow-2xl transition-colors duration-300 ease-in-out hover:bg-black/30 hover:text-white hover:shadow-white md:text-sm">
+            Schedule an Appointment
+          </div>
+        </Link>
       </div>
     </div>
   );
