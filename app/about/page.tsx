@@ -38,15 +38,19 @@ const About = () => {
       </div>
 
       {/* Story */}
-      <div className="bg-black/90 px-9 py-10 text-white md:px-24 md:py-20">
-        <div className="text-center font-lexend text-5xl font-bold">
+      <div className="bg-black/90 px-9 py-10 text-white md:px-24 md:py-20 lg:px-36">
+        <div className="text-center font-lexend text-5xl font-bold lg:text-6xl">
           Owner Story
         </div>
-        <div className="mt-10 flex flex-col items-center justify-center gap-5 font-questrial md:text-2xl">
+        <div className="mx-auto mt-10 flex flex-col items-center justify-center gap-5 font-questrial md:text-2xl lg:mt-16 lg:max-w-220 lg:text-3xl">
           <div>
-            Hi, my name is Marcus Reynolds, founder of Onyx Hand Premium Wash.
-            For us, it&apos;s not just about washing cars — it&apos;s about
-            providing a service you can trust every time you pull in.
+            Hi, my name is{" "}
+            <span className="text-2xl font-bold text-yellow-400 lg:text-4xl">
+              Marcus Reynolds
+            </span>
+            , founder of Onyx Hand Premium Wash. For us, it&apos;s not just
+            about washing cars — it&apos;s about providing a service you can
+            trust every time you pull in.
           </div>
           <div>
             I started Onyx Hand Premium Wash because I saw how many vehicles
@@ -62,10 +66,11 @@ const About = () => {
             and soft microfiber materials that protect your paint while
             delivering a deep, spotless clean.
           </div>
-          <div></div>
         </div>
       </div>
       {/* Story */}
+
+      {/* Missions */}
     </div>
   );
 };
