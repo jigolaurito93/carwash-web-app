@@ -75,7 +75,7 @@ const Contact = () => {
 
       {/* Section 3 */}
       <div className="flex flex-col justify-center space-y-5 bg-black px-7 py-12 md:px-14 md:py-20">
-        <div className="mb-8 text-center font-lexend text-xl text-white md:mb-14 md:text-2xl">
+        <div className="mb-8 text-center font-lexend text-3xl font-bold tracking-tight text-white sm:text-4xl md:mb-14 lg:text-5xl">
           Find Our Location
         </div>
 
@@ -89,7 +89,9 @@ const Contact = () => {
 
       {/* Form */}
       <div className="mx-auto flex max-w-125 flex-col items-center gap-4 p-10 font-questrial md:max-w-150 lg:max-w-175">
-        <div className="font-lexend text-2xl">Have a Question?</div>
+        <div className="font-lexend text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+          Have a Question?
+        </div>
         <div className="text-center">
           Fill out the form below and our team will get back to you as soon as
           possible. We&apos;re happy to help with bookings, services, or
