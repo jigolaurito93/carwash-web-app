@@ -1,6 +1,7 @@
 "use client";
 
 import ContactForm from "@/components/ContactForm";
+import FAQ from "@/components/FAQ";
 import ShopMap from "@/components/GoogleMapShop";
 import ShopInfoSection2 from "@/components/ShopInfoSection2";
 import Image from "next/image";
@@ -81,6 +82,12 @@ const Contact = () => {
         <ShopMap />
       </div>
       {/* Section 3 */}
+
+      {/* FAQ */}
+      <FAQ />
+      {/* FAQ */}
+
+      {/* Form */}
       <div className="mx-auto flex max-w-125 flex-col items-center gap-4 p-10 font-questrial md:max-w-150 lg:max-w-175">
         <div className="font-lexend text-2xl">Have a Question?</div>
         <div className="text-center">
@@ -91,6 +98,7 @@ const Contact = () => {
         <div></div>
         <ContactForm />
       </div>
+      {/* Form */}
     </div>
   );
 };
