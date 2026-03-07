@@ -3,6 +3,10 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { PiTargetBold } from "react-icons/pi";
+import { FaHandPaper } from "react-icons/fa";
+import { FaMagnifyingGlass } from "react-icons/fa6";
+import { FaShieldAlt } from "react-icons/fa";
+import { FaHandshake } from "react-icons/fa6";
 
 const About = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -75,7 +79,7 @@ const About = () => {
       <div className="px-9 py-10 md:px-24 md:py-20 lg:px-36">
         <div className="flex flex-col items-center justify-center gap-4 text-center font-lexend text-5xl font-bold md:flex-row lg:text-6xl">
           <div>Our Mission</div>
-          <PiTargetBold />
+          <PiTargetBold className="text-yellow-400" size={80} />
         </div>
         <div className="mx-auto mt-8 text-center font-questrial md:text-2xl lg:mt-16 lg:max-w-220 lg:text-3xl">
           Our mission is to deliver a premium hand wash experience that protects
@@ -89,13 +93,12 @@ const About = () => {
       <div className="space-y-10 bg-black/90 px-9 py-10 text-white md:px-24 md:py-20 lg:px-36">
         <div className="flex flex-col items-center justify-center gap-4 text-center font-lexend text-5xl font-bold md:flex-row lg:text-6xl">
           <div className="tracking-tighter">Why Choose Us</div>
-          <PiTargetBold />
         </div>
-        <div className="mx-auto mt-8 space-y-8 text-center font-questrial md:text-2xl lg:mt-16 lg:max-w-220 lg:text-3xl">
+        <div className="mx-auto mt-8 space-y-8 text-center font-questrial md:text-2xl lg:mt-16 lg:max-w-220 lg:space-y-12 lg:text-3xl">
           <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-center gap-3 text-2xl font-extrabold">
+            <div className="flex items-center justify-center gap-3 text-2xl font-bold text-yellow-400 md:text-4xl lg:text-5xl">
               <div>Hand Washed Only</div>
-              <PiTargetBold />
+              <FaHandPaper size={30} />
             </div>
             <div>
               Every vehicle is washed by hand to prevent scratches and ensure a
@@ -103,9 +106,9 @@ const About = () => {
             </div>
           </div>
           <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-center gap-3 text-2xl font-extrabold">
+            <div className="flex items-center justify-center gap-3 text-2xl font-bold text-yellow-400 md:text-4xl lg:text-5xl">
               <div>Attention to Detail</div>
-              <PiTargetBold />
+              <FaMagnifyingGlass size={30} />
             </div>
             <div>
               We clean areas many automated washes miss — wheels, trim, and
@@ -113,9 +116,9 @@ const About = () => {
             </div>
           </div>
           <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-center gap-3 text-2xl font-extrabold">
+            <div className="flex items-center justify-center gap-3 text-2xl font-bold text-yellow-400 md:text-4xl lg:text-5xl">
               <div>Paint-Safe Products</div>
-              <PiTargetBold />
+              <FaShieldAlt size={30} />
             </div>
             <div>
               We use high-quality soaps and microfiber materials designed to
@@ -123,9 +126,9 @@ const About = () => {
             </div>
           </div>
           <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-center gap-3 text-2xl font-extrabold">
+            <div className="flex items-center justify-center gap-3 text-2xl font-bold text-yellow-400 md:text-4xl lg:text-5xl">
               <div>Customer First Service</div>
-              <PiTargetBold />
+              <FaHandshake size={30} />
             </div>
             <div>
               Your satisfaction is our priority, and we take pride in every
