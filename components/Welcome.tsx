@@ -15,7 +15,7 @@ const Welcome = () => {
       </div>
       <div className="flex min-h-full flex-col gap-5 md:w-1/2 md:justify-center md:px-10 lg:px-18 2xl:px-32">
         <div className="flex flex-col text-center text-white lg:mb-7">
-          <div className="font-bungee text-3xl font-bold lg:text-4xl xl:text-5xl 2xl:text-6xl">
+          <div className="font-bungee text-3xl font-bold text-yellow-400 lg:text-4xl xl:text-5xl 2xl:text-6xl">
             The Full Onyx Experience
           </div>
           <div className="font-bungee 2xl:text-2xl">
