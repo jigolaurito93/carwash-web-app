@@ -40,7 +40,7 @@ const Contact = () => {
               Contact Us
             </div>
             {/* <div className="mx-auto my-1 h-[3px] w-28 rounded-full bg-black/60" /> */}
-            <div className="mt-2 max-w-[500px] px-6 font-lexend text-sm font-bold text-white italic sm:text-lg lg:max-w-[700] lg:text-xl">
+            <div className="mt-2 max-w-125 px-6 font-lexend text-sm font-bold text-white italic sm:text-lg lg:max-w-[700] lg:text-xl">
               Have questions or ready to book your next wash? We&apos;re here to
               help.
             </div>
