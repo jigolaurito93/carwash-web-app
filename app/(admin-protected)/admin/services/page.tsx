@@ -9,6 +9,7 @@ export default async function AdminServicesPage() {
   return (
     <div className="p-8">
       <h1 className="mb-4 text-2xl font-bold">Manage Services</h1>
+      <div></div>
       <pre className="rounded bg-gray-100 p-4">
         {JSON.stringify(data, null, 2)}
       </pre>
