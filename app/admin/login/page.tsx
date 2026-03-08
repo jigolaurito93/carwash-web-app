@@ -2,10 +2,18 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+// 1. Change this import
+import { createBrowserClient } from "@supabase/ssr";
 
 export default function AdminLoginPage() {
   const router = useRouter();
+
+  // 2. Initialize the client inside the component
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  );
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -14,7 +22,7 @@ export default function AdminLoginPage() {
     e.preventDefault();
     setError(null);
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -22,36 +30,49 @@ export default function AdminLoginPage() {
     if (error) {
       setError(error.message);
     } else {
+      console.log("✅ Login Successful!", data.user);
+
+      // 3. Refresh & Redirect
+      router.refresh();
       router.push("/admin/dashboard");
     }
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-4">
-        <h1 className="text-2xl font-bold">Owner Login</h1>
-        {error && <p className="text-red-500">{error}</p>}
-        <div>
-          <label>Email</label>
+    <div className="flex min-h-screen items-center justify-center px-8">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-sm space-y-4 lg:max-w-md"
+      >
+        <h1 className="mb-10 font-lexend text-3xl font-bold md:text-4xl lg:mb-15 lg:text-5xl">
+          Admin Login
+        </h1>
+        {error && (
+          <p className="absolute top-68 font-questrial text-lg font-bold text-red-500">
+            {error}
+          </p>
+        )}
+        <div className="font-questrial text-lg">
+          <label className="tracking-wider">Email</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full border px-2 py-1"
+            className="w-full rounded-sm border-2 px-2 py-1"
           />
         </div>
-        <div>
-          <label>Password</label>
+        <div className="font-questrial text-lg">
+          <label className="tracking-wider">Password</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full border px-2 py-1"
+            className="w-full rounded-sm border-2 px-2 py-1"
           />
         </div>
         <button
           type="submit"
-          className="rounded bg-blue-600 px-4 py-2 text-white"
+          className="mt-7 w-full rounded bg-black px-4 py-2 font-questrial text-xl tracking-widest text-white"
         >
           Login
         </button>
