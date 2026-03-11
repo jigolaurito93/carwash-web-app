@@ -22,16 +22,16 @@ const TestServices = async () => {
     description: s.subtitle ?? "",
     features: s.types ?? [],
     vehicles: {
-      "Most Cars / Sedans": s.price_car ?? 0,
-      "Mid-Size / Crossover": s.price_mid ?? 0,
-      "Full-Size / Large": s.price_full ?? 0,
+      Car: s.price_car ?? 0,
+      Mid: s.price_mid ?? 0,
+      Full: s.price_full ?? 0,
     },
   }));
 
   return (
     <div className="flex flex-col px-4 pt-20 pb-32">
       {/* Black bar on top of navbar */}
-      <div className="fixed top-0 left-0 h-20 w-full bg-black" />
+      <div className="fixed top-0 left-0 h-[80px] w-full bg-black" />
 
       {/* Services and Pricing */}
       <div className="mx-auto py-10 font-lexend text-xl md:text-3xl">
