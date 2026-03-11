@@ -36,3 +36,28 @@ export async function updateService(
   revalidatePath("/admin/services");
   return { success: true };
 }
+
+export async function createOtherService(payload) {
+  const { error } = await supabase.from("otherServices").insert(payload);
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  revalidatePath("/admin/services");
+  return { success: true };
+}
+
+export async function updateOtherService(id, payload) {
+  const { error } = await supabase
+    .from("otherServices")
+    .update(payload)
+    .eq("id", id);
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  revalidatePath("/admin/services");
+  return { success: true };
+}

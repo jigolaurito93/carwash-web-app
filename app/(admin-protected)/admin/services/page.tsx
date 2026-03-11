@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import ServicesTable from "./ServicesTable";
+import OtherServicesTable from "./OtherServices";
 
 export default async function AdminServicesPage() {
   // Fetch from "Services" table on supabase
