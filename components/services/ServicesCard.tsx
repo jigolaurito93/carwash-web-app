@@ -1,38 +1,37 @@
-interface ServiceRow {
-  service: string;
-  price: string;
-  description?: string;
-}
+// Card for Other Services
 
+// Interface for the Other Services Card
 interface ServicesCardData {
   title: string;
   subtitle?: string;
-  description?: string;
   services: ServiceRow[];
 }
-
+// Interface for the Other Services (services list)
+interface ServiceRow {
+  service: string;
+  price: string;
+}
+// Interface for the Other Services Card Props
 interface ServicesCardProps {
   serviceCard: ServicesCardData;
 }
 
 const ServicesCard = ({ serviceCard }: ServicesCardProps) => {
-  const subtitleText = serviceCard.subtitle ?? serviceCard.description ?? "";
   return (
     <div className="flex w-full max-w-80 flex-col rounded-md border border-black/30 p-4 pb-10 shadow-lg xl:pb-10">
       <div className="flex flex-col gap-1 rounded-md bg-black/10 px-2 py-2">
         <div className="text-center font-lexend text-lg">
           {serviceCard.title}
         </div>
-        {subtitleText && (
-          <div className="px-2 text-center font-lexend text-xs">
-            {subtitleText}
-          </div>
-        )}
+
+        <div className="px-2 text-center font-lexend text-xs">
+          {serviceCard.subtitle}
+        </div>
       </div>
       <div className="my-4 flex flex-col gap-2 px-3 lg:px-3">
-        {serviceCard.services.map((detail) => (
+        {serviceCard.services.map((detail, i) => (
           <div
-            key={detail.service}
+            key={`${detail.service}-${i}`}
             className="flex justify-between font-questrial text-sm"
           >
             <div>{detail.service}</div>

@@ -45,9 +45,9 @@ const TestServices = async () => {
 
   // Map otherServices to ServicesCard shape
   const formattedOtherServices = otherServices?.map((s) => ({
-    title: s.title ?? s.name ?? "",
-    subtitle: s.subtitle ?? s.description ?? "",
-    services: s.services ?? [], // Must match { service: string, price: string, description?: string }[]
+    title: s.name,
+    subtitle: s.subtitle ?? "",
+    services: s.types ?? [],
   }));
 
   // Map detailingServices to ServicesCard shape
