@@ -43,7 +43,7 @@ const About = () => {
       </div>
 
       {/* Story */}
-      <div className="bg-black/90 px-9 py-10 lg:min-h-screen flex flex-col justify-center text-white md:px-24 md:py-20 lg:px-36">
+      <div className="flex flex-col justify-center bg-black/90 px-9 py-10 text-white md:px-24 md:py-20 lg:min-h-screen lg:px-36">
         <div className="text-center font-lexend text-5xl font-bold lg:text-6xl">
           Owner Story
         </div>
@@ -90,47 +90,63 @@ const About = () => {
       {/* Mission */}
 
       {/* Why choose us */}
-      <div className="space-y-10 bg-black/90 px-9 py-10 text-white md:px-24 md:py-20 lg:px-36">
+      <div className="space-y-10 bg-black/90 px-9 py-10 text-white md:px-24 md:py-20 lg:px-12 2xl:px-20">
         <div className="flex flex-col items-center justify-center gap-4 text-center font-lexend text-5xl font-bold md:flex-row lg:text-6xl">
-          <div className="tracking-tighter">Why Choose Us</div>
+          <div className="tracking-tighter uppercase">Why Choose Us</div>
         </div>
-        <div className="mx-auto mt-8 space-y-8 text-center font-questrial md:text-2xl lg:mt-16 lg:max-w-220 lg:space-y-12 lg:text-3xl">
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-center gap-3 text-2xl font-bold text-yellow-400 md:text-4xl lg:text-5xl">
-              <div>Hand Washed Only</div>
-              <FaHandPaper size={30} />
+
+        <div className="mx-auto mt-8 grid grid-cols-1 space-y-12 text-center font-questrial md:grid-cols-2 md:space-y-8 md:space-x-8 md:text-2xl lg:mt-16 lg:grid-cols-4 lg:space-x-4 xl:mt-20 2xl:space-x-10">
+          {/* 1. Hand Washed Only */}
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-yellow-400 md:h-14 md:w-14 lg:h-12 lg:w-12 2xl:h-16 2xl:w-16">
+              <FaHandPaper className="h-1/2 w-1/2 text-black" />
             </div>
-            <div>
+            <div className="text-2xl font-bold tracking-tight text-yellow-400 uppercase lg:text-2xl 2xl:text-4xl">
+              Hand Washed Only
+            </div>
+            <div className="max-w-xl text-xl lg:text-lg 2xl:text-2xl">
               Every vehicle is washed by hand to prevent scratches and ensure a
               deeper clean.
             </div>
           </div>
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-center gap-3 text-2xl font-bold text-yellow-400 md:text-4xl lg:text-5xl">
-              <div>Attention to Detail</div>
-              <FaMagnifyingGlass size={30} />
+
+          {/* 2. Attention to Detail */}
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-yellow-400 md:h-14 md:w-14 lg:h-12 lg:w-12 2xl:h-16 2xl:w-16">
+              <FaMagnifyingGlass className="h-1/2 w-1/2 text-black" />
             </div>
-            <div>
+            <div className="text-2xl font-bold tracking-tight text-yellow-400 uppercase lg:text-2xl 2xl:text-4xl">
+              Attention to Detail
+            </div>
+            <div className="max-w-xl text-xl lg:text-lg 2xl:text-2xl">
               We clean areas many automated washes miss — wheels, trim, and
               finishing touches.
             </div>
           </div>
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-center gap-3 text-2xl font-bold text-yellow-400 md:text-4xl lg:text-5xl">
-              <div>Paint-Safe Products</div>
-              <FaShieldAlt size={30} />
+
+          {/* 3. Paint-Safe Products */}
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-yellow-400 md:h-14 md:w-14 lg:h-12 lg:w-12 2xl:h-16 2xl:w-16">
+              <FaShieldAlt className="h-1/2 w-1/2 text-black" />
             </div>
-            <div>
+            <div className="text-2xl font-bold tracking-tight text-yellow-400 uppercase lg:text-2xl 2xl:text-4xl">
+              Paint-Safe Products
+            </div>
+            <div className="max-w-xl text-xl lg:text-lg 2xl:text-2xl">
               We use high-quality soaps and microfiber materials designed to
               protect your vehicle&apos;s finish.
             </div>
           </div>
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-center gap-3 text-2xl font-bold text-yellow-400 md:text-4xl lg:text-5xl">
-              <div>Customer First Service</div>
-              <FaHandshake size={30} />
+
+          {/* 4. Customer First Service */}
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-yellow-400 md:h-14 md:w-14 lg:h-12 lg:w-12 2xl:h-16 2xl:w-16">
+              <FaHandshake className="h-1/2 w-1/2 text-black" />
             </div>
-            <div>
+            <div className="text-2xl font-bold tracking-tight text-yellow-400 uppercase lg:text-2xl 2xl:text-4xl">
+              Customer First Service
+            </div>
+            <div className="max-w-xl text-xl lg:text-lg 2xl:text-2xl">
               Your satisfaction is our priority, and we take pride in every
               vehicle we wash.
             </div>
