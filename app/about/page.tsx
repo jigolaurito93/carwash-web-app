@@ -47,7 +47,7 @@ const About = () => {
         <div className="text-center font-lexend text-5xl font-bold lg:text-6xl">
           Owner Story
         </div>
-        <div className="mx-auto mt-8 flex flex-col items-center justify-center gap-5 font-questrial md:text-2xl lg:mt-16 lg:max-w-220 lg:text-3xl">
+        <div className="mx-auto mt-8 flex flex-col items-center justify-center gap-5 font-questrial md:text-2xl lg:mt-16 lg:max-w-220 lg:text-2xl tracking-wide lg:tracking-widest">
           <div>
             Hi, my name is{" "}
             <span className="text-2xl font-bold text-yellow-400 lg:text-4xl">
