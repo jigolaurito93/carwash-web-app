@@ -119,7 +119,7 @@ export default function ServicesTable({ services }: Props) {
         <button
           type="button"
           onClick={() => setCreating(true)}
-          className="rounded bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800"
+          className="cursor-pointer rounded bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800"
         >
           Add service
         </button>
@@ -205,7 +205,7 @@ export default function ServicesTable({ services }: Props) {
                     <button
                       type="button"
                       onClick={() => setEditing(row)}
-                      className="rounded border border-gray-300 bg-white px-2 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50"
+                      className="cursor-pointer rounded border border-gray-300 bg-white px-2 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50"
                     >
                       Edit
                     </button>
@@ -327,14 +327,14 @@ export default function ServicesTable({ services }: Props) {
                 <button
                   type="button"
                   onClick={() => !saving && setCreating(false)}
-                  className="rounded border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  className="cursor-pointer rounded border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="rounded bg-gray-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                  className="cursor-pointer rounded bg-gray-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
                 >
                   {saving ? "Adding…" : "Add"}
                 </button>
@@ -461,14 +461,14 @@ export default function ServicesTable({ services }: Props) {
                 <button
                   type="button"
                   onClick={() => !saving && setEditing(null)}
-                  className="rounded border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  className="cursor-pointer rounded border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="rounded bg-gray-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                  className="cursor-pointer rounded bg-gray-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
                 >
                   {saving ? "Saving…" : "Save"}
                 </button>
