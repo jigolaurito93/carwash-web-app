@@ -4,21 +4,21 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 // 1. Change this import
 import { createBrowserClient } from "@supabase/ssr";
+import { FormEvent } from "react";
+
+const supabase = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+);
 
 export default function AdminLoginPage() {
   const router = useRouter();
-
-  // 2. Initialize the client inside the component
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  );
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setError(null);
 
@@ -33,8 +33,9 @@ export default function AdminLoginPage() {
       console.log("✅ Login Successful!", data.user);
 
       // 3. Refresh & Redirect
-      router.refresh();
-      router.push("/admin/dashboard");
+      // router.refresh();
+      // router.push("/admin/dashboard");
+      window.location.href = "/admin/dashboard";
     }
   }
 
@@ -72,7 +73,7 @@ export default function AdminLoginPage() {
         </div>
         <button
           type="submit"
-          className="mt-7 w-full rounded bg-black px-4 py-2 font-questrial text-xl tracking-widest text-white"
+          className="mt-7 w-full cursor-pointer rounded bg-black px-4 py-2 font-questrial text-xl tracking-widest text-white"
         >
           Login
         </button>

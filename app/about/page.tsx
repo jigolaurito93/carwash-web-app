@@ -47,7 +47,7 @@ const About = () => {
         <div className="text-center font-lexend text-5xl font-bold lg:text-6xl">
           Owner Story
         </div>
-        <div className="mx-auto mt-8 flex flex-col items-center justify-center gap-5 font-questrial md:text-2xl lg:mt-16 lg:max-w-220 lg:text-2xl tracking-wide lg:tracking-widest">
+        <div className="mx-auto mt-8 flex flex-col items-center justify-center gap-5 font-questrial tracking-wide md:text-2xl lg:mt-16 lg:max-w-220 lg:text-2xl lg:tracking-widest">
           <div>
             Hi, my name is{" "}
             <span className="text-2xl font-bold text-yellow-400 lg:text-4xl">
@@ -95,7 +95,7 @@ const About = () => {
           <div className="tracking-tighter uppercase">Why Choose Us</div>
         </div>
 
-        <div className="mx-auto mt-8 grid grid-cols-1 space-y-12 text-center font-questrial md:grid-cols-2 md:space-y-8 md:space-x-8 md:text-2xl md:mt-16 lg:grid-cols-4 lg:space-x-4 xl:mt-20 2xl:space-x-16">
+        <div className="mx-auto mt-8 grid grid-cols-1 space-y-12 text-center font-questrial md:mt-16 md:grid-cols-2 md:space-y-8 md:space-x-8 md:text-2xl lg:grid-cols-4 lg:space-x-4 xl:mt-20 2xl:space-x-16">
           {/* 1. Hand Washed Only */}
           <div className="flex flex-col items-center gap-4">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-yellow-400 md:h-14 md:w-14 lg:h-12 lg:w-12 2xl:h-14 2xl:w-14">
