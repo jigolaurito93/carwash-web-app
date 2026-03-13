@@ -1,3 +1,4 @@
+import LogoutButton from "@/components/admin/LogoutButton";
 import { ReactNode } from "react";
 
 export const metadata = {
@@ -24,6 +25,10 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           </a>
           {/* Add logout button or other links here */}
         </nav>
+        {/* This pushes everything below it to the bottom */}
+        <div className="mt-auto pt-10">
+          <LogoutButton />
+        </div>
       </aside>
 
       <main className="flex-1 p-8">{children}</main>
