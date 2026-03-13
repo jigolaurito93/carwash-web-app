@@ -59,4 +59,46 @@ export async function updateService(id: number, payload: any) {
   return { success: true };
 }
 
-// ... repeat pattern for otherServices
+/* --- OTHER SERVICES ACTIONS --- */
+
+export async function createOtherService(
+  payload: Database["public"]["Tables"]["otherServices"]["Insert"],
+) {
+  const supabase = await getSupabase();
+
+  // Security check
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: "Unauthorized" };
+
+  const { error } = await supabase.from("otherServices").insert(payload);
+
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath("/admin/services");
+  return { success: true };
+}
+
+export async function updateOtherService(
+  id: number,
+  payload: Database["public"]["Tables"]["otherServices"]["Update"],
+) {
+  const supabase = await getSupabase();
+
+  // Security check
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: "Unauthorized" };
+
+  const { error } = await supabase
+    .from("otherServices")
+    .update(payload)
+    .eq("id", id);
+
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath("/admin/services");
+  return { success: true };
+}
