@@ -43,7 +43,7 @@ const About = () => {
       </div>
 
       {/* Story */}
-      <div className="bg-black/90 px-9 py-10 text-white md:px-24 md:py-20 lg:px-36">
+      <div className="bg-black/90 px-9 py-10 lg:min-h-screen flex flex-col justify-center text-white md:px-24 md:py-20 lg:px-36">
         <div className="text-center font-lexend text-5xl font-bold lg:text-6xl">
           Owner Story
         </div>
