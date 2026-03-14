@@ -149,7 +149,7 @@ export default function OtherServicesModal({
             <label className="mb-2 block font-questrial text-xs font-bold text-gray-400 uppercase">
               Services and Pricing
             </label>
-            <div className="scrollbar-thin max-h-48 space-y-2 overflow-y-auto pr-2">
+            <div className="scrollbar-thin max-h-48 space-y-2 overflow-y-auto pr-2 text-sm">
               {dynamicTypes.map((type: any, index) => (
                 <div key={index} className="flex items-end gap-2">
                   <input
@@ -181,10 +181,10 @@ export default function OtherServicesModal({
             <button
               type="button"
               onClick={addRow}
-              className="mt-3 flex cursor-pointer items-center justify-center gap-2 rounded border border-gray-400 p-2 font-questrial text-xs font-bold tracking-wider text-gray-500 hover:border-yellow-400 hover:bg-yellow-50 hover:text-yellow-700"
+              className="mt-3 flex cursor-pointer items-center justify-center gap-2 rounded border border-gray-400 p-2 font-questrial text-xs font-bold tracking-widest text-gray-500 uppercase transition-colors hover:border-yellow-400 hover:bg-yellow-50 hover:text-yellow-700"
             >
               <FiPlusCircle className="h-4 w-4" />
-              ADD VEHICLE OPTION
+              Add Service Option
             </button>
           </div>
 

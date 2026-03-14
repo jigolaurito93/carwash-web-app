@@ -151,9 +151,9 @@ export default function ServicesModal({
             <button
               type="button"
               onClick={addFeature}
-              className="mt-3 flex items-center gap-2 font-questrial text-[10px] font-bold tracking-widest text-gray-500 transition-colors hover:text-black"
+              className="mt-3 flex cursor-pointer items-center gap-2 rounded border border-gray-400 p-2 font-questrial text-xs font-bold tracking-widest text-gray-500 uppercase transition-colors hover:border-yellow-400 hover:bg-yellow-50 hover:text-yellow-700"
             >
-              <FiPlusCircle /> ADD FEATURE
+              <FiPlusCircle /> Add Service Option
             </button>
           </div>
 
@@ -173,7 +173,7 @@ export default function ServicesModal({
               },
             ].map((item) => (
               <div key={item.name}>
-                <label className="mb-1 block font-questrial text-[10px] font-bold text-gray-400 uppercase">
+                <label className="mb-1 block font-questrial text-xs font-bold tracking-wider text-gray-400 uppercase">
                   {item.label}
                 </label>
                 <input
@@ -223,14 +223,14 @@ export default function ServicesModal({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 font-questrial text-sm font-medium text-gray-500 transition-colors hover:text-black"
+              className="cursor-pointer px-4 py-2 font-questrial text-sm font-medium text-gray-500 transition-colors hover:text-black"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={saving}
-              className={`rounded px-6 py-2 font-questrial text-sm font-bold tracking-wider shadow-md transition-all active:scale-95 ${
+              className={`cursor-pointer rounded px-6 py-2 font-questrial text-sm font-bold tracking-wider shadow-md transition-all active:scale-95 ${
                 isEdit
                   ? "bg-yellow-400 text-black hover:bg-yellow-500"
                   : "bg-black text-white hover:bg-zinc-800"
