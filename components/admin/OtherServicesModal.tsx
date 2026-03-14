@@ -125,7 +125,7 @@ export default function OtherServicesModal({
                 name="title"
                 defaultValue={service?.title || ""}
                 required
-                className="w-full border-b-2 border-gray-200 py-1 transition-colors outline-none focus:border-yellow-400"
+                className="w-full border border-gray-200 px-2 py-1 shadow-sm transition-colors outline-none focus:border-gray-400"
                 placeholder="e.g. Complete Detail
 "
               />
@@ -138,7 +138,7 @@ export default function OtherServicesModal({
               <input
                 name="subtitle"
                 defaultValue={service?.subtitle || ""}
-                className="w-full border-b-2 border-gray-200 py-1 transition-colors outline-none focus:border-yellow-400"
+                className="w-full border border-gray-200 px-2 py-1 shadow-sm transition-colors outline-none focus:border-gray-400"
                 placeholder="e.g. Full interior and exterior care"
               />
             </div>
@@ -158,22 +158,22 @@ export default function OtherServicesModal({
                     onChange={(e) =>
                       updateRow(index, "service", e.target.value)
                     }
-                    className="flex-1 border-b border-gray-300 py-1 outline-none focus:border-yellow-400"
+                    className="flex-1 border border-gray-200 px-2 py-1 shadow-sm outline-none focus:border-gray-300"
                   />
                   <input
                     placeholder="Price"
                     type="number"
                     value={type.price || ""}
                     onChange={(e) => updateRow(index, "price", e.target.value)}
-                    className="w-20 border-b border-gray-300 py-1 outline-none focus:border-yellow-400"
+                    className="w-20 border border-gray-200 px-2 py-1 shadow-sm outline-none focus:border-gray-300"
                   />
                   <button
                     type="button"
                     onClick={() => removeRow(index)}
-                    className="cursor-pointer px-1 text-xs text-red-400 hover:text-red-600"
+                    className="my-auto cursor-pointer px-1 text-xs text-red-400 hover:text-red-600"
                     title="Remove row"
                   >
-                    <IoMdCloseCircle className="h-5 w-5" />
+                    <IoMdCloseCircle className="h-6 w-6" />
                   </button>
                 </div>
               ))}
@@ -198,7 +198,7 @@ export default function OtherServicesModal({
                 name="sort_order"
                 type="number"
                 defaultValue={service?.sort_order ?? 0}
-                className="w-full border-b-2 border-gray-200 py-1 outline-none focus:border-yellow-400"
+                className="w-full border border-gray-200 px-2 py-1 shadow-sm outline-none focus:border-gray-300"
               />
             </div>
             <div className="flex items-center gap-2 pt-5">
