@@ -18,9 +18,9 @@ interface ServicesCardProps {
 
 const ServicesCard = ({ serviceCard }: ServicesCardProps) => {
   return (
-    <div className="flex w-full max-w-80 flex-col rounded-md border border-black/30 p-4 pb-10 shadow-lg xl:pb-10">
+    <div className="flex w-full flex-1 flex-col gap-5 rounded-md border border-black/30 p-4 pb-10 shadow-lg xl:pb-10">
       <div className="flex flex-col gap-1 rounded-md bg-black/10 px-2 py-2">
-        <div className="text-center font-lexend text-lg">
+        <div className="text-center font-lexend text-xl">
           {serviceCard.title}
         </div>
 
@@ -28,7 +28,7 @@ const ServicesCard = ({ serviceCard }: ServicesCardProps) => {
           {serviceCard.subtitle}
         </div>
       </div>
-      <div className="my-4 flex flex-col gap-2 px-3 lg:px-3">
+      <div className="flex flex-col gap-2 px-3 lg:px-3">
         {serviceCard.services.map((detail, i) => (
           <div
             key={`${detail.service}-${i}`}

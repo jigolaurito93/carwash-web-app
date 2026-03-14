@@ -4,6 +4,8 @@ To Do:
     - add cursor-pointer to buttons
     - Mobile Navbar is shown in Admin UI tablet
     - Add Profile
+    DONE - Display table on /testService
+    - Fix is_active_bool in /testService
     
     Admin Page:
         - Add Profile to Navbar
@@ -21,7 +23,7 @@ To Do:
         DONE - Change font of title
         DONE - Change Plus sign in + ADD VEHICLE OPTION
         DONE - Change X to react icon
-        - Add toast for successfully deleting file
+        DONE - Add toast for successfully deleting file
         DONE - Add toast for successfully adding, editing file
     
     Services:

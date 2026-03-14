@@ -13,7 +13,7 @@ interface ServicesItemProps {
 
 const ServicesCard2 = ({ serviceCard }: ServicesItemProps) => {
   return (
-    <div className="flex w-full max-w-80 flex-col gap-5 rounded-md border border-black/30 p-4 pb-10 shadow-lg xl:pb-10">
+    <div className="flex w-full max-w-80 flex-1 flex-col gap-5 rounded-md border border-black/30 p-4 pb-10 shadow-lg xl:pb-10">
       <div className="shrink-0 rounded-md bg-black/10 p-2 text-black">
         <div className="text-center font-lexend text-xl">
           {serviceCard.title}
@@ -30,7 +30,7 @@ const ServicesCard2 = ({ serviceCard }: ServicesItemProps) => {
           </div>
         ))}
       </div>
-      <div className="mt-4">
+      <div className="">
         {Object.entries(serviceCard.vehicles).map(([size, price]) => (
           <div key={price} className="flex justify-between px-4 font-questrial">
             <div>{size} :</div>

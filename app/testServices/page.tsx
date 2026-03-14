@@ -45,7 +45,7 @@ const TestServices = async () => {
 
   // Map otherServices to ServicesCard shape
   const formattedOtherServices = otherServices?.map((s) => ({
-    title: s.name,
+    title: s.title,
     subtitle: s.subtitle ?? "",
     services: s.types ?? [],
   }));
@@ -71,7 +71,7 @@ const TestServices = async () => {
       <div className="mx-auto py-10 font-lexend text-xl md:text-3xl">
         Services and Pricing
       </div>
-      <div className="max-w-9xl mx-auto grid gap-7 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+      <div className="max-w-9xl mx-auto grid justify-items-center gap-7 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
         {formattedServices?.map((service, i) => (
           <ServicesCard2 key={i} serviceCard={service} />
         ))}
@@ -83,7 +83,7 @@ const TestServices = async () => {
           <div className="mx-auto py-10 font-lexend text-xl md:text-3xl">
             Other Services
           </div>
-          <div className="max-w-9xl mx-auto grid gap-7 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+          <div className="max-w-9xl mx-auto grid justify-items-center gap-7 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
             {formattedOtherServices.map((service, i) => (
               <ServicesCard key={i} serviceCard={service} />
             ))}
