@@ -25,8 +25,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           <a href="/admin/appointments" className="block hover:text-yellow-400">
             Appointments
           </a>
-          {/* Add logout button or other links here */}
+          <a href="/admin/services" className="block hover:text-yellow-400">
+            Services
+          </a>
+          <a href="/admin/gallery" className="block hover:text-yellow-400">
+            Gallery
+          </a>
         </nav>
+
         {/* This pushes everything below it to the bottom */}
         <div className="mt-auto pt-10">
           <LogoutButton />
