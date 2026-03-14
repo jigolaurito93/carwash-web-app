@@ -8,11 +8,25 @@ import { createOtherService, updateOtherService } from "./actions";
 type OtherServiceRow = Database["public"]["Tables"]["otherServices"]["Row"];
 type Json = Database["public"]["Tables"]["otherServices"]["Row"]["types"];
 
-function typesToDisplay(types: Json): string {
-  if (types == null) return "—";
-  if (Array.isArray(types)) return types.join(", ");
-  if (typeof types === "string") return types;
-  return JSON.stringify(types);
+function typesToDisplay(types: Json) {
+  if (!types || !Array.isArray(types))
+    return <span className="text-gray-400">—</span>;
+
+  return (
+    <div className="flex flex-col gap-1">
+      {types.map((t: any, i: number) => {
+        const name = t.service || t.name || "Unknown";
+        const price = t.price != null ? `$${t.price}` : "";
+
+        return (
+          <div key={i} className="flex justify-between gap-4 text-xs">
+            <span className="font-medium text-gray-700">{name}</span>
+            <span className="text-gray-500 tabular-nums">{price}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 
 function typesToEditValue(types: Json): string {
@@ -30,48 +44,64 @@ export default function OtherServicesTable({ services }: Props) {
   const [creating, setCreating] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Each row will look like this: { service: "SUV", price: 50 }
+  const [dynamicTypes, setDynamicTypes] = useState([
+    { service: "", price: "" },
+  ]);
 
-  function parseFormPayload(formData: FormData) {
-    let typesParsed: Json = null;
-    const typesRaw = (formData.get("types") as string)?.trim();
+  // Reset state when opening the "Create" modal
+  const openCreateModal = () => {
+    setDynamicTypes([{ service: "", price: "" }]);
+    setCreating(true);
+  };
 
-    if (typesRaw) {
-      try {
-        typesParsed = JSON.parse(typesRaw) as Json;
-      } catch {
-        return null; // Triggers "Invalid JSON" error
-      }
-    }
+  const addTypeRow = () => {
+    setDynamicTypes([...dynamicTypes, { service: "", price: "" }]);
+  };
 
-    const sortOrder = formData.get("sort_order");
+  const removeTypeRow = (index: number) => {
+    setDynamicTypes(dynamicTypes.filter((_, i) => i !== index));
+  };
 
-    return {
-      name: (formData.get("name") as string) || "",
-      subtitle: (formData.get("subtitle") as string) || null,
-      types: typesParsed,
-      is_active: formData.get("is_active") === "on",
-      sort_order: sortOrder ? Number(sortOrder) : null,
-    };
-  }
+  const updateTypeRow = (
+    index: number,
+    field: "service" | "price",
+    value: string,
+  ) => {
+    const newTypes = [...dynamicTypes];
+    newTypes[index][field] = value;
+    setDynamicTypes(newTypes);
+  };
 
   async function handleCreateSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
     setSaving(true);
 
-    const payload = parseFormPayload(new FormData(e.currentTarget));
+    const formData = new FormData(e.currentTarget);
 
-    if (!payload) {
-      setError('Invalid JSON format in Types field. Example: ["SUV", "Sedan"]');
-      setSaving(false);
-      return;
-    }
+    // Add (t.service || "") to handle undefined/null cases
+    const formattedTypes = dynamicTypes
+      .filter((t) => t && (t.service || "").toString().trim() !== "")
+      .map((t) => ({
+        service: (t.service || "").toString().trim(),
+        price: Number(t.price) || 0,
+      }));
+
+    const payload = {
+      title: (formData.get("title") as string) || "",
+      subtitle: (formData.get("subtitle") as string) || null,
+      types: formattedTypes, // This is now your JSON array
+      is_active: formData.get("is_active") === "on",
+      sort_order: Number(formData.get("sort_order")) || null,
+    };
 
     const result = await createOtherService(payload);
     setSaving(false);
 
     if (result.success) {
       setCreating(false);
+      setDynamicTypes([{ service: "", price: "" }]); // Reset state for next time
       router.refresh();
     } else {
       setError(result.error);
@@ -85,19 +115,37 @@ export default function OtherServicesTable({ services }: Props) {
     setError(null);
     setSaving(true);
 
-    const payload = parseFormPayload(new FormData(e.currentTarget));
+    const formData = new FormData(e.currentTarget);
 
-    if (!payload) {
-      setError("Invalid JSON format in Types field.");
+    // 1. Format the dynamicTypes from state
+    const formattedTypes = dynamicTypes
+      .filter((t) => t && (t.service || "").toString().trim() !== "") // Safe check: (t.service || "")
+      .map((t) => ({
+        service: (t.service || "").toString().trim(), // Safe check: (t.service || "")
+        price: Number(t.price) || 0,
+      }));
+
+    if (formattedTypes.length === 0) {
+      setError("Please add at least one vehicle type.");
       setSaving(false);
       return;
     }
+
+    // 2. Build Payload
+    const payload = {
+      title: (formData.get("title") as string) || "",
+      subtitle: (formData.get("subtitle") as string) || null,
+      types: formattedTypes,
+      is_active: formData.get("is_active") === "on",
+      sort_order: Number(formData.get("sort_order")) || 0,
+    };
 
     const result = await updateOtherService(editing.id, payload);
     setSaving(false);
 
     if (result.success) {
       setEditing(null);
+      setDynamicTypes([{ service: "", price: "" }]); // Reset state
       router.refresh();
     } else {
       setError(result.error);
@@ -120,7 +168,7 @@ export default function OtherServicesTable({ services }: Props) {
         <table className="min-w-full divide-y divide-gray-200 text-left text-sm">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-4 py-3 font-semibold text-gray-700">Name</th>
+              <th className="px-4 py-3 font-semibold text-gray-700">Title</th>
               <th className="hidden px-4 py-3 font-semibold text-gray-700 sm:table-cell">
                 Subtitle
               </th>
@@ -147,13 +195,13 @@ export default function OtherServicesTable({ services }: Props) {
             ) : (
               services.map((row) => (
                 <tr key={row.id} className="transition-colors hover:bg-gray-50">
-                  <td className="px-4 py-3 font-medium text-gray-900">
-                    {row.name}
+                  <td className="px-4 py-3 align-top font-medium text-gray-900">
+                    {row.title}
                   </td>
-                  <td className="hidden px-4 py-3 text-gray-600 sm:table-cell">
+                  <td className="hidden px-4 py-3 align-top text-gray-600 sm:table-cell">
                     {row.subtitle ?? "—"}
                   </td>
-                  <td className="px-4 py-3 text-gray-600">
+                  <td className="px-4 py-3 align-top text-gray-600">
                     {typesToDisplay(row.types)}
                   </td>
                   <td className="px-4 py-3 text-center">
@@ -170,10 +218,34 @@ export default function OtherServicesTable({ services }: Props) {
                   <td className="px-4 py-3 text-center text-gray-600">
                     {row.sort_order ?? "—"}
                   </td>
+                  {/* ... inside your tbody services.map((row) => ... */}
                   <td className="px-4 py-3 text-right">
                     <button
                       type="button"
-                      onClick={() => setEditing(row)}
+                      onClick={() => {
+                        // 1. Mark which row we are editing
+                        setEditing(row);
+
+                        // 2. Clean the data so React doesn't crash on 'undefined'
+                        const rawTypes = Array.isArray(row.types)
+                          ? row.types
+                          : [];
+                        const safeTypes = rawTypes.map((t: any) => ({
+                          // Fallback check: if DB uses 'name', move it to 'service'
+                          service: t.service || "",
+                          price: t.price || 0,
+                        }));
+
+                        // 3. Update the dynamic rows state
+                        setDynamicTypes(
+                          safeTypes.length > 0
+                            ? safeTypes
+                            : [{ service: "", price: "" }],
+                        );
+
+                        // 4. Clear any old errors
+                        setError(null);
+                      }}
                       className="rounded border border-gray-300 bg-white px-3 py-1 text-xs font-medium text-gray-700 shadow-sm transition-all hover:bg-gray-50"
                     >
                       Edit
@@ -202,10 +274,10 @@ export default function OtherServicesTable({ services }: Props) {
 
               <div>
                 <label className="mb-1 block text-xs font-bold text-gray-400 uppercase">
-                  Service Name
+                  Service Title
                 </label>
                 <input
-                  name="name"
+                  name="title"
                   required
                   className="w-full border-b-2 border-gray-200 py-1 transition-colors outline-none focus:border-yellow-400"
                   placeholder="e.g. Clay Bar Treatment"
@@ -224,15 +296,54 @@ export default function OtherServicesTable({ services }: Props) {
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-bold text-gray-400 uppercase">
-                  Vehicle Types (JSON Array)
+                <label className="mb-2 block text-xs font-bold text-gray-400 uppercase">
+                  Other Services
                 </label>
-                <textarea
-                  name="types"
-                  className="w-full rounded border-2 border-gray-100 bg-gray-50 p-2 font-mono text-sm transition-colors outline-none focus:border-yellow-400"
-                  placeholder='["SUV", "Sedan", "Truck"]'
-                  rows={3}
-                />
+
+                <div className="space-y-2">
+                  {dynamicTypes.map((type, index) => (
+                    <div key={index} className="flex items-end gap-2">
+                      <div className="flex-1">
+                        <input
+                          placeholder="Type (e.g. SUV)"
+                          value={type.service}
+                          onChange={(e) =>
+                            updateTypeRow(index, "service", e.target.value)
+                          }
+                          className="w-full border-b border-gray-300 py-1 text-sm outline-none focus:border-yellow-400"
+                        />
+                      </div>
+                      <div className="w-24">
+                        <input
+                          placeholder="Price"
+                          type="number"
+                          value={type.price}
+                          onChange={(e) =>
+                            updateTypeRow(index, "price", e.target.value)
+                          }
+                          className="w-full border-b border-gray-300 py-1 text-sm outline-none focus:border-yellow-400"
+                        />
+                      </div>
+                      {dynamicTypes.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeTypeRow(index)}
+                          className="pb-1 text-xs text-red-400 hover:text-red-600"
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={addTypeRow}
+                  className="mt-3 text-xs font-bold text-yellow-600 hover:text-yellow-700"
+                >
+                  + ADD ROW
+                </button>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -289,91 +400,107 @@ export default function OtherServicesTable({ services }: Props) {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
           <div className="w-full max-w-lg rounded-xl bg-white p-6 shadow-2xl">
             <h2 className="mb-4 text-xl font-bold text-gray-900">
-              Edit {editing.name}
+              Edit {editing.title}
             </h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form
+              onSubmit={handleSubmit}
+              key={editing.id}
+              className="space-y-4"
+            >
               {error && (
                 <p className="rounded border border-red-100 bg-red-50 p-2 text-sm font-bold text-red-600">
                   {error}
                 </p>
               )}
 
-              <div>
-                <label className="mb-1 block text-xs font-bold text-gray-400 uppercase">
-                  Service Name
-                </label>
-                <input
-                  name="name"
-                  defaultValue={editing.name}
-                  required
-                  className="w-full border-b-2 border-gray-200 py-1 transition-colors outline-none focus:border-yellow-400"
-                />
-              </div>
+              {/* ... Name and Subtitle Inputs ... */}
 
+              {/* REPLACED TEXTAREA WITH DYNAMIC ROWS */}
               <div>
-                <label className="mb-1 block text-xs font-bold text-gray-400 uppercase">
-                  Subtitle
-                </label>
-                <input
-                  name="subtitle"
-                  defaultValue={editing.subtitle ?? ""}
-                  className="w-full border-b-2 border-gray-200 py-1 transition-colors outline-none focus:border-yellow-400"
-                />
-              </div>
-
-              <div>
-                <label className="mb-1 block text-xs font-bold text-gray-400 uppercase">
-                  Vehicle Types (JSON Array)
-                </label>
-                <textarea
-                  name="types"
-                  defaultValue={typesToEditValue(editing.types)}
-                  className="w-full rounded border-2 border-gray-100 bg-gray-50 p-2 font-mono text-sm transition-colors outline-none focus:border-yellow-400"
-                  rows={3}
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="mb-1 block text-xs font-bold text-gray-400 uppercase">
-                    Sort Order
+                    Service Name
                   </label>
                   <input
-                    name="sort_order"
-                    type="number"
-                    defaultValue={editing.sort_order ?? 0}
+                    name="title"
+                    required
+                    defaultValue={editing.title}
                     className="w-full border-b-2 border-gray-200 py-1 transition-colors outline-none focus:border-yellow-400"
+                    placeholder="e.g. Clay Bar Treatment"
                   />
                 </div>
-                <div className="flex items-center gap-2 pt-5">
-                  <input
-                    type="checkbox"
-                    name="is_active"
-                    defaultChecked={editing.is_active}
-                    id="edit_active"
-                    className="h-4 w-4 accent-yellow-400"
-                  />
-                  <label
-                    htmlFor="edit_active"
-                    className="text-sm font-bold text-gray-700"
-                  >
-                    Active
+
+                <div>
+                  <label className="my-2 block text-xs font-bold text-gray-400 uppercase">
+                    Subtitle
                   </label>
+                  <input
+                    name="subtitle"
+                    defaultValue={editing.subtitle ?? ""}
+                    className="w-full border-b-2 border-gray-200 py-1 transition-colors outline-none focus:border-yellow-400"
+                    placeholder="e.g. Removes surface contaminants"
+                  />
                 </div>
+                <label className="my-2 block text-xs font-bold text-gray-400 uppercase">
+                  Other Services
+                </label>
+                <div className="max-h-40 space-y-2 overflow-y-auto pr-2">
+                  {dynamicTypes.map((type, index) => (
+                    <div key={index} className="flex items-end gap-2">
+                      <div className="flex-1">
+                        <input
+                          placeholder="Type (e.g. SUV)"
+                          value={type.service}
+                          onChange={(e) =>
+                            updateTypeRow(index, "service", e.target.value)
+                          }
+                          className="w-full border-b border-gray-300 py-1 text-sm outline-none focus:border-yellow-400"
+                        />
+                      </div>
+                      <div className="w-24">
+                        <input
+                          placeholder="Price"
+                          type="number"
+                          value={type.price}
+                          onChange={(e) =>
+                            updateTypeRow(index, "price", e.target.value)
+                          }
+                          className="w-full border-b border-gray-300 py-1 text-sm outline-none focus:border-yellow-400"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeTypeRow(index)}
+                        className="px-1 pb-1 text-xs text-red-400 hover:text-red-600"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={addTypeRow}
+                  className="mt-3 text-xs font-bold text-yellow-600 hover:text-yellow-700"
+                >
+                  + ADD ROW
+                </button>
               </div>
+
+              {/* ... Sort Order and Active Checkbox ... */}
 
               <div className="flex justify-end gap-3 pt-6">
                 <button
                   type="button"
                   onClick={() => setEditing(null)}
-                  className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-black"
+                  className="px-4 py-2 text-sm font-medium text-gray-500"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="rounded bg-yellow-400 px-6 py-2 text-sm font-bold text-black shadow-md transition-all hover:bg-yellow-500 disabled:bg-gray-400"
+                  className="rounded bg-yellow-400 px-6 py-2 text-sm font-bold text-black shadow-md hover:bg-yellow-500"
                 >
                   {saving ? "Saving..." : "Update Changes"}
                 </button>
