@@ -3,7 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Database } from "@/lib/database.types";
-import { createService, updateService } from "./actions";
+import { createService, deleteService, updateService } from "./actions";
+import { IoMdCloseCircle } from "react-icons/io";
+import { FiPlusCircle } from "react-icons/fi";
+import { toast } from "sonner";
 
 type ServiceRow = Database["public"]["Tables"]["services"]["Row"];
 type Json = Database["public"]["Tables"]["services"]["Row"]["types"];
@@ -37,32 +40,36 @@ export default function ServicesTable({ services }: Props) {
   const [creating, setCreating] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [dynamicTypes, setDynamicTypes] = useState<string[]>([""]);
 
   function parseFormPayload(formData: FormData) {
-    let typesParsed: Json = null;
-    const typesRaw = (formData.get("types") as string)?.trim();
-    if (typesRaw) {
-      try {
-        typesParsed = JSON.parse(typesRaw) as Json;
-      } catch {
-        return null;
-      }
-    }
-    const priceCar = formData.get("price_car");
-    const priceMid = formData.get("price_mid");
-    const priceFull = formData.get("price_full");
-    const sortOrder = formData.get("sort_order");
+    // Filter out empty rows
+    const typesParsed = dynamicTypes.filter((t) => t.trim() !== "");
+
     return {
       name: (formData.get("name") as string) || "",
       subtitle: (formData.get("subtitle") as string) || null,
-      types: typesParsed,
-      price_car: priceCar ? Number(priceCar) : null,
-      price_mid: priceMid ? Number(priceMid) : null,
-      price_full: priceFull ? Number(priceFull) : null,
+      types: typesParsed, // Use the state array directly
+      price_car: Number(formData.get("price_car")) || null,
+      price_mid: Number(formData.get("price_mid")) || null,
+      price_full: Number(formData.get("price_full")) || null,
       is_active: formData.get("is_active") === "on",
-      sort_order: sortOrder ? Number(sortOrder) : null,
+      sort_order: Number(formData.get("sort_order")) || 0,
     };
   }
+
+  const handleCreateClick = () => {
+    setDynamicTypes([""]); // Reset for new service
+    setCreating(true);
+  };
+
+  const handleEditClick = (service: ServiceRow) => {
+    const existing = Array.isArray(service.types)
+      ? (service.types as string[])
+      : [];
+    setDynamicTypes(existing.length > 0 ? existing : [""]);
+    setEditing(service);
+  };
 
   async function handleCreateSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -112,6 +119,55 @@ export default function ServicesTable({ services }: Props) {
       setError(result.error);
     }
   }
+
+  const handleDelete = (id: number, name: string) => {
+    toast.custom(
+      (t) => (
+        <div className="w-87.5 rounded-xl bg-black p-6 shadow-2xl">
+          <div className="flex flex-col items-center text-center">
+            {/* Warning Icon */}
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-600 text-black">
+              <span className="text-xl font-bold">!</span>
+            </div>
+
+            <h3 className="font-lexend text-lg font-bold text-white">
+              Confirm Deletion
+            </h3>
+            <p className="mt-2 font-questrial text-sm text-gray-400">
+              Are you sure you want to remove{" "}
+              <span className="text-yellow-400">"{name}"</span>? This cannot be
+              undone.
+            </p>
+
+            <div className="mt-6 flex w-full gap-3">
+              <button
+                onClick={() => toast.dismiss(t)}
+                className="flex-1 cursor-pointer rounded-md border border-zinc-700 bg-white py-2 font-questrial text-xs font-bold tracking-wider text-black transition-colors hover:bg-zinc-200"
+              >
+                CANCEL
+              </button>
+              <button
+                onClick={async () => {
+                  toast.dismiss(t);
+                  const res = await deleteService(id);
+                  if (res.success) {
+                    toast.success("Service removed.");
+                    router.refresh();
+                  } else {
+                    toast.error("Error: " + res.error);
+                  }
+                }}
+                className="flex-1 cursor-pointer rounded-md bg-red-600 py-2 font-questrial text-xs font-bold tracking-wider text-white transition-all hover:bg-red-500 active:scale-95"
+              >
+                DELETE
+              </button>
+            </div>
+          </div>
+        </div>
+      ),
+      { duration: Infinity },
+    );
+  };
 
   return (
     <>
@@ -202,13 +258,22 @@ export default function ServicesTable({ services }: Props) {
                     {row.sort_order ?? "—"}
                   </td>
                   <td className="px-4 py-3">
-                    <button
-                      type="button"
-                      onClick={() => setEditing(row)}
-                      className="cursor-pointer rounded border border-gray-300 bg-white px-2 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50"
-                    >
-                      Edit
-                    </button>
+                    <div className="flex w-20 flex-col gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleEditClick(row)}
+                        className="cursor-pointer rounded border border-gray-300 bg-white px-2 py-1 text-xs font-semibold text-gray-700 transition-all hover:bg-yellow-400 hover:text-black"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(row.id, row.name)}
+                        className="cursor-pointer rounded border border-red-100 bg-red-50 px-2 py-1 text-xs font-semibold text-red-600 transition-all hover:bg-red-600 hover:text-white"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
@@ -253,16 +318,45 @@ export default function ServicesTable({ services }: Props) {
                 />
               </div>
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
-                  Types (JSON)
+                <label className="mb-2 block font-questrial text-xs font-bold text-gray-400 uppercase">
+                  Service Features
                 </label>
-                <textarea
-                  name="types"
-                  rows={4}
-                  className="w-full rounded border border-gray-300 px-3 py-2 font-mono text-sm"
-                  placeholder='["Feature one", "Feature two"]'
-                />
+                <div className="scrollbar-thin max-h-48 space-y-2 overflow-y-auto pr-2">
+                  {dynamicTypes.map((type, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <input
+                        placeholder="e.g. Hand Wash"
+                        value={type}
+                        onChange={(e) => {
+                          const next = [...dynamicTypes];
+                          next[index] = e.target.value;
+                          setDynamicTypes(next);
+                        }}
+                        className="flex-1 border border-gray-200 px-2 py-1 text-sm shadow-sm outline-none focus:border-gray-400"
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setDynamicTypes(
+                            dynamicTypes.filter((_, i) => i !== index),
+                          )
+                        }
+                        className="cursor-pointer text-red-400 hover:text-red-600"
+                      >
+                        <IoMdCloseCircle className="h-5 w-5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setDynamicTypes([...dynamicTypes, ""])}
+                  className="mt-3 flex items-center gap-2 font-questrial text-[10px] font-bold tracking-widest text-gray-500 hover:text-black"
+                >
+                  <FiPlusCircle /> ADD FEATURE
+                </button>
               </div>
+
               <div className="grid grid-cols-3 gap-3">
                 <div>
                   <label className="mb-1 block text-sm font-medium text-gray-700">

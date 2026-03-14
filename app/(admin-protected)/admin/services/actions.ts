@@ -59,6 +59,24 @@ export async function updateService(id: number, payload: any) {
   return { success: true };
 }
 
+export async function deleteService(id: number) {
+  const supabase = await getSupabase();
+
+  // Security check
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: "Unauthorized" };
+
+  const { error } = await supabase.from("services").delete().eq("id", id);
+
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath("/admin/services");
+  revalidatePath("/services"); // Update public page too
+  return { success: true };
+}
+
 //////////////////////////////////////////////////////////////////////////
 //                    OTHER SERVICES ACTIONS
 //////////////////////////////////////////////////////////////////////////

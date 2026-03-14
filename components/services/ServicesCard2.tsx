@@ -32,7 +32,7 @@ const ServicesCard2 = ({ serviceCard }: ServicesItemProps) => {
       </div>
       <div className="">
         {Object.entries(serviceCard.vehicles).map(([size, price]) => (
-          <div key={price} className="flex justify-between px-4 font-questrial">
+          <div key={size} className="flex justify-between px-4 font-questrial">
             <div>{size} :</div>
             <div>${price}</div>
           </div>
