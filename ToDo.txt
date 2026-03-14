@@ -7,7 +7,7 @@ To Do:
     
     Admin Page:
         - Add Profile to Navbar
-        - Display Name on Dashboard
+        - Display name of user on Dashboard
 
     Other Services:
         DONE - edit modal need  is_active and order field 

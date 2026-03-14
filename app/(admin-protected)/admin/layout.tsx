@@ -1,5 +1,6 @@
 import LogoutButton from "@/components/admin/LogoutButton";
 import { ReactNode } from "react";
+import { Toaster } from "sonner";
 
 export const metadata = {
   title: "Onyx | Admin Dashboard",
@@ -11,6 +12,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
+      <Toaster position="top-center" />
       {/* If you have a Sidebar or Nav, put it here */}
       <aside className="hidden w-64 bg-black p-6 text-white md:block">
         <h2 className="font-lexend text-2xl font-bold text-yellow-400">

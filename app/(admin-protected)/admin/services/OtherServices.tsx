@@ -6,6 +6,7 @@ import type { Database } from "@/lib/database.types";
 import { deleteOtherService } from "./actions";
 import OtherServicesModal from "@/components/admin/OtherServicesModal";
 import { FiPlusCircle } from "react-icons/fi";
+import { toast } from "sonner";
 
 type OtherServiceRow = Database["public"]["Tables"]["otherServices"]["Row"];
 
@@ -49,15 +50,53 @@ export default function OtherServicesTable({
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id: number, title: string) => {
-    if (confirm(`Are you sure you want to delete "${title}"?`)) {
-      const result = await deleteOtherService(id);
-      if (result.success) {
-        router.refresh();
-      } else {
-        alert(result.error);
-      }
-    }
+  const handleDelete = (id: number, title: string) => {
+    toast.custom(
+      (t) => (
+        <div className="w-87.5 rounded-xl bg-black p-6 shadow-2xl">
+          <div className="flex flex-col items-center text-center">
+            {/* Warning Icon */}
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-600 text-black">
+              <span className="text-xl font-bold">!</span>
+            </div>
+
+            <h3 className="font-lexend text-lg font-bold text-white">
+              Confirm Deletion
+            </h3>
+            <p className="mt-2 font-questrial text-sm text-gray-400">
+              Are you sure you want to remove{" "}
+              <span className="text-yellow-400">"{title}"</span>? This cannot be
+              undone.
+            </p>
+
+            <div className="mt-6 flex w-full gap-3">
+              <button
+                onClick={() => toast.dismiss(t)}
+                className="flex-1 cursor-pointer rounded-md border border-zinc-700 bg-white py-2 font-questrial text-xs font-bold tracking-wider text-black transition-colors hover:bg-zinc-200"
+              >
+                CANCEL
+              </button>
+              <button
+                onClick={async () => {
+                  toast.dismiss(t);
+                  const res = await deleteOtherService(id);
+                  if (res.success) {
+                    toast.success("Service removed.");
+                    router.refresh();
+                  } else {
+                    toast.error("Error: " + res.error);
+                  }
+                }}
+                className="flex-1 cursor-pointer rounded-md bg-red-600 py-2 font-questrial text-xs font-bold tracking-wider text-white transition-all hover:bg-red-500 active:scale-95"
+              >
+                DELETE
+              </button>
+            </div>
+          </div>
+        </div>
+      ),
+      { duration: Infinity },
+    );
   };
 
   return (
