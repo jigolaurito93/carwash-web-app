@@ -3,7 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Database } from "@/lib/database.types";
-import { createOtherService, updateOtherService } from "./actions";
+import {
+  createOtherService,
+  deleteOtherService,
+  updateOtherService,
+} from "./actions";
 
 type OtherServiceRow = Database["public"]["Tables"]["otherServices"]["Row"];
 type Json = Database["public"]["Tables"]["otherServices"]["Row"]["types"];
@@ -172,9 +176,11 @@ export default function OtherServicesTable({ services }: Props) {
             <tr>
               <th className="px-4 py-3 font-semibold text-gray-700">Title</th>
               <th className="hidden px-4 py-3 font-semibold text-gray-700 sm:table-cell">
-                Subtitle
+                Description
               </th>
-              <th className="px-4 py-3 font-semibold text-gray-700">Types</th>
+              <th className="px-4 py-3 font-semibold text-gray-700">
+                Services
+              </th>
               <th className="px-4 py-3 text-center font-semibold text-gray-700">
                 Active
               </th>
@@ -220,38 +226,63 @@ export default function OtherServicesTable({ services }: Props) {
                   <td className="px-4 py-3 text-center text-gray-600">
                     {row.sort_order ?? "—"}
                   </td>
-                  {/* ... inside your tbody services.map((row) => ... */}
-                  <td className="px-4 py-3 text-right">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        // 1. Mark which row we are editing
-                        setEditing(row);
 
-                        // 2. Clean the data so React doesn't crash on 'undefined'
-                        const rawTypes = Array.isArray(row.types)
-                          ? row.types
-                          : [];
-                        const safeTypes = rawTypes.map((t: any) => ({
-                          // Fallback check: if DB uses 'name', move it to 'service'
-                          service: t.service || "",
-                          price: t.price || 0,
-                        }));
+                  <td className="px-4 py-3 align-top">
+                    <div className="ml-auto flex w-20 flex-col items-stretch gap-2">
+                      {/* Edit Button */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          // 1. Mark which row we are editing
+                          setEditing(row);
 
-                        // 3. Update the dynamic rows state
-                        setDynamicTypes(
-                          safeTypes.length > 0
-                            ? safeTypes
-                            : [{ service: "", price: "" }],
-                        );
+                          // 2. Clean the data so React doesn't crash on 'undefined'
+                          const rawTypes = Array.isArray(row.types)
+                            ? row.types
+                            : [];
+                          const safeTypes = rawTypes.map((t: any) => ({
+                            // Fallback check: if DB uses 'name', move it to 'service'
+                            service: t.service || "",
+                            price: t.price || 0,
+                          }));
 
-                        // 4. Clear any old errors
-                        setError(null);
-                      }}
-                      className="rounded border border-gray-300 bg-white px-3 py-1 text-xs font-medium text-gray-700 shadow-sm transition-all hover:bg-gray-50"
-                    >
-                      Edit
-                    </button>
+                          // 3. Update the dynamic rows state
+                          setDynamicTypes(
+                            safeTypes.length > 0
+                              ? safeTypes
+                              : [{ service: "", price: "" }],
+                          );
+
+                          // 4. Clear any old errors
+                          setError(null);
+                        }}
+                        className="rounded border border-gray-300 bg-white px-3 py-1 text-xs font-medium text-gray-700 shadow-sm transition-all hover:bg-gray-50"
+                      >
+                        Edit
+                      </button>
+
+                      {/* Delete Button */}
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          if (
+                            confirm(
+                              `Are you sure you want to delete "${row.title}"?`,
+                            )
+                          ) {
+                            const result = await deleteOtherService(row.id);
+                            if (!result.success) {
+                              alert(result.error);
+                            } else {
+                              router.refresh();
+                            }
+                          }
+                        }}
+                        className="rounded border border-red-200 bg-white px-3 py-1 text-xs font-medium text-red-600 shadow-sm transition-all hover:bg-red-50"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))

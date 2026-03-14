@@ -59,8 +59,11 @@ export async function updateService(id: number, payload: any) {
   return { success: true };
 }
 
-/* --- OTHER SERVICES ACTIONS --- */
+//////////////////////////////////////////////////////////////////////////
+//                    OTHER SERVICES ACTIONS
+//////////////////////////////////////////////////////////////////////////
 
+// Create A Row in Table
 export async function createOtherService(
   payload: Database["public"]["Tables"]["otherServices"]["Insert"],
 ) {
@@ -80,6 +83,25 @@ export async function createOtherService(
   return { success: true };
 }
 
+// Delete A Row in Table
+export async function deleteOtherService(id: number) {
+  const supabase = await getSupabase();
+
+  // Security check
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: "Unauthorized" };
+
+  const { error } = await supabase.from("otherServices").delete().eq("id", id);
+
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath("/admin/services");
+  return { success: true };
+}
+
+//Update A Row in Table
 export async function updateOtherService(
   id: number,
   payload: Database["public"]["Tables"]["otherServices"]["Update"],
