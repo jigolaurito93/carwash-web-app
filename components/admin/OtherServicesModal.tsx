@@ -91,8 +91,8 @@ export default function OtherServicesModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
       <div className="w-full max-w-lg rounded-xl bg-white p-6 shadow-2xl">
-        <h2 className="mb-4 text-xl font-bold text-gray-900">
-          {isEdit ? `Edit: ${service.title}` : "Add New Other Service"}
+        <h2 className="mb-4 font-questrial text-2xl font-bold text-gray-900">
+          {isEdit ? `EDIT: ${service.title}` : "Add Service"}
         </h2>
 
         <form
@@ -109,7 +109,7 @@ export default function OtherServicesModal({
           {/* Basic Info */}
           <div className="space-y-4">
             <div>
-              <label className="mb-1 block text-xs font-bold text-gray-400 uppercase">
+              <label className="mb-1 block font-questrial text-xs font-bold text-gray-400 uppercase">
                 Service Title
               </label>
               <input
@@ -117,45 +117,46 @@ export default function OtherServicesModal({
                 defaultValue={service?.title || ""}
                 required
                 className="w-full border-b-2 border-gray-200 py-1 transition-colors outline-none focus:border-yellow-400"
-                placeholder="e.g. Headlight Restoration"
+                placeholder="e.g. Complete Detail
+"
               />
             </div>
 
             <div>
-              <label className="mb-1 block text-xs font-bold text-gray-400 uppercase">
-                Subtitle (Optional)
+              <label className="mb-1 block font-questrial text-xs font-bold text-gray-400 uppercase">
+                Description (Optional)
               </label>
               <input
                 name="subtitle"
                 defaultValue={service?.subtitle || ""}
                 className="w-full border-b-2 border-gray-200 py-1 transition-colors outline-none focus:border-yellow-400"
-                placeholder="e.g. Clear fogged lenses"
+                placeholder="e.g. Full interior and exterior care"
               />
             </div>
           </div>
 
           {/* Vehicle Types & Prices */}
           <div>
-            <label className="mb-2 block text-xs font-bold text-gray-400 uppercase">
-              Pricing per Vehicle Type
+            <label className="mb-2 block font-questrial text-xs font-bold text-gray-400 uppercase">
+              Services and Pricing
             </label>
             <div className="scrollbar-thin max-h-48 space-y-2 overflow-y-auto pr-2">
               {dynamicTypes.map((type: any, index) => (
                 <div key={index} className="flex items-end gap-2">
                   <input
-                    placeholder="Vehicle Type (e.g. Sedan)"
+                    placeholder="Service Type (e.g. Clay Bar Treatment)"
                     value={type.service || ""}
                     onChange={(e) =>
                       updateRow(index, "service", e.target.value)
                     }
-                    className="flex-1 border-b border-gray-300 py-1 text-sm outline-none focus:border-yellow-400"
+                    className="flex-1 border-b border-gray-300 py-1 outline-none focus:border-yellow-400"
                   />
                   <input
                     placeholder="Price"
                     type="number"
                     value={type.price || ""}
                     onChange={(e) => updateRow(index, "price", e.target.value)}
-                    className="w-20 border-b border-gray-300 py-1 text-sm outline-none focus:border-yellow-400"
+                    className="w-20 border-b border-gray-300 py-1 outline-none focus:border-yellow-400"
                   />
                   <button
                     type="button"
@@ -171,7 +172,7 @@ export default function OtherServicesModal({
             <button
               type="button"
               onClick={addRow}
-              className="mt-3 flex cursor-pointer items-center justify-center gap-2 text-xs font-bold tracking-wider text-yellow-600 hover:text-yellow-700"
+              className="mt-3 flex cursor-pointer items-center justify-center gap-2 rounded border border-gray-400 p-2 font-questrial text-xs font-bold tracking-wider text-gray-500 hover:border-yellow-400 hover:bg-yellow-50 hover:text-yellow-700"
             >
               <FiPlusCircle className="h-4 w-4" />
               ADD VEHICLE OPTION
@@ -181,7 +182,7 @@ export default function OtherServicesModal({
           {/* Settings Grid */}
           <div className="grid grid-cols-2 gap-4 pt-2">
             <div>
-              <label className="mb-1 block text-xs font-bold text-gray-400 uppercase">
+              <label className="mb-1 block font-questrial text-xs font-bold text-gray-400 uppercase">
                 Sort Order
               </label>
               <input
@@ -201,7 +202,7 @@ export default function OtherServicesModal({
               />
               <label
                 htmlFor="other_modal_active"
-                className="text-sm font-bold text-gray-700"
+                className="font-questrial text-sm font-bold text-gray-700"
               >
                 Active
               </label>
@@ -213,14 +214,14 @@ export default function OtherServicesModal({
             <button
               type="button"
               onClick={onClose}
-              className="cursor-pointer px-4 py-2 text-sm font-medium text-gray-500 transition-colors hover:text-black"
+              className="cursor-pointer px-4 py-2 font-questrial text-sm font-medium text-gray-500 transition-colors hover:text-black"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={saving}
-              className={`cursor-pointer rounded px-6 py-2 text-sm font-bold shadow-md transition-all active:scale-95 disabled:bg-gray-400 ${
+              className={`cursor-pointer rounded px-6 py-2 font-questrial text-sm font-bold tracking-wider shadow-md transition-all active:scale-95 disabled:bg-gray-400 ${
                 isEdit
                   ? "bg-yellow-400 text-black hover:bg-yellow-500"
                   : "bg-black text-white hover:bg-zinc-800"

@@ -15,12 +15,12 @@ To Do:
         DONE - Change add service to plus icon
         - Fix UI
         - Add Toast to UI
-        - Change modal placeholder
+        DONE - Change modal placeholder
         DONE - add cursor pointer to all buttons
-        - Change "Edit" to gray in modal
-        - Change font of title
+        DONE - Change "Edit" to gray in modal
+        DONE - Change font of title
         DONE - Change Plus sign in + ADD VEHICLE OPTION
-        - Change X to react icon
+        DONE - Change X to react icon
     
     Services:
         - create modal has unlimited height 

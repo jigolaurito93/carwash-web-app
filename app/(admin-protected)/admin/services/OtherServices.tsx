@@ -63,10 +63,12 @@ export default function OtherServicesTable({
   return (
     <div className="mt-12">
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-xl font-bold text-gray-900">Other Services</h2>
+        <h2 className="font-questrial text-3xl font-bold tracking-wider text-gray-900">
+          Other Services
+        </h2>
         <button
           onClick={handleCreate}
-          className="flex cursor-pointer items-center justify-center gap-2 rounded bg-black px-4 py-2 text-sm font-bold text-white transition-all hover:bg-zinc-800"
+          className="flex cursor-pointer items-center justify-center gap-2 rounded bg-black px-4 py-2 font-questrial text-sm font-bold text-white transition-all hover:bg-zinc-800"
         >
           <FiPlusCircle className="h-4 w-4" />
           Add Service
@@ -75,14 +77,14 @@ export default function OtherServicesTable({
 
       <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
         <table className="min-w-full divide-y divide-gray-200 text-left text-sm">
-          <thead className="bg-gray-50">
+          <thead className="bg-gray-50 font-questrial">
             <tr>
               <th className="px-4 py-3 font-semibold text-gray-700">Title</th>
               <th className="hidden px-4 py-3 font-semibold text-gray-700 sm:table-cell">
-                Subtitle
+                Description (Optional)
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
-                Pricing Options
+                Services and Pricing
               </th>
               <th className="px-4 py-3 text-center font-semibold text-gray-700">
                 Status
@@ -129,7 +131,7 @@ export default function OtherServicesTable({
                   <td className="px-4 py-3 text-center align-top text-gray-500">
                     {row.sort_order}
                   </td>
-                  <td className="px-4 py-3 align-top">
+                  <td className="px-4 py-3 align-top font-questrial tracking-wider">
                     <div className="ml-auto flex w-20 flex-col items-stretch gap-2">
                       <button
                         onClick={() => handleEdit(row)}

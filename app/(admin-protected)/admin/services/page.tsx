@@ -34,10 +34,7 @@ export default async function AdminServicesPage() {
       <ServicesTable services={services ?? []} />
 
       {/* Other Services */}
-      <div className="mt-12">
-        <h2 className="mb-6 text-xl font-bold">Other Services</h2>
-        <OtherServicesTable services={otherServices ?? []} />
-      </div>
+      <OtherServicesTable services={otherServices ?? []} />
     </div>
   );
 }
