@@ -14,13 +14,15 @@ To Do:
         DONE - delete button to delete row in others services
         DONE - Change add service to plus icon
         - Fix UI
-        - Add Toast to UI
+        DONE - Add Toast to UI
         DONE - Change modal placeholder
         DONE - add cursor pointer to all buttons
         DONE - Change "Edit" to gray in modal
         DONE - Change font of title
         DONE - Change Plus sign in + ADD VEHICLE OPTION
         DONE - Change X to react icon
+        - Add toast for successfully deleting file
+        DONE - Add toast for successfully adding, editing file
     
     Services:
         - create modal has unlimited height 

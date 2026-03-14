@@ -9,6 +9,7 @@ import {
 } from "@/app/(admin-protected)/admin/services/actions";
 import { FiPlusCircle } from "react-icons/fi";
 import { IoMdCloseCircle } from "react-icons/io";
+import { toast } from "sonner";
 
 // Type help from your database schema
 type OtherServiceRow = Database["public"]["Tables"]["otherServices"]["Row"];
@@ -53,7 +54,6 @@ export default function OtherServicesModal({
 
     const formData = new FormData(e.currentTarget);
 
-    // Clean and validate the dynamic JSON array
     const formattedTypes = dynamicTypes
       .filter((t: any) => (t.service || "").trim() !== "")
       .map((t: any) => ({
@@ -79,10 +79,19 @@ export default function OtherServicesModal({
       ? await updateOtherService(service.id, payload)
       : await createOtherService(payload);
 
+    // --- ADD TOASTS HERE ---
     if (result.success) {
+      // Show success message
+      toast.success(
+        isEdit ? "Service updated successfully" : "New service created",
+      );
+
       router.refresh();
       onClose();
     } else {
+      // Show error message via toast (optional, since you already have setError)
+      toast.error(result.error);
+
       setError(result.error);
       setSaving(false);
     }
