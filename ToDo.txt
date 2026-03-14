@@ -12,14 +12,15 @@ To Do:
     Other Services:
         DONE - edit modal need  is_active and order field 
         DONE - delete button to delete row in others services
-        - Change add service to plus icon
+        DONE - Change add service to plus icon
         - Fix UI
         - Add Toast to UI
         - Change modal placeholder
         DONE - add cursor pointer to all buttons
         - Change "Edit" to gray in modal
         - Change font of title
-        - Change Plus sign in + ADD VEHICLE OPTION
+        DONE - Change Plus sign in + ADD VEHICLE OPTION
+        - Change X to react icon
     
     Services:
         - create modal has unlimited height 

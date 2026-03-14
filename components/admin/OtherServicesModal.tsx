@@ -8,6 +8,7 @@ import {
   updateOtherService,
 } from "@/app/(admin-protected)/admin/services/actions";
 import { FiPlusCircle } from "react-icons/fi";
+import { IoMdCloseCircle } from "react-icons/io";
 
 // Type help from your database schema
 type OtherServiceRow = Database["public"]["Tables"]["otherServices"]["Row"];
@@ -162,7 +163,7 @@ export default function OtherServicesModal({
                     className="cursor-pointer px-1 text-xs text-red-400 hover:text-red-600"
                     title="Remove row"
                   >
-                    ✕
+                    <IoMdCloseCircle className="h-5 w-5" />
                   </button>
                 </div>
               ))}
