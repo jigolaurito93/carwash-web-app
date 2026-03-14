@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 // 1. Change this import
 import { createBrowserClient } from "@supabase/ssr";
 import { FormEvent } from "react";
@@ -12,8 +11,6 @@ const supabase = createBrowserClient(
 );
 
 export default function AdminLoginPage() {
-  const router = useRouter();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
