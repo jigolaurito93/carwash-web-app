@@ -1,3 +1,7 @@
 To Do:
     - /admin/login navbar, bg change to black
     - fix position of error message in admin/login
+    DONE - edit modal for other services need  is_active and order field
+    - create modal has unlimited height 
+    - add cursor-pointer to buttons
+    - delete button to delete row in others services

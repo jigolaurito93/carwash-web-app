@@ -137,7 +137,9 @@ export default function OtherServicesTable({ services }: Props) {
       subtitle: (formData.get("subtitle") as string) || null,
       types: formattedTypes,
       is_active: formData.get("is_active") === "on",
-      sort_order: Number(formData.get("sort_order")) || 0,
+      sort_order: formData.get("sort_order")
+        ? Number(formData.get("sort_order"))
+        : 0,
     };
 
     const result = await updateOtherService(editing.id, payload);
@@ -487,7 +489,34 @@ export default function OtherServicesTable({ services }: Props) {
                 </button>
               </div>
 
-              {/* ... Sort Order and Active Checkbox ... */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="mb-1 block text-xs font-bold text-gray-400 uppercase">
+                    Sort Order
+                  </label>
+                  <input
+                    name="sort_order"
+                    type="number"
+                    defaultValue={editing.sort_order ?? 0}
+                    className="w-full border-b-2 border-gray-200 py-1 transition-colors outline-none focus:border-yellow-400"
+                  />
+                </div>
+                <div className="flex items-center gap-2 pt-5">
+                  <input
+                    type="checkbox"
+                    name="is_active"
+                    defaultChecked={editing.is_active}
+                    id="create_active"
+                    className="h-4 w-4 accent-yellow-400"
+                  />
+                  <label
+                    htmlFor="create_active"
+                    className="text-sm font-bold text-gray-700"
+                  >
+                    Active
+                  </label>
+                </div>
+              </div>
 
               <div className="flex justify-end gap-3 pt-6">
                 <button
