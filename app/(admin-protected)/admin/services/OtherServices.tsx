@@ -164,7 +164,7 @@ export default function OtherServicesTable({ services }: Props) {
         <button
           type="button"
           onClick={() => setCreating(true)}
-          className="rounded bg-gray-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-800"
+          className="cursor-pointer rounded bg-gray-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-800"
         >
           Add Other Service
         </button>
@@ -256,7 +256,7 @@ export default function OtherServicesTable({ services }: Props) {
                           // 4. Clear any old errors
                           setError(null);
                         }}
-                        className="rounded border border-gray-300 bg-white px-3 py-1 text-xs font-medium text-gray-700 shadow-sm transition-all hover:bg-gray-50"
+                        className="cursor-pointer rounded border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-700 shadow-sm transition-all hover:bg-yellow-400 hover:text-black"
                       >
                         Edit
                       </button>
@@ -278,7 +278,7 @@ export default function OtherServicesTable({ services }: Props) {
                             }
                           }
                         }}
-                        className="rounded border border-red-200 bg-white px-3 py-1 text-xs font-medium text-red-600 shadow-sm transition-all hover:bg-red-50"
+                        className="cursor-pointer rounded border border-red-100 bg-red-100 px-3 py-1 text-xs font-semibold text-red-600 shadow-sm transition-all hover:bg-red-600 hover:text-white"
                       >
                         Delete
                       </button>
