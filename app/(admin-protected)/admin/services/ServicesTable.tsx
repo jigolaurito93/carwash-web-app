@@ -173,7 +173,7 @@ export default function ServicesTable({ services }: Props) {
                     {row.subtitle ?? "—"}
                   </td>
                   <td
-                    className="hidden max-w-[200px] truncate px-4 py-3 text-gray-600 lg:table-cell"
+                    className="hidden max-w-50 truncate px-4 py-3 text-gray-600 lg:table-cell"
                     title={typesToDisplay(row.types)}
                   >
                     {typesToDisplay(row.types)}
@@ -320,7 +320,7 @@ export default function ServicesTable({ services }: Props) {
                   name="sort_order"
                   type="number"
                   min="0"
-                  className="w-full max-w-[120px] rounded border border-gray-300 px-3 py-2 text-sm"
+                  className="w-full max-w-30 rounded border border-gray-300 px-3 py-2 text-sm"
                 />
               </div>
               <div className="flex justify-end gap-2 pt-2">
@@ -454,7 +454,7 @@ export default function ServicesTable({ services }: Props) {
                   type="number"
                   min="0"
                   defaultValue={editing.sort_order ?? ""}
-                  className="w-full max-w-[120px] rounded border border-gray-300 px-3 py-2 text-sm"
+                  className="w-full max-w-30 rounded border border-gray-300 px-3 py-2 text-sm"
                 />
               </div>
               <div className="flex justify-end gap-2 pt-2">

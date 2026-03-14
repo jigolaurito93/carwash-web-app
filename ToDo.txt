@@ -8,7 +8,9 @@ To Do:
         DONE - edit modal need  is_active and order field 
         DONE - delete button to delete row in others services
         - Fix UI
+        - Add Toast to UI
     
     Services:
         - create modal has unlimited height 
         - Fix UI
+        - Add Toast to UI
