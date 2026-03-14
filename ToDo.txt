@@ -16,7 +16,10 @@ To Do:
         - Fix UI
         - Add Toast to UI
         - Change modal placeholder
-        - add cursor pointer to all buttons
+        DONE - add cursor pointer to all buttons
+        - Change "Edit" to gray in modal
+        - Change font of title
+        - Change Plus sign in + ADD VEHICLE OPTION
     
     Services:
         - create modal has unlimited height 

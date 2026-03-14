@@ -7,6 +7,7 @@ import {
   createOtherService,
   updateOtherService,
 } from "@/app/(admin-protected)/admin/services/actions";
+import { FiPlusCircle } from "react-icons/fi";
 
 // Type help from your database schema
 type OtherServiceRow = Database["public"]["Tables"]["otherServices"]["Row"];
@@ -169,9 +170,10 @@ export default function OtherServicesModal({
             <button
               type="button"
               onClick={addRow}
-              className="mt-3 cursor-pointer text-xs font-bold tracking-wider text-yellow-600 hover:text-yellow-700"
+              className="mt-3 flex cursor-pointer items-center justify-center gap-2 text-xs font-bold tracking-wider text-yellow-600 hover:text-yellow-700"
             >
-              + ADD VEHICLE OPTION
+              <FiPlusCircle className="h-4 w-4" />
+              ADD VEHICLE OPTION
             </button>
           </div>
 

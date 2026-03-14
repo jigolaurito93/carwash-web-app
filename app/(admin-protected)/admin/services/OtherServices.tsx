@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import type { Database } from "@/lib/database.types";
 import { deleteOtherService } from "./actions";
 import OtherServicesModal from "@/components/admin/OtherServicesModal";
+import { FiPlusCircle } from "react-icons/fi";
 
 type OtherServiceRow = Database["public"]["Tables"]["otherServices"]["Row"];
 
@@ -65,9 +66,10 @@ export default function OtherServicesTable({
         <h2 className="text-xl font-bold text-gray-900">Other Services</h2>
         <button
           onClick={handleCreate}
-          className="cursor-pointer rounded bg-black px-4 py-2 text-sm font-bold text-white transition-all hover:bg-zinc-800"
+          className="flex cursor-pointer items-center justify-center gap-2 rounded bg-black px-4 py-2 text-sm font-bold text-white transition-all hover:bg-zinc-800"
         >
-          + Add Service
+          <FiPlusCircle className="h-4 w-4" />
+          Add Service
         </button>
       </div>
 
