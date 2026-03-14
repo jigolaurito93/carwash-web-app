@@ -65,7 +65,7 @@ export default function OtherServicesTable({
         <h2 className="text-xl font-bold text-gray-900">Other Services</h2>
         <button
           onClick={handleCreate}
-          className="rounded bg-black px-4 py-2 text-sm font-bold text-white transition-all hover:bg-zinc-800"
+          className="cursor-pointer rounded bg-black px-4 py-2 text-sm font-bold text-white transition-all hover:bg-zinc-800"
         >
           + Add Service
         </button>
@@ -131,13 +131,13 @@ export default function OtherServicesTable({
                     <div className="ml-auto flex w-20 flex-col items-stretch gap-2">
                       <button
                         onClick={() => handleEdit(row)}
-                        className="rounded border border-gray-300 bg-white px-2 py-1 text-xs font-semibold text-gray-700 transition-all hover:bg-yellow-400 hover:text-black"
+                        className="cursor-pointer rounded border border-gray-300 bg-white px-2 py-1 text-xs font-semibold text-gray-700 transition-all hover:bg-yellow-400 hover:text-black"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDelete(row.id, row.title)}
-                        className="rounded border border-red-100 bg-red-50 px-2 py-1 text-xs font-semibold text-red-600 transition-all hover:bg-red-600 hover:text-white"
+                        className="cursor-pointer rounded border border-red-100 bg-red-50 px-2 py-1 text-xs font-semibold text-red-600 transition-all hover:bg-red-600 hover:text-white"
                       >
                         Delete
                       </button>

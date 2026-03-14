@@ -158,7 +158,7 @@ export default function OtherServicesModal({
                   <button
                     type="button"
                     onClick={() => removeRow(index)}
-                    className="px-1 text-xs text-red-400 hover:text-red-600"
+                    className="cursor-pointer px-1 text-xs text-red-400 hover:text-red-600"
                     title="Remove row"
                   >
                     ✕
@@ -169,7 +169,7 @@ export default function OtherServicesModal({
             <button
               type="button"
               onClick={addRow}
-              className="mt-3 text-xs font-bold tracking-wider text-yellow-600 hover:text-yellow-700"
+              className="mt-3 cursor-pointer text-xs font-bold tracking-wider text-yellow-600 hover:text-yellow-700"
             >
               + ADD VEHICLE OPTION
             </button>
@@ -194,7 +194,7 @@ export default function OtherServicesModal({
                 name="is_active"
                 defaultChecked={service ? service.is_active : true}
                 id="other_modal_active"
-                className="h-4 w-4 rounded accent-yellow-400"
+                className="h-4 w-4 cursor-pointer rounded accent-yellow-400"
               />
               <label
                 htmlFor="other_modal_active"
@@ -210,14 +210,14 @@ export default function OtherServicesModal({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-500 transition-colors hover:text-black"
+              className="cursor-pointer px-4 py-2 text-sm font-medium text-gray-500 transition-colors hover:text-black"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={saving}
-              className={`rounded px-6 py-2 text-sm font-bold shadow-md transition-all active:scale-95 disabled:bg-gray-400 ${
+              className={`cursor-pointer rounded px-6 py-2 text-sm font-bold shadow-md transition-all active:scale-95 disabled:bg-gray-400 ${
                 isEdit
                   ? "bg-yellow-400 text-black hover:bg-yellow-500"
                   : "bg-black text-white hover:bg-zinc-800"
