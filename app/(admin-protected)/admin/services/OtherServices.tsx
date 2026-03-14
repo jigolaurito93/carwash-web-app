@@ -3,170 +3,71 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Database } from "@/lib/database.types";
-import {
-  createOtherService,
-  deleteOtherService,
-  updateOtherService,
-} from "./actions";
+import { deleteOtherService } from "./actions";
+import OtherServicesModal from "@/components/admin/OtherServicesModal";
 
 type OtherServiceRow = Database["public"]["Tables"]["otherServices"]["Row"];
-type Json = Database["public"]["Tables"]["otherServices"]["Row"]["types"];
 
-function typesToDisplay(types: Json) {
+// Helper to render the JSON list inside the table cell
+function renderTypes(types: any) {
   if (!types || !Array.isArray(types))
     return <span className="text-gray-400">—</span>;
-
   return (
     <div className="flex flex-col gap-1">
-      {types.map((t: any, i: number) => {
-        const name = t.service || t.name || "Unknown";
-        const price = t.price != null ? `$${t.price}` : "";
-
-        return (
-          <div key={i} className="flex justify-between gap-4 text-xs">
-            <span className="font-medium text-gray-700">{name}</span>
-            <span className="text-gray-500 tabular-nums">{price}</span>
-          </div>
-        );
-      })}
+      {types.map((t: any, i: number) => (
+        <div key={i} className="flex justify-between gap-4 text-xs">
+          <span className="font-medium text-gray-700">
+            {t.service || t.name}
+          </span>
+          <span className="text-gray-500 tabular-nums">${t.price || 0}</span>
+        </div>
+      ))}
     </div>
   );
 }
 
-function typesToEditValue(types: Json): string {
-  if (types == null) return "";
-  // Returns pretty-printed JSON for the textarea
-  return JSON.stringify(types, null, 2);
-}
-
-type Props = { services: OtherServiceRow[] };
-
-export default function OtherServicesTable({ services }: Props) {
+export default function OtherServicesTable({
+  services,
+}: {
+  services: OtherServiceRow[];
+}) {
   const router = useRouter();
 
-  const [editing, setEditing] = useState<OtherServiceRow | null>(null);
-  const [creating, setCreating] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  // Each row will look like this: { service: "SUV", price: 50 }
-  const [dynamicTypes, setDynamicTypes] = useState([
-    { service: "", price: "" },
-  ]);
+  // State for Modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedService, setSelectedService] =
+    useState<OtherServiceRow | null>(null);
 
-  // Reset state when opening the "Create" modal
-  const openCreateModal = () => {
-    setDynamicTypes([{ service: "", price: "" }]);
-    setCreating(true);
+  const handleEdit = (service: OtherServiceRow) => {
+    setSelectedService(service);
+    setIsModalOpen(true);
   };
 
-  const addTypeRow = () => {
-    setDynamicTypes([...dynamicTypes, { service: "", price: "" }]);
+  const handleCreate = () => {
+    setSelectedService(null);
+    setIsModalOpen(true);
   };
 
-  const removeTypeRow = (index: number) => {
-    setDynamicTypes(dynamicTypes.filter((_, i) => i !== index));
-  };
-
-  const updateTypeRow = (
-    index: number,
-    field: "service" | "price",
-    value: string,
-  ) => {
-    const newTypes = [...dynamicTypes];
-    newTypes[index][field] = value;
-    setDynamicTypes(newTypes);
-  };
-
-  async function handleCreateSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setError(null);
-    setSaving(true);
-
-    const formData = new FormData(e.currentTarget);
-
-    // Add (t.service || "") to handle undefined/null cases
-    const formattedTypes = dynamicTypes
-      .filter((t) => t && (t.service || "").toString().trim() !== "")
-      .map((t) => ({
-        service: (t.service || "").toString().trim(),
-        price: Number(t.price) || 0,
-      }));
-
-    const payload = {
-      title: (formData.get("title") as string) || "",
-      subtitle: (formData.get("subtitle") as string) || null,
-      types: formattedTypes, // This is now your JSON array
-      is_active: formData.get("is_active") === "on",
-      sort_order: Number(formData.get("sort_order")) || null,
-    };
-
-    const result = await createOtherService(payload);
-    setSaving(false);
-
-    if (result.success) {
-      setCreating(false);
-      setDynamicTypes([{ service: "", price: "" }]); // Reset state for next time
-      router.refresh();
-    } else {
-      setError(result.error);
+  const handleDelete = async (id: number, title: string) => {
+    if (confirm(`Are you sure you want to delete "${title}"?`)) {
+      const result = await deleteOtherService(id);
+      if (result.success) {
+        router.refresh();
+      } else {
+        alert(result.error);
+      }
     }
-  }
-
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (!editing) return;
-
-    setError(null);
-    setSaving(true);
-
-    const formData = new FormData(e.currentTarget);
-
-    // 1. Format the dynamicTypes from state
-    const formattedTypes = dynamicTypes
-      .filter((t) => t && (t.service || "").toString().trim() !== "") // Safe check: (t.service || "")
-      .map((t) => ({
-        service: (t.service || "").toString().trim(), // Safe check: (t.service || "")
-        price: Number(t.price) || 0,
-      }));
-
-    if (formattedTypes.length === 0) {
-      setError("Please add at least one vehicle type.");
-      setSaving(false);
-      return;
-    }
-
-    // 2. Build Payload
-    const payload = {
-      title: (formData.get("title") as string) || "",
-      subtitle: (formData.get("subtitle") as string) || null,
-      types: formattedTypes,
-      is_active: formData.get("is_active") === "on",
-      sort_order: formData.get("sort_order")
-        ? Number(formData.get("sort_order"))
-        : 0,
-    };
-
-    const result = await updateOtherService(editing.id, payload);
-    setSaving(false);
-
-    if (result.success) {
-      setEditing(null);
-      setDynamicTypes([{ service: "", price: "" }]); // Reset state
-      router.refresh();
-    } else {
-      setError(result.error);
-    }
-  }
+  };
 
   return (
-    <>
-      <div className="mb-4 flex justify-end">
+    <div className="mt-12">
+      <div className="mb-6 flex items-center justify-between">
+        <h2 className="text-xl font-bold text-gray-900">Other Services</h2>
         <button
-          type="button"
-          onClick={() => setCreating(true)}
-          className="cursor-pointer rounded bg-gray-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-800"
+          onClick={handleCreate}
+          className="rounded bg-black px-4 py-2 text-sm font-bold text-white transition-all hover:bg-zinc-800"
         >
-          Add Other Service
+          + Add Service
         </button>
       </div>
 
@@ -176,13 +77,13 @@ export default function OtherServicesTable({ services }: Props) {
             <tr>
               <th className="px-4 py-3 font-semibold text-gray-700">Title</th>
               <th className="hidden px-4 py-3 font-semibold text-gray-700 sm:table-cell">
-                Description
+                Subtitle
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">
-                Services
+                Pricing Options
               </th>
               <th className="px-4 py-3 text-center font-semibold text-gray-700">
-                Active
+                Status
               </th>
               <th className="px-4 py-3 text-center font-semibold text-gray-700">
                 Order
@@ -194,7 +95,7 @@ export default function OtherServicesTable({ services }: Props) {
           </thead>
 
           <tbody className="divide-y divide-gray-200 bg-white">
-            {!services.length ? (
+            {services.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
                   No other services found.
@@ -206,13 +107,13 @@ export default function OtherServicesTable({ services }: Props) {
                   <td className="px-4 py-3 align-top font-medium text-gray-900">
                     {row.title}
                   </td>
-                  <td className="hidden px-4 py-3 align-top text-gray-600 sm:table-cell">
+                  <td className="hidden px-4 py-3 align-top text-gray-500 sm:table-cell">
                     {row.subtitle ?? "—"}
                   </td>
-                  <td className="px-4 py-3 align-top text-gray-600">
-                    {typesToDisplay(row.types)}
+                  <td className="px-4 py-3 align-top">
+                    {renderTypes(row.types)}
                   </td>
-                  <td className="px-4 py-3 text-center">
+                  <td className="px-4 py-3 text-center align-top">
                     <span
                       className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
                         row.is_active
@@ -220,65 +121,23 @@ export default function OtherServicesTable({ services }: Props) {
                           : "bg-gray-100 text-gray-600"
                       }`}
                     >
-                      {row.is_active ? "Yes" : "No"}
+                      {row.is_active ? "Active" : "Inactive"}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-center text-gray-600">
-                    {row.sort_order ?? "—"}
+                  <td className="px-4 py-3 text-center align-top text-gray-500">
+                    {row.sort_order}
                   </td>
-
                   <td className="px-4 py-3 align-top">
                     <div className="ml-auto flex w-20 flex-col items-stretch gap-2">
-                      {/* Edit Button */}
                       <button
-                        type="button"
-                        onClick={() => {
-                          // 1. Mark which row we are editing
-                          setEditing(row);
-
-                          // 2. Clean the data so React doesn't crash on 'undefined'
-                          const rawTypes = Array.isArray(row.types)
-                            ? row.types
-                            : [];
-                          const safeTypes = rawTypes.map((t: any) => ({
-                            // Fallback check: if DB uses 'name', move it to 'service'
-                            service: t.service || "",
-                            price: t.price || 0,
-                          }));
-
-                          // 3. Update the dynamic rows state
-                          setDynamicTypes(
-                            safeTypes.length > 0
-                              ? safeTypes
-                              : [{ service: "", price: "" }],
-                          );
-
-                          // 4. Clear any old errors
-                          setError(null);
-                        }}
-                        className="cursor-pointer rounded border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-700 shadow-sm transition-all hover:bg-yellow-400 hover:text-black"
+                        onClick={() => handleEdit(row)}
+                        className="rounded border border-gray-300 bg-white px-2 py-1 text-xs font-semibold text-gray-700 transition-all hover:bg-yellow-400 hover:text-black"
                       >
                         Edit
                       </button>
-
-                      {/* Delete Button */}
                       <button
-                        type="button"
-                        onClick={async () => {
-                          if (
-                            confirm(
-                              `Are you sure you want to delete "${row.title}"?`,
-                            )
-                          ) {
-                            const result = await deleteOtherService(row.id);
-                            if (!result.success) {
-                              alert(result.error);
-                            } else {
-                              router.refresh();
-                            }
-                          }
-                        }}
-                        className="cursor-pointer rounded border border-red-100 bg-red-100 px-3 py-1 text-xs font-semibold text-red-600 shadow-sm transition-all hover:bg-red-600 hover:text-white"
+                        onClick={() => handleDelete(row.id, row.title)}
+                        className="rounded border border-red-100 bg-red-50 px-2 py-1 text-xs font-semibold text-red-600 transition-all hover:bg-red-600 hover:text-white"
                       >
                         Delete
                       </button>
@@ -291,284 +150,13 @@ export default function OtherServicesTable({ services }: Props) {
         </table>
       </div>
 
-      {/* CREATE MODAL */}
-      {creating && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-lg rounded-xl bg-white p-6 shadow-2xl">
-            <h2 className="mb-4 text-xl font-bold text-gray-900">
-              Add Other Service
-            </h2>
-            <form onSubmit={handleCreateSubmit} className="space-y-4">
-              {error && (
-                <p className="rounded border border-red-100 bg-red-50 p-2 text-sm font-bold text-red-600">
-                  {error}
-                </p>
-              )}
-
-              <div>
-                <label className="mb-1 block text-xs font-bold text-gray-400 uppercase">
-                  Service Title
-                </label>
-                <input
-                  name="title"
-                  required
-                  className="w-full border-b-2 border-gray-200 py-1 transition-colors outline-none focus:border-yellow-400"
-                  placeholder="e.g. Clay Bar Treatment"
-                />
-              </div>
-
-              <div>
-                <label className="mb-1 block text-xs font-bold text-gray-400 uppercase">
-                  Subtitle
-                </label>
-                <input
-                  name="subtitle"
-                  className="w-full border-b-2 border-gray-200 py-1 transition-colors outline-none focus:border-yellow-400"
-                  placeholder="e.g. Removes surface contaminants"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-xs font-bold text-gray-400 uppercase">
-                  Other Services
-                </label>
-
-                <div className="space-y-2">
-                  {dynamicTypes.map((type, index) => (
-                    <div key={index} className="flex items-end gap-2">
-                      <div className="flex-1">
-                        <input
-                          placeholder="Type (e.g. SUV)"
-                          value={type.service}
-                          onChange={(e) =>
-                            updateTypeRow(index, "service", e.target.value)
-                          }
-                          className="w-full border-b border-gray-300 py-1 text-sm outline-none focus:border-yellow-400"
-                        />
-                      </div>
-                      <div className="w-24">
-                        <input
-                          placeholder="Price"
-                          type="number"
-                          value={type.price}
-                          onChange={(e) =>
-                            updateTypeRow(index, "price", e.target.value)
-                          }
-                          className="w-full border-b border-gray-300 py-1 text-sm outline-none focus:border-yellow-400"
-                        />
-                      </div>
-                      {dynamicTypes.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() => removeTypeRow(index)}
-                          className="pb-1 text-xs text-red-400 hover:text-red-600"
-                        >
-                          Remove
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                </div>
-
-                <button
-                  type="button"
-                  onClick={addTypeRow}
-                  className="mt-3 text-xs font-bold text-yellow-600 hover:text-yellow-700"
-                >
-                  + ADD ROW
-                </button>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="mb-1 block text-xs font-bold text-gray-400 uppercase">
-                    Sort Order
-                  </label>
-                  <input
-                    name="sort_order"
-                    type="number"
-                    className="w-full border-b-2 border-gray-200 py-1 transition-colors outline-none focus:border-yellow-400"
-                  />
-                </div>
-                <div className="flex items-center gap-2 pt-5">
-                  <input
-                    type="checkbox"
-                    name="is_active"
-                    defaultChecked
-                    id="create_active"
-                    className="h-4 w-4 accent-yellow-400"
-                  />
-                  <label
-                    htmlFor="create_active"
-                    className="text-sm font-bold text-gray-700"
-                  >
-                    Active
-                  </label>
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-3 pt-6">
-                <button
-                  type="button"
-                  onClick={() => setCreating(false)}
-                  className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-black"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="rounded bg-black px-6 py-2 text-sm font-bold text-white transition-all hover:bg-zinc-800 disabled:bg-gray-400"
-                >
-                  {saving ? "Saving..." : "Create Service"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+      {/* Reusable Modal Component */}
+      {isModalOpen && (
+        <OtherServicesModal
+          service={selectedService}
+          onClose={() => setIsModalOpen(false)}
+        />
       )}
-
-      {/* EDIT MODAL */}
-      {editing && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-lg rounded-xl bg-white p-6 shadow-2xl">
-            <h2 className="mb-4 text-xl font-bold text-gray-900">
-              Edit {editing.title}
-            </h2>
-            <form
-              onSubmit={handleSubmit}
-              key={editing.id}
-              className="space-y-4"
-            >
-              {error && (
-                <p className="rounded border border-red-100 bg-red-50 p-2 text-sm font-bold text-red-600">
-                  {error}
-                </p>
-              )}
-
-              {/* ... Name and Subtitle Inputs ... */}
-
-              {/* REPLACED TEXTAREA WITH DYNAMIC ROWS */}
-              <div>
-                <div>
-                  <label className="mb-1 block text-xs font-bold text-gray-400 uppercase">
-                    Service Name
-                  </label>
-                  <input
-                    name="title"
-                    required
-                    defaultValue={editing.title}
-                    className="w-full border-b-2 border-gray-200 py-1 transition-colors outline-none focus:border-yellow-400"
-                    placeholder="e.g. Clay Bar Treatment"
-                  />
-                </div>
-
-                <div>
-                  <label className="my-2 block text-xs font-bold text-gray-400 uppercase">
-                    Subtitle
-                  </label>
-                  <input
-                    name="subtitle"
-                    defaultValue={editing.subtitle ?? ""}
-                    className="w-full border-b-2 border-gray-200 py-1 transition-colors outline-none focus:border-yellow-400"
-                    placeholder="e.g. Removes surface contaminants"
-                  />
-                </div>
-                <label className="my-2 block text-xs font-bold text-gray-400 uppercase">
-                  Other Services
-                </label>
-                <div className="max-h-40 space-y-2 overflow-y-auto pr-2">
-                  {dynamicTypes.map((type, index) => (
-                    <div key={index} className="flex items-end gap-2">
-                      <div className="flex-1">
-                        <input
-                          placeholder="Type (e.g. SUV)"
-                          value={type.service}
-                          onChange={(e) =>
-                            updateTypeRow(index, "service", e.target.value)
-                          }
-                          className="w-full border-b border-gray-300 py-1 text-sm outline-none focus:border-yellow-400"
-                        />
-                      </div>
-                      <div className="w-24">
-                        <input
-                          placeholder="Price"
-                          type="number"
-                          value={type.price}
-                          onChange={(e) =>
-                            updateTypeRow(index, "price", e.target.value)
-                          }
-                          className="w-full border-b border-gray-300 py-1 text-sm outline-none focus:border-yellow-400"
-                        />
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => removeTypeRow(index)}
-                        className="px-1 pb-1 text-xs text-red-400 hover:text-red-600"
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  ))}
-                </div>
-                <button
-                  type="button"
-                  onClick={addTypeRow}
-                  className="mt-3 text-xs font-bold text-yellow-600 hover:text-yellow-700"
-                >
-                  + ADD ROW
-                </button>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="mb-1 block text-xs font-bold text-gray-400 uppercase">
-                    Sort Order
-                  </label>
-                  <input
-                    name="sort_order"
-                    type="number"
-                    defaultValue={editing.sort_order ?? 0}
-                    className="w-full border-b-2 border-gray-200 py-1 transition-colors outline-none focus:border-yellow-400"
-                  />
-                </div>
-                <div className="flex items-center gap-2 pt-5">
-                  <input
-                    type="checkbox"
-                    name="is_active"
-                    defaultChecked={editing.is_active}
-                    id="create_active"
-                    className="h-4 w-4 accent-yellow-400"
-                  />
-                  <label
-                    htmlFor="create_active"
-                    className="text-sm font-bold text-gray-700"
-                  >
-                    Active
-                  </label>
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-3 pt-6">
-                <button
-                  type="button"
-                  onClick={() => setEditing(null)}
-                  className="px-4 py-2 text-sm font-medium text-gray-500"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="rounded bg-yellow-400 px-6 py-2 text-sm font-bold text-black shadow-md hover:bg-yellow-500"
-                >
-                  {saving ? "Saving..." : "Update Changes"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-    </>
+    </div>
   );
 }
