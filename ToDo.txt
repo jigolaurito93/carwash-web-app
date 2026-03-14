@@ -30,3 +30,29 @@ To Do:
         DONE - create modal has unlimited height 
         - Fix UI
         DONE - Add Toast to UI
+
+
+1. The Admin Sidebar (Left Side)
+Since it’s a vertical strip, group your items by "Task" to make it intuitive.
+Top (Branding):
+Your Logo or "ADMIN PANEL" in font-lexend.
+A "Back to Site" button with a small arrow icon.
+Middle (Core Navigation):
+Dashboard: (Home icon) Overview and stats.
+Main Services: (List icon) Links to your ServicesTable.
+Other Services: (Grid icon) Links to your OtherServicesTable.
+Detailing: (Sparkle icon) Links to your DetailingServices table.
+Bottom (Account/System):
+Settings: For site-wide changes (phone number, hours).
+Logout Button: (Power icon) Styled in red-400 or zinc-500.
+2. The Admin Dashboard (Main Content)
+Since you are using a sidebar, the main content area will be wide. Use that space for "Big Picture" Cards:
+Row 1: Summary Cards (Small Boxes)
+Live Services: "12 Active"
+Drafts/Hidden: "3 Hidden" (Helps you remember what’s not public yet).
+Last Update: Displays the timestamp of your last database change.
+Row 2: Quick Management (Two Columns)
+Left Column: A "Recently Modified" list showing the last 5 services you edited.
+Right Column: "Quick Toggles" to turn categories on or off without opening a modal.
+Row 3: Status Check
+A simple "Database Status" indicator to ensure Supabase is responding correctly.
