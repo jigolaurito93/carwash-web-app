@@ -2,7 +2,12 @@ To Do:
     - /admin/login navbar, bg change to black
     - fix position of error message in admin/login
     - add cursor-pointer to buttons
+    - Mobile Navbar is shown in Admin UI tablet
+    - Add Profile
     
+    Admin Page:
+        - Add Profile to Navbar
+        - Display Name on Dashboard
 
     Other Services:
         DONE - edit modal need  is_active and order field 

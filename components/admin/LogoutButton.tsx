@@ -20,7 +20,7 @@ export default function LogoutButton() {
   return (
     <button
       onClick={handleLogout}
-      className="flex w-full cursor-pointer items-center gap-2 rounded px-2 py-2 text-red-400 transition-colors hover:bg-white/10 hover:text-red-300"
+      className="flex w-full cursor-pointer items-center gap-2 rounded px-2 py-2 font-questrial text-red-400 transition-colors hover:bg-white/10 hover:text-red-300"
     >
       <IoLogOutOutline size={20} />
       <span>Log Out</span>
