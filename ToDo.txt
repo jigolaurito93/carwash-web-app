@@ -5,7 +5,7 @@ To Do:
     - Mobile Navbar is shown in Admin UI tablet
     - Add Profile
     DONE - Display table on /testService
-    - Fix is_active_bool in /testService
+    DONE - Fix is_active_bool in /testService
     
     Admin Page:
         - Add Profile to Navbar
@@ -27,6 +27,6 @@ To Do:
         DONE - Add toast for successfully adding, editing file
     
     Services:
-        - create modal has unlimited height 
+        DONE - create modal has unlimited height 
         - Fix UI
-        - Add Toast to UI
+        DONE - Add Toast to UI

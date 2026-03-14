@@ -14,6 +14,7 @@ const TestServices = async () => {
   const { data: otherServices, error: otherError } = await supabase
     .from("otherServices")
     .select("*")
+    .eq("is_active", true)
     .order("sort_order", { ascending: true });
 
   // Fetch detailing services
