@@ -223,14 +223,14 @@ export default function ServicesModal({
             <button
               type="button"
               onClick={onClose}
-              className="cursor-pointer px-4 py-2 font-questrial text-sm font-medium text-gray-500 transition-colors hover:text-black"
+              className="btnCancel text-sm"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={saving}
-              className={`cursor-pointer rounded px-6 py-2 font-questrial text-sm font-bold tracking-wider shadow-md transition-all active:scale-95 ${
+              className={`btnSave text-sm ${
                 isEdit
                   ? "bg-yellow-400 text-black hover:bg-yellow-500"
                   : "bg-black text-white hover:bg-zinc-800"
