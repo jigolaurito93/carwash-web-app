@@ -5,13 +5,15 @@ import {
   Bungee_Hairline,
   Lexend_Giga,
   Lexend_Tera,
-  Questrial, Inter } from "next/font/google";
+  Questrial,
+  Inter,
+} from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/Footer";
 import { cn } from "@/lib/utils";
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -58,7 +60,17 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn("antialiased", geistSans.variable, geistMono.variable, bungeeHairline.variable, lexendGiga.variable, lexendTera.variable, questrial.variable, "font-sans", inter.variable)}
+      className={cn(
+        "antialiased",
+        geistSans.variable,
+        geistMono.variable,
+        bungeeHairline.variable,
+        lexendGiga.variable,
+        lexendTera.variable,
+        questrial.variable,
+        "font-sans",
+        inter.variable,
+      )}
     >
       <body>
         <Navbar />

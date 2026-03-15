@@ -1,4 +1,4 @@
-"use client";  // ← Added this
+"use client"; // ← Added this
 
 import AppointmentFormModal from "@/components/admin/AppointmentFormModal";
 import { useState } from "react";
@@ -58,7 +58,7 @@ export default function AdminDashboardPage() {
             {/* ← MODAL BUTTON */}
             <button
               onClick={() => setShowAppointmentModal(true)}
-              className="block w-full rounded bg-black px-4 py-2 text-center text-sm text-yellow-400 hover:bg-gray-900 transition-colors"
+              className="block w-full rounded bg-black px-4 py-2 text-center text-sm text-yellow-400 transition-colors hover:bg-gray-900"
             >
               Create appointment
             </button>
