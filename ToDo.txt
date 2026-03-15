@@ -3,7 +3,7 @@ To Do:
     - fix position of error message in admin/login
     - add cursor-pointer to buttons
     - Mobile Navbar is shown in Admin UI tablet
-    - Add Profile
+    DONE - Add Profile
     - Import photos to grab from supabase
     DONE - Display table on /testService
     DONE - Fix is_active_bool in /testService
@@ -32,7 +32,7 @@ To Do:
     
     Main Dashboard:
         DONE - Display name on main page
-        - Add Profile to Navbar
+        DONE - Add Profile to Navbar
 
 
 1. The Admin Sidebar (Left Side)

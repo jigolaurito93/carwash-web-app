@@ -1,30 +1,10 @@
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+"use client";  // ← Added this
+
+import AppointmentFormModal from "@/components/admin/AppointmentFormModal";
+import { useState } from "react";
 
 export default function AdminDashboardPage() {
-  // Use this if you want to display owner name from supabase. Add async on top
-  // I hardcoded the name for now
-
-  // const cookieStore = await cookies();
-
-  // const supabase = createServerClient(
-  //   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  //   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  //   {
-  //     cookies: {
-  //       getAll() {
-  //         return cookieStore.getAll();
-  //       },
-  //     },
-  //   },
-  // );
-
-  // const {
-  //   data: { user },
-  // } = await supabase.auth.getUser();
-  // console.log(user);
-  // const displayName =
-  //   user?.user_metadata?.display_name || user?.email?.split("@")[0] || "Owner";
+  const [showAppointmentModal, setShowAppointmentModal] = useState(false);
 
   return (
     <div className="">
@@ -62,7 +42,7 @@ export default function AdminDashboardPage() {
         </div>
       </section>
 
-      {/* Main content (unchanged) */}
+      {/* Main content */}
       <section className="grid gap-6 md:grid-cols-2">
         <div className="rounded-lg bg-white p-4 shadow-sm">
           <h2 className="mb-3 text-lg font-semibold">Upcoming appointments</h2>
@@ -75,12 +55,14 @@ export default function AdminDashboardPage() {
         <div className="rounded-lg bg-white p-4 shadow-sm">
           <h2 className="mb-3 text-lg font-semibold">Quick actions</h2>
           <div className="space-y-3">
-            <a
-              href="/admin/appointments/new"
-              className="block w-full rounded bg-black px-4 py-2 text-center text-sm text-yellow-400 hover:bg-gray-900"
+            {/* ← MODAL BUTTON */}
+            <button
+              onClick={() => setShowAppointmentModal(true)}
+              className="block w-full rounded bg-black px-4 py-2 text-center text-sm text-yellow-400 hover:bg-gray-900 transition-colors"
             >
               Create appointment
-            </a>
+            </button>
+
             <a
               href="/admin/services"
               className="block w-full rounded bg-black px-4 py-2 text-center text-sm text-yellow-400 hover:bg-gray-900"
@@ -96,10 +78,11 @@ export default function AdminDashboardPage() {
           </div>
         </div>
       </section>
-      {/* Today's schedule */}
-      {/* Notes/recent activites */}
-      {/* downpayment */}
-      {/* ALerts/warnings */}
+
+      {/* ← APPOINTMENT MODAL */}
+      {showAppointmentModal && (
+        <AppointmentFormModal onClose={() => setShowAppointmentModal(false)} />
+      )}
     </div>
   );
 }
