@@ -1,80 +1,38 @@
-"use client";
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
 
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
+export default async function AdminDashboardPage() {
+  const cookieStore = await cookies();
 
-type DbUser = {
-  id: string;
-  display_name: string | null;
-  email: string | null;
-};
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+      },
+    },
+  );
 
-export default function AdminDashboardPage() {
-  const [displayName, setDisplayName] = useState<string>("Owner");
-  const [email, setEmail] = useState<string>("");
-  const [loadingUser, setLoadingUser] = useState(true);
-
-  useEffect(() => {
-    const loadUserData = async () => {
-      try {
-        // 1) Get the auth user
-        const {
-          data: { user },
-          error: userError,
-        } = await supabase.auth.getUser();
-
-        if (userError) {
-          console.error("Error getting auth user:", userError);
-          return;
-        }
-        if (!user) {
-          // not logged in
-          return;
-        }
-
-        // 2) Fetch from your `users` table
-        const { data, error } = await supabase
-          .from("users") // your table name
-          .select("display_name, email")
-          .eq("id", user.id)
-          .single<DbUser>();
-
-        if (error) {
-          console.error("Error fetching user row:", error);
-          return;
-        }
-
-        if (data?.display_name) setDisplayName(data.display_name);
-        if (data?.email) setEmail(data.email ?? "");
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoadingUser(false);
-      }
-    };
-
-    loadUserData();
-  }, []);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  console.log(user);
+  const displayName =
+    user?.user_metadata?.display_name || user?.email?.split("@")[0] || "Owner";
 
   return (
     <div className="">
-      <div className="fixed top-0 left-0 h-[80px] w-full bg-black" />
+      <div className="fixed top-0 left-0 h-20 w-full bg-black" />
 
       {/* Header */}
       <header className="flex flex-col gap-2">
-        <h1 className="mt-20 mb-1 font-lexend text-4xl font-bold">
-          Owner Dashboard
-        </h1>
+        <h1 className="mt-20 mb-1 font-lexend text-4xl font-bold">Dashboard</h1>
         <p className="font-questrial text-2xl font-bold text-gray-500">
-          {loadingUser
-            ? "Welcome back..."
-            : `Welcome back, ${displayName}. Here's what's happening today.`}
+          Welcome back, {displayName}! Here&apos;s what&apos;s happening today.
         </p>
-        {!loadingUser && email && (
-          <p className="font-questrial text-sm text-gray-400">
-            Logged in as {email}
-          </p>
-        )}
       </header>
 
       {/* Top cards */}

@@ -1,0 +1,61 @@
+✅What are cookies?
+    Supabase creates 3 main cookies when you log in:
+        sb-[project]-auth-token     → access_token (short-lived, ~1hr)
+        sb-[project]-refresh-token  → refresh_token (long-lived, days/weeks)  
+        sb-[project]-provider-token → OAuth tokens (if using Google/etc.)
+
+✅ await supabase.auth.refreshSession()
+    What it does:
+        Takes your current refresh token and exchanges it with Supabase Auth server to get new access token + refresh token pair.
+
+    When it's used:
+        Access token expired (usually 1 hour)
+        You want to keep user logged in without forcing re-login
+        Automatic in most cases (Supabase clients do it behind the scenes)
+
+✅ middleware.ts should now be called proxy.ts because of Next.js 16 (Canary)
+✅ How does middleware work?
+
+    Browser → makes HTTP request (click link, type URL, etc.)
+        ↓
+    Next.js server → "Hey, before handling this request, run proxy.ts first"
+        ↓
+    Next.js → calls your `proxy(request)` → passes incoming HTTP request as argument
+        ↓
+    Your proxy code runs → `request` contains URL, headers, cookies, method, etc.
+        ↓
+    You return `NextResponse` → Next.js continues handling the request
+
+✅ Flow Diagram:
+
+    1. User visits: http://localhost:3000/admin/dashboard
+    ↓
+    2. Browser sends HTTP GET request to Next.js server
+    ↓  
+    3. Next.js sees `proxy.ts` exists → "Run proxy first!"
+    ↓
+    4. Next.js calls: `proxy(request)` ← request = incoming HTTP request object
+    ↓
+    5. Your code gets `request.nextUrl.pathname` = "/admin/dashboard"
+    ↓
+    6. Your code returns `supabaseResponse` 
+    ↓
+    7. Next.js uses your response → serves `/admin/dashboard` page
+
+✅ What request contains:
+
+    request.nextUrl.pathname      // "/admin/dashboard"
+    request.nextUrl.searchParams   // URL query params
+    request.cookies.getAll()       // Browser cookies (your Supabase auth cookies)
+    request.headers.get('user-agent') // Browser info
+    request.method                 // "GET", "POST", etc.
+
+✅ The Flow When Tokens Refresh:
+    1. Browser sends request with OLD cookies
+    2. getAll() → Supabase sees expired access token  
+    3. supabase.auth.getUser() → "Token expired, need refresh"
+    4. refreshSession() → Supabase calls setAll(NEW_COOKIES)
+    5. request.cookies.set() → Request now has NEW cookies
+    6. supabaseResponse = NextResponse.next(request) → New response with updated request
+    7. supabaseResponse.cookies.set() → Response has NEW cookies  
+    8. Browser receives response → Now has NEW cookies for next request

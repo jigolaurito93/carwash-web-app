@@ -6,6 +6,7 @@ To Do:
     - Add Profile
     DONE - Display table on /testService
     DONE - Fix is_active_bool in /testService
+    DONE - Fix browserclient and serverclient for supabase
     
     Admin Page:
         - Add Profile to Navbar
@@ -30,6 +31,9 @@ To Do:
         DONE - create modal has unlimited height 
         - Fix UI
         DONE - Add Toast to UI
+    
+    Main Dashboard:
+        DONE - Display name on main page
 
 
 1. The Admin Sidebar (Left Side)
