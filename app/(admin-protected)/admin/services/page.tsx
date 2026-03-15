@@ -28,7 +28,7 @@ export default async function AdminServicesPage() {
 
   return (
     <div className="p-6 md:p-8">
-      <h1 className="mb-6 text-2xl font-bold">Manage Services</h1>
+      <h1 className="adminHeader mb-6">Manage Services</h1>
 
       {/* Main Services */}
       <ServicesTable services={services ?? []} />

@@ -54,9 +54,7 @@ export default function AdminProfilePage() {
 
   return (
     <div className="max-w-2xl p-10">
-      <h1 className="mb-8 font-lexend text-3xl font-bold tracking-tight text-gray-900 uppercase">
-        Account Settings
-      </h1>
+      <h1 className="adminHeader mb-8">Account Settings</h1>
 
       <form action={handleAction} className="space-y-6">
         {/* Email - Read Only */}

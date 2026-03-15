@@ -49,7 +49,7 @@ export default async function AdminLayout({
         </div>
       </aside>
 
-      <main className="flex-1 p-8 pt-20">{children}</main>
+      <main className="flex-1 p-8 pt-28">{children}</main>
     </div>
   );
 }

@@ -30,7 +30,7 @@ export default async function AppointmentsPage() {
     <div className="mx-auto max-w-7xl space-y-6 p-6">
       {/* Clean header */}
       <div className="flex items-center justify-between">
-        <h1 className="font-lexend text-3xl font-bold">Appointments</h1>
+        <h1 className="adminHeader">Manage Appointments</h1>
         <div className="flex items-center gap-4">
           <a
             href="/admin/dashboard"
