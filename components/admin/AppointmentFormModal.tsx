@@ -4,8 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import { DatePickerTime } from "../ui/date-picker-time";
 import {
   createAppointment,
-  updateAppointment,
   deleteAppointment,
+  updateAppointment,
 } from "@/app/(admin-protected)/admin/dashboard/actions"; // Add update/delete actions
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -139,10 +139,7 @@ export default function AppointmentFormModal({
       result = await createAppointment(payload);
     } else {
       // You'll need to add updateAppointment action
-      result = await updateAppointment({
-        ...payload,
-        id: appointment!.id,
-      });
+      result = await updateAppointment(appointment!.id, payload);
     }
 
     setIsSubmitting(false);
@@ -288,16 +285,14 @@ export default function AppointmentFormModal({
 
           {/* Buttons */}
           <div className="flex gap-3 pt-2">
-            {mode === "edit" && (
-              <button
-                type="button"
-                onClick={handleDelete}
-                className="flex-1 rounded-xl bg-red-500 px-6 py-3 text-lg font-semibold text-white hover:bg-red-600"
-                disabled={isSubmitting}
-              >
-                Delete
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 rounded-xl border border-gray-300 px-6 py-3 text-lg font-semibold text-gray-700 hover:bg-gray-50"
+              disabled={isSubmitting}
+            >
+              Cancel
+            </button>
             <button
               type="submit"
               className="btnSaveYlw flex-1 rounded-xl px-6 py-3 text-lg font-semibold"
@@ -308,14 +303,6 @@ export default function AppointmentFormModal({
                 : mode === "create"
                   ? "Create Appointment"
                   : "Update Appointment"}
-            </button>
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 rounded-xl border border-gray-300 px-6 py-3 text-lg font-semibold text-gray-700 hover:bg-gray-50"
-              disabled={isSubmitting}
-            >
-              Cancel
             </button>
           </div>
         </form>
