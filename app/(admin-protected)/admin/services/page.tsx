@@ -1,6 +1,8 @@
 import { supabase } from "@/lib/supabase";
 import ServicesTable from "./ServicesTable";
 import OtherServicesTable from "./OtherServices";
+import { LiaLongArrowAltLeftSolid } from "react-icons/lia";
+import Link from "next/link";
 
 export default async function AdminServicesPage() {
   // Fetch from "Services" table on supabase
@@ -28,7 +30,16 @@ export default async function AdminServicesPage() {
 
   return (
     <div className="p-6 md:p-8">
-      <h1 className="adminHeader mb-6">Manage Services</h1>
+      <div className="mb-12 flex items-center justify-between">
+        <h1 className="adminHeader">Manage Services</h1>
+        <Link
+          href="/admin/dashboard"
+          className="btnSaveYlw flex items-center gap-2"
+        >
+          <LiaLongArrowAltLeftSolid className="h-6 w-6" />
+          <span>Back To Dashboard</span>
+        </Link>
+      </div>
 
       {/* Main Services */}
       <ServicesTable services={services ?? []} />

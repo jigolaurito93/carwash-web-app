@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { updateProfile } from "./actions";
+import { LiaLongArrowAltLeftSolid } from "react-icons/lia";
+import Link from "next/link";
 
 export default function AdminProfilePage() {
   const [user, setUser] = useState<any>(null);
@@ -53,10 +55,19 @@ export default function AdminProfilePage() {
   if (loading) return <div className="p-10 font-questrial">Loading...</div>;
 
   return (
-    <div className="max-w-2xl p-10">
-      <h1 className="adminHeader mb-8">Account Settings</h1>
+    <div className="p-10">
+      <div className="mb-12 flex items-center justify-between">
+        <h1 className="adminHeader">Account Settings</h1>
+        <Link
+          href="/admin/dashboard"
+          className="btnSaveYlw flex items-center gap-2"
+        >
+          <LiaLongArrowAltLeftSolid className="h-6 w-6" />
+          <span>Back To Dashboard</span>
+        </Link>
+      </div>
 
-      <form action={handleAction} className="space-y-6">
+      <form action={handleAction} className="max-w-2xl space-y-6">
         {/* Email - Read Only */}
         <div>
           <label className="labelx block text-xs">Email Address</label>
