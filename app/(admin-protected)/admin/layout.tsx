@@ -1,4 +1,5 @@
 import LogoutButton from "@/components/admin/LogoutButton";
+import Link from "next/link";
 import { ReactNode } from "react";
 import { Toaster } from "sonner";
 
@@ -17,24 +18,29 @@ export default async function AdminLayout({
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Toaster position="top-center" />
-      {/* If you have a Sidebar or Nav, put it here */}
-      <aside className="hidden w-64 bg-black p-6 text-white md:block">
+      <aside className="hidden w-64 bg-black p-6 pt-28 text-white md:block">
         <h2 className="font-lexend text-2xl font-bold text-yellow-400">
           Onyx Admin
         </h2>
         <nav className="mt-10 space-y-4 font-questrial">
-          <a href="/admin/dashboard" className="block hover:text-yellow-400">
+          <Link href="/admin/dashboard" className="block hover:text-yellow-400">
             Dashboard
-          </a>
-          <a href="/admin/appointments" className="block hover:text-yellow-400">
+          </Link>
+          <Link
+            href="/admin/appointments"
+            className="block hover:text-yellow-400"
+          >
             Appointments
-          </a>
-          <a href="/admin/services" className="block hover:text-yellow-400">
+          </Link>
+          <Link href="/admin/services" className="block hover:text-yellow-400">
             Services
-          </a>
-          <a href="/admin/gallery" className="block hover:text-yellow-400">
+          </Link>
+          <Link href="/admin/gallery" className="block hover:text-yellow-400">
             Gallery
-          </a>
+          </Link>
+          <Link href="/admin/profile" className="block hover:text-yellow-400">
+            Account Setting
+          </Link>
         </nav>
 
         {/* This pushes everything below it to the bottom */}
@@ -43,7 +49,7 @@ export default async function AdminLayout({
         </div>
       </aside>
 
-      <main className="flex-1 p-8">{children}</main>
+      <main className="flex-1 p-8 pt-20">{children}</main>
     </div>
   );
 }

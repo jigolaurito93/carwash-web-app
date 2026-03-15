@@ -96,6 +96,10 @@ export default function AdminDashboardPage() {
           </div>
         </div>
       </section>
+      {/* Today's schedule */}
+      {/* Notes/recent activites */}
+      {/* downpayment */}
+      {/* ALerts/warnings */}
     </div>
   );
 }

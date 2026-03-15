@@ -18,12 +18,35 @@ export default function AdminProfilePage() {
     getUser();
   }, []);
 
+  // Add this helper function at the top of your component
+  function capitalizeDisplayName(name: string): string {
+    return name
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+  }
+
   async function handleAction(formData: FormData) {
+    let displayName = formData.get("displayName") as string;
+
+    // Capitalize first letter of each word
+    displayName = capitalizeDisplayName(displayName.trim());
+
+    // Optimistically update UI immediately
+    setUser((prev) => ({
+      ...prev,
+      user_metadata: { ...prev.user_metadata, display_name: displayName },
+    }));
+
     const res = await updateProfile(formData);
     if (res.success) {
       toast.success("Profile updated!");
     } else {
+      // Revert on error
       toast.error(res.error);
+      // Trigger refetch
+      const { data } = await supabase.auth.getUser();
+      setUser(data.user);
     }
   }
 
@@ -38,39 +61,32 @@ export default function AdminProfilePage() {
       <form action={handleAction} className="space-y-6">
         {/* Email - Read Only */}
         <div>
-          <label className="mb-1 block font-questrial text-xs font-bold text-gray-400 uppercase">
-            Email Address
-          </label>
+          <label className="labelx block text-xs">Email Address</label>
           <input
             type="email"
             disabled
             value={user?.email || ""}
-            className="w-full border border-gray-100 bg-gray-50 px-3 py-2 text-sm text-gray-500 outline-none"
+            className="inputx bg-gray-300"
           />
-          <p className="mt-1 text-[10px] text-gray-400">
-            Email cannot be changed manually.
+          <p className="mt-2 ml-3 text-xs text-gray-400">
+            Email cannot be changed manually
           </p>
         </div>
 
         {/* Display Name - Editable */}
         <div>
-          <label className="mb-1 block font-questrial text-xs font-bold text-gray-400 uppercase">
-            Display Name
-          </label>
+          <label className="labelx block text-xs">Display Name</label>
           <input
             name="displayName"
             defaultValue={user?.user_metadata?.display_name || ""}
             placeholder="e.g. Admin User"
-            className="w-full border border-gray-200 px-3 py-2 text-sm shadow-sm transition-colors outline-none focus:border-gray-400"
+            className="inputx w-full text-sm"
           />
         </div>
 
         <div className="border-t pt-6">
-          <button
-            type="submit"
-            className="cursor-pointer rounded bg-black px-8 py-2 font-questrial text-sm font-bold tracking-widest text-white shadow-md transition-all hover:bg-zinc-800 active:scale-95"
-          >
-            SAVE CHANGES
+          <button type="submit" className="btnSaveYlw">
+            Save Changes
           </button>
         </div>
       </form>

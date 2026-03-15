@@ -25,7 +25,7 @@ async function getSupabase() {
   );
 }
 
-// Inside your existing actions.ts
+// Updates Supabase Profile Account
 export async function updateProfile(formData: FormData) {
   const supabase = await getSupabase();
   const displayName = formData.get("displayName") as string;
