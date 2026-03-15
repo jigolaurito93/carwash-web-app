@@ -35,3 +35,63 @@ body {
 
 }
   */
+
+/* hmtl {
+    @apply no-scrollbar;
+  } */
+
+/* labelx {
+  @apply block text-sm text-blue-500 font-bold mb-2 font-lexend;
+
+  display: block;
+  font-weight: 600;
+  color: #FCD34D; 
+   margin-bottom: 0.5rem;
+} */
+
+/* labelx:hover {
+  @apply scale-105;
+} */
+
+/* labelx.required::after {
+  content: " *";
+  @apply text-red-400;
+} */
+
+/* label {
+  @apply font-lexend font-bold;
+} */
+
+.labelx {
+  @apply mb-1 font-questrial font-bold tracking-wider text-gray-400 uppercase;
+}
+
+.inputx {
+  @apply w-full border border-gray-200 px-3 py-2 text-sm shadow-sm transition-colors outline-none focus:border-gray-400;
+}
+
+/* ------------ Buttons --------------- */
+.btnSave {
+  @apply cursor-pointer rounded px-6 py-2 font-questrial font-bold tracking-wider uppercase shadow-md transition-all active:scale-95;
+}
+
+.btnSaveBlk {
+  @apply cursor-pointer rounded;
+}
+
+.btnSaveYlw {
+  @apply cursor-pointer rounded bg-yellow-400 px-6 py-2 font-questrial text-sm font-bold tracking-wider text-black uppercase shadow-md transition-all hover:bg-yellow-500 active:scale-95;
+}
+
+.btnCancel {
+  @apply cursor-pointer rounded border border-gray-200 px-4 py-2 font-questrial font-medium text-gray-500 uppercase shadow-sm transition-colors hover:text-black;
+}
+
+.btnDelete {
+  @apply rounded;
+}
+
+/* Delete */
+/* Edit */
+
+/* ------------------------------------ */

@@ -4,14 +4,12 @@ To Do:
     - add cursor-pointer to buttons
     - Mobile Navbar is shown in Admin UI tablet
     - Add Profile
+    - Import photos to grab from supabase
     DONE - Display table on /testService
     DONE - Fix is_active_bool in /testService
     DONE - Fix browserclient and serverclient for supabase
+    - Make customized styling for buttons
     
-    Admin Page:
-        - Add Profile to Navbar
-        - Display name of user on Dashboard
-
     Other Services:
         DONE - edit modal need  is_active and order field 
         DONE - delete button to delete row in others services
@@ -34,6 +32,7 @@ To Do:
     
     Main Dashboard:
         DONE - Display name on main page
+        - Add Profile to Navbar
 
 
 1. The Admin Sidebar (Left Side)
@@ -49,6 +48,7 @@ Detailing: (Sparkle icon) Links to your DetailingServices table.
 Bottom (Account/System):
 Settings: For site-wide changes (phone number, hours).
 Logout Button: (Power icon) Styled in red-400 or zinc-500.
+
 2. The Admin Dashboard (Main Content)
 Since you are using a sidebar, the main content area will be wide. Use that space for "Big Picture" Cards:
 Row 1: Summary Cards (Small Boxes)
