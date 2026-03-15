@@ -27,7 +27,7 @@ export default async function AdminLayout({
             Dashboard
           </Link>
           <Link
-            href="/admin/appointments"
+            href="/admin/appointment"
             className="block hover:text-yellow-400"
           >
             Appointments

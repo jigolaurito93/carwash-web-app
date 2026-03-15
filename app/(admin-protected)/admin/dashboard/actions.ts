@@ -40,6 +40,44 @@ export async function createAppointment(payload: any) {
   if (error) return { success: false, error: error.message };
 
   // Clears the server-side cache so the next request gets fresh data from the DB.
-  revalidatePath("/admin/dashboard");
+  revalidatePath("/admin/appointment");
+  return { success: true };
+}
+
+export async function updateAppointment(id: string, payload: any) {
+  const supabase = await getSupabase();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: "Unauthorized" };
+
+  const { error } = await supabase
+    .from("appointment")
+    .update(payload)
+    .eq("id", id);
+
+  if (error) return { success: false, error: error.message };
+
+  // Clears the server-side cache so the next request gets fresh data from the DB.
+  revalidatePath("/admin/appointment");
+  return { success: true };
+}
+
+export async function deleteAppointment(id: string) {
+  const supabase = await getSupabase();
+
+  // Security check
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: "Unauthorized" };
+
+  const { error } = await supabase.from("appointment").delete().eq("id", id);
+
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath("/admin/appointment");
+  revalidatePath("/appointment");
   return { success: true };
 }
