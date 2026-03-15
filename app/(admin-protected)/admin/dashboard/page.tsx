@@ -1,27 +1,30 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-export default async function AdminDashboardPage() {
-  const cookieStore = await cookies();
+export default function AdminDashboardPage() {
+  // Use this if you want to display owner name from supabase. Add async on top
+  // I hardcoded the name for now
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-      },
-    },
-  );
+  // const cookieStore = await cookies();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  console.log(user);
-  const displayName =
-    user?.user_metadata?.display_name || user?.email?.split("@")[0] || "Owner";
+  // const supabase = createServerClient(
+  //   process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  //   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  //   {
+  //     cookies: {
+  //       getAll() {
+  //         return cookieStore.getAll();
+  //       },
+  //     },
+  //   },
+  // );
+
+  // const {
+  //   data: { user },
+  // } = await supabase.auth.getUser();
+  // console.log(user);
+  // const displayName =
+  //   user?.user_metadata?.display_name || user?.email?.split("@")[0] || "Owner";
 
   return (
     <div className="">
@@ -31,7 +34,7 @@ export default async function AdminDashboardPage() {
       <header className="flex flex-col gap-2">
         <h1 className="mt-20 mb-1 font-lexend text-4xl font-bold">Dashboard</h1>
         <p className="font-questrial text-2xl font-bold text-gray-500">
-          Welcome back, {displayName}! Here&apos;s what&apos;s happening today.
+          Welcome back, John Doe! Here&apos;s what&apos;s happening today.
         </p>
       </header>
 

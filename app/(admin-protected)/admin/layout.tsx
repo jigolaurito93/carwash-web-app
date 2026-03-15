@@ -6,7 +6,11 @@ export const metadata = {
   title: "Onyx | Admin Dashboard",
 };
 
-export default function AdminLayout({ children }: { children: ReactNode }) {
+export default async function AdminLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
   // NOTE: We removed the Supabase client and redirect() because
   // the Middleware already verified the user before this code even runs.
 
