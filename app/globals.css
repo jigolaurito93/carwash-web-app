@@ -112,7 +112,7 @@ body {
 }
 
 .inputx {
-  @apply w-full rounded-sm border border-gray-200 px-3 py-4 text-sm shadow-sm transition-colors outline-none focus:border-gray-400;
+  @apply w-full rounded-sm border border-gray-200 px-3 py-3 text-sm shadow-sm transition-colors outline-none focus:border-gray-400;
 }
 
 /* ------------ Buttons --------------- */

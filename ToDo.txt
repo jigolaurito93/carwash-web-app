@@ -33,6 +33,11 @@ To Do:
     Main Dashboard:
         DONE - Display name on main page
         DONE - Add Profile to Navbar
+    
+    Appointment:
+        - Make contact number look like this format (123) 1234-0021
+        - But store it as 1234123111
+        - If status column empty, put scheduled as default
 
 
 1. The Admin Sidebar (Left Side)

@@ -2,6 +2,9 @@
 
 import { useState, useEffect, useRef } from "react";
 import { DatePickerTime } from "../ui/date-picker-time";
+import { createAppointment } from "@/app/(admin-protected)/admin/dashboard/actions";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function AppointmentFormModal({
   onClose,
@@ -12,7 +15,11 @@ export default function AppointmentFormModal({
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [service, setService] = useState("Basic Wash ($20)");
   const modalRef = useRef<HTMLDivElement>(null);
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false); // ← NEW
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [notes, setNotes] = useState("");
+  const [phone, setPhone] = useState("");
+
+  const router = useRouter();
 
   // Close on outside click (EXCEPT calendar)
   useEffect(() => {
@@ -39,14 +46,36 @@ export default function AppointmentFormModal({
     };
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({
-      customerName,
-      dateTime: selectedDate,
+
+    if (!selectedDate) {
+      alert("Please select a date and time");
+      return;
+    }
+    if (!service) {
+      alert("Please select service");
+      return;
+    }
+
+    const payload = {
+      customer_name: customerName || "unknown",
+      appointment_date: selectedDate!.toISOString(),
       service,
-    });
-    onClose();
+      notes: notes || null,
+    };
+
+    const result = await createAppointment(payload);
+
+    if (result.success) {
+      // Show success message
+      toast.success("Appointment created successfully");
+      router.refresh();
+      onClose();
+    } else {
+      // Show error message via toast (optional, since you already have setError)
+      toast.error(result.error);
+    }
   };
 
   return (
@@ -86,6 +115,22 @@ export default function AppointmentFormModal({
             />
           </div>
 
+          {/* Phone Number */}
+          <div>
+            <label className="mb-2 block text-xs font-medium tracking-wide text-gray-700 uppercase">
+              Phone Number
+            </label>
+            <input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="inputx"
+              placeholder="(123) 456-7890"
+              pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+              required
+            />
+          </div>
+
           {/* Date Picker - PASS isCalendarOpen */}
           <div>
             <label className="mb-4 block text-xs font-medium tracking-wide text-gray-700 uppercase">
@@ -95,7 +140,7 @@ export default function AppointmentFormModal({
               date={selectedDate}
               onDateChange={setSelectedDate}
               isCalendarOpen={isCalendarOpen}
-              onCalendarOpenChange={setIsCalendarOpen} // ← NEW PROP
+              onCalendarOpenChange={setIsCalendarOpen}
             />
           </div>
 
@@ -120,6 +165,23 @@ export default function AppointmentFormModal({
                 </option>
               ))}
             </select>
+          </div>
+
+          {/* Notes */}
+          <div>
+            <label className="mb-2 block text-xs font-medium tracking-wide text-gray-700 uppercase">
+              Notes (Optional)
+            </label>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              className="inputx resize-vertical h-24"
+              placeholder="Customer preferences, special instructions, vehicle details..."
+              maxLength={500}
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              {notes.length}/500 characters
+            </p>
           </div>
 
           {/* Buttons */}

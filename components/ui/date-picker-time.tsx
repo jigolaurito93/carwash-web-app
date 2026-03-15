@@ -17,14 +17,12 @@ import { ChevronDownIcon } from "lucide-react";
 interface DatePickerTimeProps {
   date: Date | undefined;
   onDateChange: (date: Date | undefined) => void;
-  isCalendarOpen: boolean;
   onCalendarOpenChange: (open: boolean) => void;
 }
 
 export function DatePickerTime({
   date,
   onDateChange,
-  isCalendarOpen,
   onCalendarOpenChange,
 }: DatePickerTimeProps) {
   const [open, setOpen] = React.useState(false);
