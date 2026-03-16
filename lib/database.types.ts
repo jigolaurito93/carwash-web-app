@@ -44,6 +44,17 @@ export interface Database {
           sort_order?: number | null;
         };
       };
+      services_all: {
+        Row: {
+          id: number;
+          name: string;
+          price: string | number;
+          category: string;
+          subcategory: string;
+          created_at: string;
+          updated_at: string;
+        };
+      };
       gallery_images: {
         Row: {
           id: number;

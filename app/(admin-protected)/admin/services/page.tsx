@@ -3,6 +3,7 @@ import ServicesTable from "./ServicesTable";
 import OtherServicesTable from "./OtherServices";
 import { LiaLongArrowAltLeftSolid } from "react-icons/lia";
 import Link from "next/link";
+import AllServicesTable from "./AllServicesTable";
 
 export default async function AdminServicesPage() {
   // Fetch from "Services" table on supabase
@@ -46,6 +47,11 @@ export default async function AdminServicesPage() {
 
       {/* Other Services */}
       <OtherServicesTable services={otherServices ?? []} />
+
+      {/* All Services */}
+      <div>
+        <AllServicesTable />
+      </div>
     </div>
   );
 }
