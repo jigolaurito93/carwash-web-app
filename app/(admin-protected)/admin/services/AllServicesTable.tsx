@@ -244,7 +244,11 @@ const ServicesTableClient = ({ services }: { services: Service[] }) => {
   return (
     <>
       {/* Filter Buttons */}
-      <div className="mb-6 flex flex-wrap gap-2 rounded-xl border bg-gray-50 p-4">
+      <div className="mb-1 font-questrial text-sm font-bold tracking-wider text-gray-400">
+        Filter
+      </div>
+      <hr />
+      <div className="flex flex-wrap gap-2 rounded-xl bg-gray-50 p-4">
         {/* Category Dropdown (unchanged) */}
         <div className="relative" ref={categoryDropdownRef}>
           <button
@@ -255,7 +259,7 @@ const ServicesTableClient = ({ services }: { services: Service[] }) => {
                 : "border border-gray-200 bg-white text-gray-700 hover:bg-gray-100"
             }`}
           >
-            {getCategoryButtonText()}
+            Services
             <FiChevronDown
               className={`h-4 w-4 transition-transform ${categoryFiltersOpen ? "rotate-180" : ""}`}
             />
@@ -333,7 +337,7 @@ const ServicesTableClient = ({ services }: { services: Service[] }) => {
                 : "border border-gray-200 bg-white text-gray-700 hover:bg-gray-100"
             }`}
           >
-            {getSubcategoryButtonText()}
+            Category
             <FiChevronDown
               className={`h-4 w-4 transition-transform ${subcategoryFiltersOpen ? "rotate-180" : ""}`}
             />
@@ -350,7 +354,7 @@ const ServicesTableClient = ({ services }: { services: Service[] }) => {
                   }
                   className="h-4 w-4 rounded border-gray-300 text-black focus:ring-black"
                 />
-                All Subcategories ({availableSubcategories.length})
+                All Categories ({availableSubcategories.length})
               </label>
               <div className="py-2">
                 {renderSubcategoryCheckboxes()}
@@ -363,41 +367,11 @@ const ServicesTableClient = ({ services }: { services: Service[] }) => {
             </div>
           )}
         </div>
-
-        {/* Other Filter Buttons */}
-        {[
-          { id: "regular", label: "Regular" },
-          { id: "premium", label: "Premium" },
-          { id: "add_on", label: "Add-ons" },
-        ].map((filter) => (
-          <button
-            key={filter.id}
-            onClick={() => {
-              setActiveFilter(filter.id);
-              setAllServices(false);
-              setMainServices(false);
-              setOtherServices(false);
-              setDetailingServices(false);
-              setAllSubcategories(false);
-              setRegularSub(false);
-              setPremiumSub(false);
-              setAddOnSub(false);
-              setCompleteDetailSub(false);
-              setInteriorDetailSub(false);
-            }}
-            className={`rounded-lg px-4 py-2 text-sm font-semibold transition-all ${
-              activeFilter === filter.id
-                ? "bg-black text-white shadow-md"
-                : "border border-gray-200 bg-white text-gray-700 hover:bg-gray-100"
-            }`}
-          >
-            {filter.label}
-          </button>
-        ))}
       </div>
+      <hr />
 
       {/* Rest remains the same */}
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mt-12 mb-6 flex items-center justify-between">
         <h2 className="font-questrial text-3xl font-bold tracking-wider text-gray-900">
           All Services ({filteredServices.length})
         </h2>
@@ -406,7 +380,6 @@ const ServicesTableClient = ({ services }: { services: Service[] }) => {
           Add Service
         </button>
       </div>
-
       <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
         <table className="min-w-full divide-y divide-gray-200 text-left text-sm">
           <thead className="bg-gray-50 font-questrial">
