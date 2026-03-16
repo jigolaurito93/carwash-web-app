@@ -1,44 +1,69 @@
 "use client";
 
 import { FiPlusCircle, FiChevronDown } from "react-icons/fi";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import type { Database } from "@/lib/database.types";
 
 type Service = Database["public"]["Tables"]["services_all"]["Row"];
 
 const ServicesTableClient = ({ services }: { services: Service[] }) => {
-  // Replace activeFilter with checkbox states
-  const [filtersOpen, setFiltersOpen] = useState(false);
+  // Category filters (unchanged)
+  const [categoryFiltersOpen, setCategoryFiltersOpen] = useState(false);
   const [allServices, setAllServices] = useState(true);
   const [mainServices, setMainServices] = useState(false);
   const [otherServices, setOtherServices] = useState(false);
   const [detailingServices, setDetailingServices] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const categoryDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Subcategory filters
+  const [subcategoryFiltersOpen, setSubcategoryFiltersOpen] = useState(false);
+  const [allSubcategories, setAllSubcategories] = useState(true);
+  const [regularSub, setRegularSub] = useState(false);
+  const [premiumSub, setPremiumSub] = useState(false);
+  const [addOnSub, setAddOnSub] = useState(false);
+  const [completeDetailSub, setCompleteDetailSub] = useState(false);
+  const [interiorDetailSub, setInteriorDetailSub] = useState(false);
+  const subcategoryDropdownRef = useRef<HTMLDivElement>(null);
 
   const [activeFilter, setActiveFilter] = useState("all");
 
-  // Other filters remain buttons
-  const otherFilters = [
-    { id: "regular", label: "Regular" },
-    { id: "premium", label: "Premium" },
-    { id: "add_on", label: "Add-ons" },
-  ];
+  // Compute available subcategories based on category selection
+  const availableSubcategories = useMemo(() => {
+    if (allServices) return services;
 
-  // Close dropdown when clicking outside
+    const filteredByCategory = services.filter((service) => {
+      const matchesMain = mainServices && service.category === "main_service";
+      const matchesOther =
+        otherServices && service.category === "other_service";
+      const matchesDetailing =
+        detailingServices && service.category === "detailing_service";
+      return matchesMain || matchesOther || matchesDetailing;
+    });
+
+    return filteredByCategory;
+  }, [services, allServices, mainServices, otherServices, detailingServices]);
+
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
+        categoryDropdownRef.current &&
+        !categoryDropdownRef.current.contains(event.target as Node)
       ) {
-        setFiltersOpen(false);
+        setCategoryFiltersOpen(false);
+      }
+      if (
+        subcategoryDropdownRef.current &&
+        !subcategoryDropdownRef.current.contains(event.target as Node)
+      ) {
+        setSubcategoryFiltersOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Handle "All Services" checkbox - unchecks others
+  // Category filter handlers (unchanged)
   const handleAllServicesChange = (checked: boolean) => {
     setAllServices(checked);
     if (checked) {
@@ -48,19 +73,156 @@ const ServicesTableClient = ({ services }: { services: Service[] }) => {
     }
   };
 
-  // Determine active filter based on checkboxes
-  const getActiveFilter = () => {
-    if (allServices) return "all";
-    if (mainServices) return "main_service";
-    if (otherServices) return "other_service";
-    if (detailingServices) return "detailing_service";
-    return "all";
+  const handleCategoryServiceChange = (
+    setter: React.Dispatch<React.SetStateAction<boolean>>,
+    checked: boolean,
+  ) => {
+    setAllServices(false);
+    setter(checked);
   };
 
+  // Subcategory filter handlers
+  const handleAllSubcategoriesChange = (checked: boolean) => {
+    setAllSubcategories(checked);
+    if (checked) {
+      setRegularSub(false);
+      setPremiumSub(false);
+      setAddOnSub(false);
+      setCompleteDetailSub(false);
+      setInteriorDetailSub(false);
+    }
+  };
+
+  const handleSubcategoryChange = (
+    setter: React.Dispatch<React.SetStateAction<boolean>>,
+    checked: boolean,
+  ) => {
+    setAllSubcategories(false);
+    setter(checked);
+  };
+
+  // Dynamic subcategory checkboxes - only show if available in filtered data
+  const renderSubcategoryCheckboxes = () => {
+    const subcatCounts: Record<string, number> = {};
+
+    availableSubcategories.forEach((service) => {
+      if (service.sub_category) {
+        subcatCounts[service.sub_category] =
+          (subcatCounts[service.sub_category] || 0) + 1;
+      }
+    });
+
+    const subcatOptions = [
+      {
+        key: "regular_wash",
+        label: "Regular",
+        state: regularSub,
+        setter: setRegularSub,
+      },
+      {
+        key: "premium_wash",
+        label: "Premium",
+        state: premiumSub,
+        setter: setPremiumSub,
+      },
+      { key: "add_on", label: "Add-on", state: addOnSub, setter: setAddOnSub },
+      {
+        key: "complete_detail",
+        label: "Complete Detail",
+        state: completeDetailSub,
+        setter: setCompleteDetailSub,
+      },
+      {
+        key: "interior_detail",
+        label: "Interior Detail",
+        state: interiorDetailSub,
+        setter: setInteriorDetailSub,
+      },
+    ];
+
+    return subcatOptions.map(
+      ({ key, label, state, setter }, index) =>
+        subcatCounts[key] > 0 && (
+          <label
+            key={key}
+            className={`flex cursor-pointer items-center gap-3 border-t border-gray-100 px-4 py-3 text-sm hover:bg-gray-50 ${index === 0 ? "" : "border-t"}`}
+          >
+            <input
+              type="checkbox"
+              checked={state}
+              onChange={(e) =>
+                handleSubcategoryChange(setter, e.target.checked)
+              }
+              className="h-4 w-4 rounded border-gray-300 text-black focus:ring-black"
+            />
+            <span className="flex items-center gap-1">
+              {label}
+              <span className="text-xs text-gray-400">
+                ({subcatCounts[key]})
+              </span>
+            </span>
+          </label>
+        ),
+    );
+  };
+
+  // Get display text
+  const getCategoryButtonText = () => {
+    if (allServices) return "All Services";
+    const selected = [];
+    if (mainServices) selected.push("Main");
+    if (otherServices) selected.push("Other");
+    if (detailingServices) selected.push("Detailing");
+    return selected.length ? selected.join(", ") + " Services" : "All Services";
+  };
+
+  const getSubcategoryButtonText = () => {
+    if (allSubcategories) return "All Subcats";
+    const selected = [];
+    if (regularSub) selected.push("Regular");
+    if (premiumSub) selected.push("Premium");
+    if (addOnSub) selected.push("Add-on");
+    if (completeDetailSub) selected.push("Comp Detail");
+    if (interiorDetailSub) selected.push("Int Detail");
+    return selected.length ? selected.join(", ") : "All Subcats";
+  };
+
+  // Combined filtering logic
   const filteredServices = services.filter((service) => {
-    const currentFilter = getActiveFilter();
-    if (currentFilter === "all") return true;
-    return service.category === currentFilter;
+    // Category filter
+    if (!allServices) {
+      const matchesMain = mainServices && service.category === "main_service";
+      const matchesOther =
+        otherServices && service.category === "other_service";
+      const matchesDetailing =
+        detailingServices && service.category === "detailing_service";
+      if (!matchesMain && !matchesOther && !matchesDetailing) return false;
+    }
+
+    // Subcategory filter
+    if (!allSubcategories) {
+      const matchesRegular =
+        regularSub && service.sub_category === "regular_wash";
+      const matchesPremium =
+        premiumSub && service.sub_category === "premium_wash";
+      const matchesAddOn = addOnSub && service.sub_category === "add_on";
+      const matchesCompleteDetail =
+        completeDetailSub && service.sub_category === "complete_detail";
+      const matchesInteriorDetail =
+        interiorDetailSub && service.sub_category === "interior_detail";
+
+      if (
+        !matchesRegular &&
+        !matchesPremium &&
+        !matchesAddOn &&
+        !matchesCompleteDetail &&
+        !matchesInteriorDetail
+      ) {
+        return false;
+      }
+    }
+
+    return true;
   });
 
   const formatSubCategory = (subCategory: string | null) => {
@@ -68,8 +230,8 @@ const ServicesTableClient = ({ services }: { services: Service[] }) => {
     const displayNames: Record<string, string> = {
       complete_detail: "Complete Detail",
       interior_detail: "Interior Detail",
-      regular: "Regular",
-      premium: "Premium",
+      regular_wash: "Regular Wash",
+      premium_wash: "Premium Wash",
       add_on: "Add On",
       paint_protection: "Paint Protection",
     };
@@ -81,37 +243,27 @@ const ServicesTableClient = ({ services }: { services: Service[] }) => {
 
   return (
     <>
-      {/* Filter Buttons - First is now dropdown */}
+      {/* Filter Buttons */}
       <div className="mb-6 flex flex-wrap gap-2 rounded-xl border bg-gray-50 p-4">
-        {/* Dropdown Filter Button */}
-        <div className="relative" ref={dropdownRef}>
+        {/* Category Dropdown (unchanged) */}
+        <div className="relative" ref={categoryDropdownRef}>
           <button
-            onClick={() => setFiltersOpen(!filtersOpen)}
+            onClick={() => setCategoryFiltersOpen(!categoryFiltersOpen)}
             className={`flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all ${
               allServices || mainServices || otherServices || detailingServices
                 ? "bg-black text-white shadow-md"
                 : "border border-gray-200 bg-white text-gray-700 hover:bg-gray-100"
             }`}
           >
-            {allServices && "All Services"}
-            {mainServices && "Main Services"}
-            {otherServices && "Other Services"}
-            {detailingServices && "Detailing Services"}
-            {!(
-              allServices ||
-              mainServices ||
-              otherServices ||
-              detailingServices
-            ) && "All Services"}
+            {getCategoryButtonText()}
             <FiChevronDown
-              className={`h-4 w-4 transition-transform ${filtersOpen ? "rotate-180" : ""}`}
+              className={`h-4 w-4 transition-transform ${categoryFiltersOpen ? "rotate-180" : ""}`}
             />
           </button>
 
-          {/* Dropdown Menu */}
-          {filtersOpen && (
-            <div className="absolute top-full left-0 z-50 mt-1 w-48 rounded-lg border border-gray-200 bg-white shadow-lg">
-              <label className="flex cursor-pointer items-center gap-2 px-4 py-3 text-sm hover:bg-gray-50">
+          {categoryFiltersOpen && (
+            <div className="absolute top-full left-0 z-50 mt-1 w-52 rounded-lg border border-gray-200 bg-white shadow-lg">
+              <label className="flex cursor-pointer items-center gap-3 px-4 py-3 text-sm hover:bg-gray-50">
                 <input
                   type="checkbox"
                   checked={allServices}
@@ -120,42 +272,45 @@ const ServicesTableClient = ({ services }: { services: Service[] }) => {
                 />
                 All Services
               </label>
-              <label className="flex cursor-pointer items-center gap-2 border-t border-gray-100 px-4 py-3 text-sm hover:bg-gray-50">
+              <label className="flex cursor-pointer items-center gap-3 border-t border-gray-100 px-4 py-3 text-sm hover:bg-gray-50">
                 <input
                   type="checkbox"
                   checked={mainServices}
-                  onChange={(e) => {
-                    setMainServices(e.target.checked);
-                    if (allServices) setAllServices(false);
-                  }}
+                  onChange={(e) =>
+                    handleCategoryServiceChange(
+                      setMainServices,
+                      e.target.checked,
+                    )
+                  }
                   className="h-4 w-4 rounded border-gray-300 text-black focus:ring-black"
-                  disabled={allServices}
                 />
                 Main Services
               </label>
-              <label className="flex cursor-pointer items-center gap-2 border-t border-gray-100 px-4 py-3 text-sm hover:bg-gray-50">
+              <label className="flex cursor-pointer items-center gap-3 border-t border-gray-100 px-4 py-3 text-sm hover:bg-gray-50">
                 <input
                   type="checkbox"
                   checked={otherServices}
-                  onChange={(e) => {
-                    setOtherServices(e.target.checked);
-                    if (allServices) setAllServices(false);
-                  }}
+                  onChange={(e) =>
+                    handleCategoryServiceChange(
+                      setOtherServices,
+                      e.target.checked,
+                    )
+                  }
                   className="h-4 w-4 rounded border-gray-300 text-black focus:ring-black"
-                  disabled={allServices}
                 />
                 Other Services
               </label>
-              <label className="flex cursor-pointer items-center gap-2 border-t border-gray-100 px-4 py-3 text-sm hover:bg-gray-50">
+              <label className="flex cursor-pointer items-center gap-3 border-t border-gray-100 px-4 py-3 text-sm hover:bg-gray-50">
                 <input
                   type="checkbox"
                   checked={detailingServices}
-                  onChange={(e) => {
-                    setDetailingServices(e.target.checked);
-                    if (allServices) setAllServices(false);
-                  }}
+                  onChange={(e) =>
+                    handleCategoryServiceChange(
+                      setDetailingServices,
+                      e.target.checked,
+                    )
+                  }
                   className="h-4 w-4 rounded border-gray-300 text-black focus:ring-black"
-                  disabled={allServices}
                 />
                 Detailing Services
               </label>
@@ -163,17 +318,72 @@ const ServicesTableClient = ({ services }: { services: Service[] }) => {
           )}
         </div>
 
+        {/* Subcategory Dropdown - DYNAMIC */}
+        <div className="relative" ref={subcategoryDropdownRef}>
+          <button
+            onClick={() => setSubcategoryFiltersOpen(!subcategoryFiltersOpen)}
+            className={`flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all ${
+              allSubcategories ||
+              regularSub ||
+              premiumSub ||
+              addOnSub ||
+              completeDetailSub ||
+              interiorDetailSub
+                ? "bg-black text-white shadow-md"
+                : "border border-gray-200 bg-white text-gray-700 hover:bg-gray-100"
+            }`}
+          >
+            {getSubcategoryButtonText()}
+            <FiChevronDown
+              className={`h-4 w-4 transition-transform ${subcategoryFiltersOpen ? "rotate-180" : ""}`}
+            />
+          </button>
+
+          {subcategoryFiltersOpen && (
+            <div className="absolute top-full left-0 z-50 mt-1 max-h-64 w-64 overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg">
+              <label className="flex cursor-pointer items-center gap-3 border-b border-gray-100 px-4 py-3 text-sm hover:bg-gray-50">
+                <input
+                  type="checkbox"
+                  checked={allSubcategories}
+                  onChange={(e) =>
+                    handleAllSubcategoriesChange(e.target.checked)
+                  }
+                  className="h-4 w-4 rounded border-gray-300 text-black focus:ring-black"
+                />
+                All Subcategories ({availableSubcategories.length})
+              </label>
+              <div className="py-2">
+                {renderSubcategoryCheckboxes()}
+                {availableSubcategories.length === 0 && (
+                  <div className="px-4 py-6 text-center text-sm text-gray-500">
+                    No subcategories available for selected categories
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Other Filter Buttons */}
-        {otherFilters.map((filter) => (
+        {[
+          { id: "regular", label: "Regular" },
+          { id: "premium", label: "Premium" },
+          { id: "add_on", label: "Add-ons" },
+        ].map((filter) => (
           <button
             key={filter.id}
             onClick={() => {
               setActiveFilter(filter.id);
-              // Reset checkboxes when using other filters
               setAllServices(false);
               setMainServices(false);
               setOtherServices(false);
               setDetailingServices(false);
+              setAllSubcategories(false);
+              setRegularSub(false);
+              setPremiumSub(false);
+              setAddOnSub(false);
+              setCompleteDetailSub(false);
+              setInteriorDetailSub(false);
             }}
             className={`rounded-lg px-4 py-2 text-sm font-semibold transition-all ${
               activeFilter === filter.id
@@ -186,7 +396,7 @@ const ServicesTableClient = ({ services }: { services: Service[] }) => {
         ))}
       </div>
 
-      {/* Rest of your component remains the same */}
+      {/* Rest remains the same */}
       <div className="mb-6 flex items-center justify-between">
         <h2 className="font-questrial text-3xl font-bold tracking-wider text-gray-900">
           All Services ({filteredServices.length})

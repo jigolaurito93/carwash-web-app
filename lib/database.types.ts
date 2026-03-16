@@ -50,7 +50,7 @@ export interface Database {
           name: string;
           price: string | number;
           category: string;
-          subcategory: string;
+          sub_category: string;
           created_at: string;
           updated_at: string;
         };
