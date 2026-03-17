@@ -63,13 +63,22 @@ const ServicesTableClient = ({ services }: { services: Service[] }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Category filter handlers (unchanged)
+  // Category filter handlers
   const handleAllServicesChange = (checked: boolean) => {
     setAllServices(checked);
     if (checked) {
+      // reset category checkboxes
       setMainServices(false);
       setOtherServices(false);
       setDetailingServices(false);
+
+      // reset subcategory checkboxes back to "all"
+      setAllSubcategories(true);
+      setRegularSub(false);
+      setPremiumSub(false);
+      setAddOnSub(false);
+      setCompleteDetailSub(false);
+      setInteriorDetailSub(false);
     }
   };
 
@@ -224,6 +233,19 @@ const ServicesTableClient = ({ services }: { services: Service[] }) => {
 
     return true;
   });
+
+  const formatCategory = (category: string | null) => {
+    if (!category) return "—";
+    const displayNames: Record<string, string> = {
+      main_service: "Main Services",
+      other_service: "Other Services",
+      detailing_service: "Detailing Services",
+    };
+    return (
+      displayNames[category] ||
+      category.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())
+    );
+  };
 
   const formatSubCategory = (subCategory: string | null) => {
     if (!subCategory) return "—";
@@ -416,7 +438,9 @@ const ServicesTableClient = ({ services }: { services: Service[] }) => {
                   <td className="px-4 py-3 text-gray-500 tabular-nums">
                     ${row.price || "—"}
                   </td>
-                  <td className="px-4 py-3 text-gray-500">{row.category}</td>
+                  <td className="px-4 py-3 text-gray-500">
+                    {formatCategory(row.category)}
+                  </td>
                   <td className="px-4 py-3 text-gray-500">
                     {formatSubCategory(row.sub_category)}
                   </td>
