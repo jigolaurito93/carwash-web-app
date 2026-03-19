@@ -56,7 +56,7 @@ export default function AppointmentsClient({
             <p className="mt-2 font-questrial text-sm text-gray-400">
               Are you sure you want to remove{" "}
               <span className="text-yellow-400">
-                "{apt.customer_name}'s appointment"
+                &quot;{apt.customer_name}&apos;s appointment&quot;
               </span>
               ? This cannot be undone.
             </p>
@@ -169,11 +169,10 @@ export default function AppointmentsClient({
                     </td>
                     <td className="px-4 py-3 text-center">
                       <span
-                        className={`inline-flex rounded-full px-3 py-1 text-xs font-bold ${
-                          apt.status === "scheduled"
+                        className={`inline-flex rounded-full px-3 py-1 text-xs font-bold ${apt.status === "scheduled"
                             ? "bg-green-100 text-green-800"
                             : "bg-gray-100 text-gray-600"
-                        }`}
+                          }`}
                       >
                         {apt.status === "scheduled" ? "Active" : "Cancelled"}
                       </span>

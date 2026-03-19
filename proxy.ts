@@ -22,7 +22,7 @@ export async function proxy(request: NextRequest) {
         setAll(cookiesToSet) {
           // Update the request object with new cookies. Now if Supabase makes more calls during this middleware run, it sees the updated cookies.
           cookiesToSet.forEach(
-            ({ name, value, options }) => request.cookies.set(name, value), // Update request (for this middleware call)
+            ({ name, value }) => request.cookies.set(name, value), // Update request (for this middleware call)
           );
 
           // Creates a brand new response using the updated request (with fresh cookies).

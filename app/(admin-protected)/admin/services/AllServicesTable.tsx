@@ -30,6 +30,7 @@ const AllServicesTableClient = ({
   const [allSubcategories, setAllSubcategories] = useState(true);
   const [regularSub, setRegularSub] = useState(false);
   const [premiumSub, setPremiumSub] = useState(false);
+  const [paintProtectionSub, setPaintProtectionSub] = useState(false);
   const [addOnSub, setAddOnSub] = useState(false);
   const [completeDetailSub, setCompleteDetailSub] = useState(false);
   const [interiorDetailSub, setInteriorDetailSub] = useState(false);
@@ -41,8 +42,6 @@ const AllServicesTableClient = ({
   const [selectedService, setSelectedService] = useState<AllServiceRow | null>(
     null,
   );
-
-  const [activeFilter, setActiveFilter] = useState("all");
 
   // Compute available subcategories based on category selection
   const availableSubcategories = useMemo(() => {
@@ -226,6 +225,12 @@ const AllServicesTableClient = ({
         state: interiorDetailSub,
         setter: setInteriorDetailSub,
       },
+      {
+        key: "paint_protection",
+        label: "Paint Protection",
+        state: paintProtectionSub,
+        setter: setPaintProtectionSub,
+      },
     ];
 
     return subcatOptions.map(
@@ -272,6 +277,7 @@ const AllServicesTableClient = ({
     if (addOnSub) selected.push("Add-on");
     if (completeDetailSub) selected.push("Comp Detail");
     if (interiorDetailSub) selected.push("Int Detail");
+    if (paintProtectionSub) selected.push("Paint Protection");
     return selected.length ? selected.join(", ") : "All Subcats";
   };
 
@@ -298,13 +304,16 @@ const AllServicesTableClient = ({
         completeDetailSub && service.sub_category === "complete_detail";
       const matchesInteriorDetail =
         interiorDetailSub && service.sub_category === "interior_detail";
+      const matchesPaintProtection =
+        paintProtectionSub && service.sub_category === "paint_protection";
 
       if (
         !matchesRegular &&
         !matchesPremium &&
         !matchesAddOn &&
         !matchesCompleteDetail &&
-        !matchesInteriorDetail
+        !matchesInteriorDetail &&
+        !matchesPaintProtection
       ) {
         return false;
       }
@@ -335,6 +344,7 @@ const AllServicesTableClient = ({
       premium_wash: "Premium Wash",
       add_on: "Add On",
       paint_protection: "Paint Protection",
+      premium_plus_wash: "Premium+ Wash",
     };
     return (
       displayNames[subCategory] ||
@@ -345,13 +355,13 @@ const AllServicesTableClient = ({
   return (
     <>
       <div className="mt-12 mb-6 flex items-center justify-between">
-        <h2
-          onClick={handleCreate}
-          className="font-questrial text-3xl font-bold tracking-wider text-gray-900"
-        >
+        <h2 className="font-questrial text-3xl font-bold tracking-wider text-gray-900">
           All Services ({filteredServices.length})
         </h2>
-        <button className="flex cursor-pointer items-center gap-2 rounded bg-black px-4 py-2 font-questrial text-sm font-bold text-white transition-all hover:bg-zinc-800">
+        <button
+          onClick={handleCreate}
+          className="flex cursor-pointer items-center gap-2 rounded bg-black px-4 py-2 font-questrial text-sm font-bold text-white transition-all hover:bg-zinc-800"
+        >
           <FiPlusCircle className="h-4 w-4" />
           Add Service
         </button>

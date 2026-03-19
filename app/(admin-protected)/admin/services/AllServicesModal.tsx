@@ -5,7 +5,11 @@ import { useRouter } from "next/navigation";
 import type { Database } from "@/lib/database.types";
 import { toast } from "sonner";
 import { createAllServiceRow, updateAllServiceRow } from "./actions";
-import { CATEGORIES, SUBCATEGORIES } from "@/data/services";
+import {
+  CATEGORIES,
+  CATEGORY_SUBCATEGORIES,
+  SUBCATEGORY_NAMES,
+} from "@/data/services";
 
 type AllServiceRow = Database["public"]["Tables"]["services_all"]["Row"];
 
@@ -29,7 +33,18 @@ const AllServicesModal = ({ service, onClose }: AllServiceModalProps) => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // 3. Submission Logic
+  // NEW: Track category selection for dynamic subcategories
+  const [selectedCategory, setSelectedCategory] = useState(
+    service?.category || "",
+  );
+
+  // Get available subcategories for selected category
+  const availableSubcategories =
+    CATEGORY_SUBCATEGORIES[
+      selectedCategory as keyof typeof CATEGORY_SUBCATEGORIES
+    ] || [];
+
+  // Submission Logic
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
@@ -39,7 +54,7 @@ const AllServicesModal = ({ service, onClose }: AllServiceModalProps) => {
 
     const payload = {
       name: formData.get("name") as string,
-      desciption: (formData.get("description") as string) || null,
+      description: (formData.get("description") as string) || null,
       price: Number(formData.get("price")) || 0,
       category: formData.get("category") as string,
       sub_category: formData.get("sub_category")?.toString() || null,
@@ -94,7 +109,7 @@ const AllServicesModal = ({ service, onClose }: AllServiceModalProps) => {
                 Service Title
               </label>
               <input
-                name="title"
+                name="name"
                 defaultValue={service?.name || ""}
                 required
                 className="w-full border border-gray-200 px-2 py-1 shadow-sm transition-colors outline-none focus:border-gray-400"
@@ -115,10 +130,74 @@ const AllServicesModal = ({ service, onClose }: AllServiceModalProps) => {
             </div>
           </div>
 
-          {/* Vehicle Types & Prices */}
+          <div className="flex w-full flex-col items-start justify-center gap-2">
+            <label
+              htmlFor=""
+              className="font-questrial text-xs font-bold text-gray-400 uppercase"
+            >
+              Category
+            </label>
+            <select
+              name="category"
+              id="category"
+              defaultValue={service?.category || ""}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className={`${selectedCategory ? "text-black" : "text-gray-400"} w-full border border-gray-200 px-2 py-2 shadow-sm outline-none focus:border-gray-300`}
+            >
+              <option className="text-gray-400" value="">
+                -- select category --
+              </option>
+              {CATEGORIES.map((category, i) => (
+                <option key={i} value={category.id} className="text-black">
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex w-full flex-col items-start justify-center gap-2">
+            <label
+              htmlFor=""
+              className="font-questrial text-xs font-bold text-gray-400 uppercase"
+            >
+              Subcategory
+            </label>
+            <select
+              name="sub_category"
+              id="sub_category"
+              defaultValue={service?.sub_category || ""}
+              disabled={!selectedCategory}
+              className={`${selectedCategory ? "text-black" : "text-gray-400"} w-full border border-gray-200 px-2 py-2 shadow-sm outline-none focus:border-gray-300`}
+            >
+              <option className="text-gray-400" value="">
+                -- select subcategory --
+              </option>
+              {availableSubcategories.map((subcategory_id) => (
+                <option
+                  key={subcategory_id}
+                  value={subcategory_id}
+                  className="text-black"
+                >
+                  {
+                    SUBCATEGORY_NAMES[
+                      subcategory_id as keyof typeof SUBCATEGORY_NAMES
+                    ]
+                  }
+                </option>
+              ))}
+            </select>
+            {/* If there are no subcategories listed */}
+            {selectedCategory && availableSubcategories.length === 0 && (
+              <p className="text-xs text-gray-500">
+                No subcategories available
+              </p>
+            )}
+          </div>
+
+          {/* Pricing */}
           <div className="relative">
             <label className="mb-2 block font-questrial text-xs font-bold text-gray-400 uppercase">
-              Services and Pricing
+              Pricing
             </label>
             <div className="relative">
               <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-gray-400">
@@ -133,26 +212,6 @@ const AllServicesModal = ({ service, onClose }: AllServiceModalProps) => {
                 placeholder="0.00"
               />
             </div>
-          </div>
-
-          <div className="flex w-full flex-col items-start justify-center gap-2">
-            <label
-              htmlFor=""
-              className="font-questrial text-xs font-bold text-gray-400 uppercase"
-            >
-              Category
-            </label>
-            <select
-              name="category"
-              id="category"
-              className="w-full border border-gray-200 px-2 py-2 shadow-sm outline-none focus:border-gray-300"
-            >
-              {CATEGORIES.map((category, i) => (
-                <option key={i} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
           </div>
 
           {/* Settings Grid */}

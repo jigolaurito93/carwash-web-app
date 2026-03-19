@@ -255,19 +255,26 @@ export const miniDetailList = {
 // };
 
 export const CATEGORIES = [
-  { id: "main_service", name: "Main Services", color: "blue" },
-  { id: "other_service", name: "Other Services", color: "green" },
-  { id: "detailing_service", name: "Detailing Services", color: "purple" },
+  { id: "main_service", name: "Main Services" },
+  { id: "other_service", name: "Other Services" },
+  { id: "detailing_service", name: "Detailing Services" },
 ] as const;
 
-export const SUBCATEGORIES = [
-  { id: "regular_wash", name: "Regular Wash" },
-  { id: "premium_wash", name: "Premium Wash" },
-  { id: "add_on", name: "Add-on" },
-  { id: "complete_detail", name: "Complete Detail" },
-  { id: "interior_detail", name: "Interior Detail" },
-  { id: "paint_protection", name: "Paint Protection" },
-] as const;
+export const CATEGORY_SUBCATEGORIES: Record<string, string[]> = {
+  main_service: ["regular_wash", "premium_wash", "premium_plus_wash"],
+  other_service: ["add_on", "paint_protection"],
+  detailing_service: ["complete_detail", "interior_detail"],
+} as const;
+
+export const SUBCATEGORY_NAMES = {
+  regular_wash: "Regular Wash",
+  premium_wash: "Premium Wash",
+  premium_plus_wash: "Premium+ Wash",
+  add_on: "Add-on",
+  paint_protection: "Paint Protection",
+  complete_detail: "Complete Detail",
+  interior_detail: "Interior Detail",
+} as const;
 
 export type CategoryId = (typeof CATEGORIES)[number]["id"];
 export type SubcategoryId = (typeof SUBCATEGORIES)[number]["id"];

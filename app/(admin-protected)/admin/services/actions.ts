@@ -173,11 +173,11 @@ export async function createAllServiceRow(
   } = await supabase.auth.getUser();
   if (!user) return { success: false, error: "Unauthorized" };
 
-  const { error } = await supabase.from("otherServices").insert(payload);
+  const { error } = await supabase.from("services_all").insert(payload);
 
   if (error) return { success: false, error: error.message };
 
-  revalidatePath("/admin/services");
+  revalidatePath("/admin/all-services");
   return { success: true };
 }
 
