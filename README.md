@@ -100,6 +100,7 @@ Then open `http://localhost:3000` in your browser.
 - The **navbar** is fixed at the top; some pages (e.g. Services) add extra top padding or a black bar to avoid content being hidden.
 - Sections like **Hours & Contact** use responsive flex layouts: stacked on mobile, side‑by‑side on wider screens.
 - Add more later
+
 ---
 
 ## Customization

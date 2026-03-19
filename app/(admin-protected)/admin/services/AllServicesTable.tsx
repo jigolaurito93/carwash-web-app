@@ -2,11 +2,20 @@
 
 import { FiPlusCircle, FiChevronDown } from "react-icons/fi";
 import { useState, useRef, useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import type { Database } from "@/lib/database.types";
+import { deleteAllServiceRow } from "./actions";
+import { toast } from "sonner";
 
-type Service = Database["public"]["Tables"]["services_all"]["Row"];
+type AllServiceRow = Database["public"]["Tables"]["services_all"]["Row"];
 
-const ServicesTableClient = ({ services }: { services: Service[] }) => {
+const AllServicesTableClient = ({
+  services,
+}: {
+  services: AllServiceRow[];
+}) => {
+  const router = useRouter();
+
   // Category filters (unchanged)
   const [categoryFiltersOpen, setCategoryFiltersOpen] = useState(false);
   const [allServices, setAllServices] = useState(true);
@@ -24,6 +33,13 @@ const ServicesTableClient = ({ services }: { services: Service[] }) => {
   const [completeDetailSub, setCompleteDetailSub] = useState(false);
   const [interiorDetailSub, setInteriorDetailSub] = useState(false);
   const subcategoryDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Check if Modal is open
+  const [isModalOpen, setIsModalOpen] = useState(true);
+  // Check if there is an existing service row
+  const [selectedService, setSelectedService] = useState<AllServiceRow | null>(
+    null,
+  );
 
   const [activeFilter, setActiveFilter] = useState("all");
 
@@ -108,6 +124,68 @@ const ServicesTableClient = ({ services }: { services: Service[] }) => {
   ) => {
     setAllSubcategories(false);
     setter(checked);
+  };
+
+  // Function to edit the row if there is data
+  const handleEdit = (service: AllServiceRow) => {
+    setSelectedService(service);
+    setIsModalOpen(true);
+  };
+
+  // Function to create a new row if there is no data
+  const handleCreate = () => {
+    setSelectedService(null);
+    setIsModalOpen(true);
+  };
+
+  // Function to delete row in table
+  const handleDelete = (id: number, name: string) => {
+    toast.custom(
+      (t) => (
+        <div className="w-87.5 rounded-xl bg-black p-6 shadow-2xl">
+          <div className="flex flex-col items-center text-center">
+            {/* Warning Icon */}
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-600 text-black">
+              <span className="text-xl font-bold">!</span>
+            </div>
+
+            <h3 className="font-lexend text-lg font-bold text-white uppercase">
+              Confirm Deletion
+            </h3>
+            <p className="mt-2 font-questrial text-sm text-gray-400">
+              Are you sure you want to remove{" "}
+              <span className="text-yellow-400">&quot;{name}&quot;</span>? This
+              cannot be undone.
+            </p>
+
+            <div className="mt-6 flex w-full gap-3">
+              <button
+                onClick={() => toast.dismiss(t)}
+                className="flex-1 cursor-pointer rounded-md border border-zinc-700 bg-white py-2 font-questrial text-xs font-bold tracking-wider text-black transition-colors hover:bg-zinc-200"
+              >
+                CANCEL
+              </button>
+              <button
+                onClick={async () => {
+                  toast.dismiss(t);
+                  const res = await deleteAllServiceRow(id);
+                  if (res.success) {
+                    toast.success("Service removed.");
+                    router.refresh();
+                  } else {
+                    toast.error("Error: " + res.error);
+                  }
+                }}
+                className="flex-1 cursor-pointer rounded-md bg-red-600 py-2 font-questrial text-xs font-bold tracking-wider text-white transition-all hover:bg-red-500 active:scale-95"
+              >
+                DELETE
+              </button>
+            </div>
+          </div>
+        </div>
+      ),
+      { duration: Infinity },
+    );
   };
 
   // Dynamic subcategory checkboxes - only show if available in filtered data
@@ -265,6 +343,18 @@ const ServicesTableClient = ({ services }: { services: Service[] }) => {
 
   return (
     <>
+      <div className="mt-12 mb-6 flex items-center justify-between">
+        <h2
+          onClick={handleCreate}
+          className="font-questrial text-3xl font-bold tracking-wider text-gray-900"
+        >
+          All Services ({filteredServices.length})
+        </h2>
+        <button className="flex cursor-pointer items-center gap-2 rounded bg-black px-4 py-2 font-questrial text-sm font-bold text-white transition-all hover:bg-zinc-800">
+          <FiPlusCircle className="h-4 w-4" />
+          Add Service
+        </button>
+      </div>
       {/* Filter Buttons */}
       <div className="mb-1 font-questrial text-sm font-bold tracking-wider text-gray-400">
         Filter
@@ -348,7 +438,7 @@ const ServicesTableClient = ({ services }: { services: Service[] }) => {
         <div className="relative" ref={subcategoryDropdownRef}>
           <button
             onClick={() => setSubcategoryFiltersOpen(!subcategoryFiltersOpen)}
-            className={`flex items-center gap-1 cursor-pointer rounded-lg px-4 py-2 text-sm font-semibold transition-all ${
+            className={`flex cursor-pointer items-center gap-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all ${
               allSubcategories ||
               regularSub ||
               premiumSub ||
@@ -393,15 +483,7 @@ const ServicesTableClient = ({ services }: { services: Service[] }) => {
       <hr />
 
       {/* Rest remains the same */}
-      <div className="mt-12 mb-6 flex items-center justify-between">
-        <h2 className="font-questrial text-3xl font-bold tracking-wider text-gray-900">
-          All Services ({filteredServices.length})
-        </h2>
-        <button className="flex cursor-pointer items-center gap-2 rounded bg-black px-4 py-2 font-questrial text-sm font-bold text-white transition-all hover:bg-zinc-800">
-          <FiPlusCircle className="h-4 w-4" />
-          Add Service
-        </button>
-      </div>
+
       <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
         <table className="min-w-full divide-y divide-gray-200 text-left text-sm">
           <thead className="bg-gray-50 font-questrial">
@@ -446,10 +528,16 @@ const ServicesTableClient = ({ services }: { services: Service[] }) => {
                   </td>
                   <td className="px-4 py-3">
                     <div className="ml-auto flex justify-end gap-2 font-questrial tracking-widest">
-                      <button className="cursor-pointer rounded border border-gray-200 bg-white px-2 py-1 text-xs font-bold transition-all hover:bg-yellow-400">
+                      <button
+                        onClick={() => handleEdit(row)}
+                        className="cursor-pointer rounded border border-gray-200 bg-white px-2 py-1 text-xs font-bold transition-all hover:bg-yellow-400"
+                      >
                         Edit
                       </button>
-                      <button className="cursor-pointer rounded border border-red-100 bg-red-50 px-2 py-1 text-xs font-bold text-red-600 transition-all hover:bg-red-600 hover:text-white">
+                      <button
+                        onClick={() => handleDelete(row.id, row.name)}
+                        className="cursor-pointer rounded border border-red-100 bg-red-50 px-2 py-1 text-xs font-bold text-red-600 transition-all hover:bg-red-600 hover:text-white"
+                      >
                         Delete
                       </button>
                     </div>
@@ -464,4 +552,4 @@ const ServicesTableClient = ({ services }: { services: Service[] }) => {
   );
 };
 
-export default ServicesTableClient;
+export default AllServicesTableClient;

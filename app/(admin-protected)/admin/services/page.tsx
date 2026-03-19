@@ -49,9 +49,7 @@ export default async function AdminServicesPage() {
       <OtherServicesTable services={otherServices ?? []} />
 
       {/* All Services */}
-      <div>
-        <AllServicesTable />
-      </div>
+      <div>{/* <AllServicesTable /> */}</div>
     </div>
   );
 }

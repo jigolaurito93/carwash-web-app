@@ -142,3 +142,21 @@ export async function updateOtherService(
   revalidatePath("/admin/services");
   return { success: true };
 }
+
+// Delete A Row in All Services Table
+export async function deleteAllServiceRow(id: number) {
+  const supabase = await getSupabase();
+
+  // Security check
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: "Unauthorized" };
+
+  const { error } = await supabase.from("services_all").delete().eq("id", id);
+
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath("/admin/all-services");
+  return { success: true };
+}
