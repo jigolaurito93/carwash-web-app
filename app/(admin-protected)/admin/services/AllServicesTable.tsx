@@ -275,7 +275,7 @@ const ServicesTableClient = ({ services }: { services: Service[] }) => {
         <div className="relative" ref={categoryDropdownRef}>
           <button
             onClick={() => setCategoryFiltersOpen(!categoryFiltersOpen)}
-            className={`flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all ${
+            className={`flex cursor-pointer items-center gap-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all ${
               allServices || mainServices || otherServices || detailingServices
                 ? "bg-black text-white shadow-md"
                 : "border border-gray-200 bg-white text-gray-700 hover:bg-gray-100"
@@ -348,7 +348,7 @@ const ServicesTableClient = ({ services }: { services: Service[] }) => {
         <div className="relative" ref={subcategoryDropdownRef}>
           <button
             onClick={() => setSubcategoryFiltersOpen(!subcategoryFiltersOpen)}
-            className={`flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all ${
+            className={`flex items-center gap-1 cursor-pointer rounded-lg px-4 py-2 text-sm font-semibold transition-all ${
               allSubcategories ||
               regularSub ||
               premiumSub ||
