@@ -48,9 +48,33 @@ export interface Database {
         Row: {
           id: number;
           name: string;
+          description?: string | null;
           price: string | number;
           category: string;
           sub_category: string;
+          types: Json;
+          sort_order?: number | null;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id: number;
+          name: string;
+          price: string | number;
+          category: string;
+          sub_category: string;
+          types: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Update: {
+          id: number;
+          name: string;
+          price: string | number;
+          category: string;
+          sub_category: string;
+          types: Json;
           created_at: string;
           updated_at: string;
         };

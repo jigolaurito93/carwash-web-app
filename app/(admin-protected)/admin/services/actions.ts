@@ -160,3 +160,47 @@ export async function deleteAllServiceRow(id: number) {
   revalidatePath("/admin/all-services");
   return { success: true };
 }
+
+// Create A Row in Table
+export async function createAllServiceRow(
+  payload: Database["public"]["Tables"]["services_all"]["Insert"],
+) {
+  const supabase = await getSupabase();
+
+  // Security check
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: "Unauthorized" };
+
+  const { error } = await supabase.from("otherServices").insert(payload);
+
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath("/admin/services");
+  return { success: true };
+}
+
+//Update A Row in Table
+export async function updateAllServiceRow(
+  id: number,
+  payload: Database["public"]["Tables"]["services_all"]["Update"],
+) {
+  const supabase = await getSupabase();
+
+  // Security check
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: "Unauthorized" };
+
+  const { error } = await supabase
+    .from("services_all")
+    .update(payload)
+    .eq("id", id);
+
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath("/admin/all-services");
+  return { success: true };
+}

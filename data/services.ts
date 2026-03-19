@@ -253,3 +253,21 @@ export const miniDetailList = {
 //     },
 //   ],
 // };
+
+export const CATEGORIES = [
+  { id: "main_service", name: "Main Services", color: "blue" },
+  { id: "other_service", name: "Other Services", color: "green" },
+  { id: "detailing_service", name: "Detailing Services", color: "purple" },
+] as const;
+
+export const SUBCATEGORIES = [
+  { id: "regular_wash", name: "Regular Wash" },
+  { id: "premium_wash", name: "Premium Wash" },
+  { id: "add_on", name: "Add-on" },
+  { id: "complete_detail", name: "Complete Detail" },
+  { id: "interior_detail", name: "Interior Detail" },
+  { id: "paint_protection", name: "Paint Protection" },
+] as const;
+
+export type CategoryId = (typeof CATEGORIES)[number]["id"];
+export type SubcategoryId = (typeof SUBCATEGORIES)[number]["id"];

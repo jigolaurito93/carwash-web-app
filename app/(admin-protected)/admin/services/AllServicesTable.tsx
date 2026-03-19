@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import type { Database } from "@/lib/database.types";
 import { deleteAllServiceRow } from "./actions";
 import { toast } from "sonner";
+import AllServicesModal from "./AllServicesModal";
 
 type AllServiceRow = Database["public"]["Tables"]["services_all"]["Row"];
 
@@ -35,7 +36,7 @@ const AllServicesTableClient = ({
   const subcategoryDropdownRef = useRef<HTMLDivElement>(null);
 
   // Check if Modal is open
-  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   // Check if there is an existing service row
   const [selectedService, setSelectedService] = useState<AllServiceRow | null>(
     null,
@@ -548,6 +549,13 @@ const AllServicesTableClient = ({
           </tbody>
         </table>
       </div>
+      {/* Reusable Modal Component */}
+      {isModalOpen && (
+        <AllServicesModal
+          service={selectedService}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
     </>
   );
 };

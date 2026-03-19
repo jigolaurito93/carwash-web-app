@@ -65,3 +65,10 @@ Left Column: A "Recently Modified" list showing the last 5 services you edited.
 Right Column: "Quick Toggles" to turn categories on or off without opening a modal.
 Row 3: Status Check
 A simple "Database Status" indicator to ensure Supabase is responding correctly.
+
+
+
+Find Out:
+1. const router = useRouter();
+   const isEdit = !!service;
+         - !! is double negation to convert any value to a boolean.

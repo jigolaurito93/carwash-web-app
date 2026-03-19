@@ -24,13 +24,13 @@ export default async function AllServicesPage() {
     },
   );
 
-  const { data: services, error } = await supabase
+  const { data: servicesAll, error } = await supabase
     .from("services_all")
     .select("*")
     .order("category")
     .order("sub_category");
 
-  if (error || !services) {
+  if (error || !servicesAll) {
     return (
       <div className="p-8 text-red-500">
         Error loading services: {error?.message || "No data"}
@@ -38,5 +38,5 @@ export default async function AllServicesPage() {
     );
   }
 
-  return <AllServicesTableClient services={services} />;
+  return <AllServicesTableClient services={servicesAll ?? []} />;
 }
