@@ -33,9 +33,13 @@ const AllServicesModal = ({ service, onClose }: AllServiceModalProps) => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // NEW: Track category selection for dynamic subcategories
+  // Track category selection for dynamic Categories
   const [selectedCategory, setSelectedCategory] = useState(
     service?.category || "",
+  );
+  // Track category selection for dynamic Subcategories
+  const [selectedSubcategory, setSelectedSubcategory] = useState(
+    service?.sub_category || "",
   );
 
   // Get available subcategories for selected category
@@ -165,9 +169,10 @@ const AllServicesModal = ({ service, onClose }: AllServiceModalProps) => {
             <select
               name="sub_category"
               id="sub_category"
+              onChange={(e) => setSelectedSubcategory(e.target.value)}
               defaultValue={service?.sub_category || ""}
               disabled={!selectedCategory}
-              className={`${selectedCategory ? "text-black" : "text-gray-400"} w-full border border-gray-200 px-2 py-2 shadow-sm outline-none focus:border-gray-300`}
+              className={`${selectedSubcategory ? "text-black" : "text-gray-400"} w-full border border-gray-200 px-2 py-2 shadow-sm outline-none focus:border-gray-300`}
             >
               <option className="text-gray-400" value="">
                 -- select subcategory --
