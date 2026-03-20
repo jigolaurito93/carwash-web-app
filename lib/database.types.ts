@@ -44,6 +44,19 @@ export interface Database {
           sort_order?: number | null;
         };
       };
+      all_services: {
+        Row: {
+          id: number;
+          name: string;
+          package_id: number;
+          price: number;
+          size: string;
+          is_active?: boolean;
+          sort_order?: number | null;
+          created_at: string;
+          updated_at: string;
+        };
+      };
       services_all: {
         Row: {
           id: number;
