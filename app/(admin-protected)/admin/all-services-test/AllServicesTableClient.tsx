@@ -27,12 +27,27 @@ const AllServicesTableClient = ({
   console.log("🚨 SERVICES LENGTH:", services?.length || 0); // ← ADD THIS
   console.log("🚨 FIRST SERVICE:", services?.[0] || "NO DATA"); // ← ADD THIS
 
+  // Outside click handler
   useEffect(() => {
-    console.log("🔍 CATEGORIES FOUND:", [
-      ...new Set(services.map((s) => s.category).filter(Boolean)),
-    ]);
-    console.log("FIRST SERVICE:", services[0]);
-  }, [services]);
+    const handleClickOutside = (event: MouseEvent) => {
+      // Check if clicking outside ALL dropdowns
+      if (
+        categoryDropdownRef.current &&
+        !categoryDropdownRef.current.contains(event.target as Node) &&
+        subcategoryDropdownRef.current &&
+        !subcategoryDropdownRef.current.contains(event.target as Node) &&
+        priceDropdownRef.current &&
+        !priceDropdownRef.current.contains(event.target as Node)
+      ) {
+        setCategoryFiltersOpen(false);
+        setSubcategoryFiltersOpen(false);
+        setPriceFilterOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const router = useRouter();
 
@@ -50,6 +65,7 @@ const AllServicesTableClient = ({
   const [regularSub, setRegularSub] = useState(false);
   const [premiumSub, setPremiumSub] = useState(false);
   const [premiumPlusSub, setPremiumPlusSub] = useState(false);
+  const [exteriorWashSub, setExteriorWashSub] = useState(false);
   const [paintProtectionSub, setPaintProtectionSub] = useState(false);
   const [addOnSub, setAddOnSub] = useState(false);
   const [completeDetailSub, setCompleteDetailSub] = useState(false);
@@ -71,43 +87,70 @@ const AllServicesTableClient = ({
     if (allServices) return services;
 
     return services.filter((service) => {
-      const matchesMain = mainServices && service.category === "main_service";
-      const matchesOther =
-        otherServices && service.category === "other_service";
+      const serviceCategory = service.services_packages?.categories?.name || "";
+      const matchesMain = mainServices && serviceCategory === "main_service";
+      const matchesOther = otherServices && serviceCategory === "other_service";
       const matchesDetailing =
-        detailingServices && service.category === "detailing_service";
+        detailingServices && serviceCategory === "detailing_service";
       return matchesMain || matchesOther || matchesDetailing;
     });
   }, [services, allServices, mainServices, otherServices, detailingServices]);
 
   const toggleDropdown = (dropdown: "category" | "subcategory" | "price") => {
-    setCategoryFiltersOpen(false);
-    setSubcategoryFiltersOpen(false);
-    setPriceFilterOpen(false);
+    // If clicking SAME dropdown that's already open → CLOSE IT
+    if (dropdown === "category" && categoryFiltersOpen) {
+      setCategoryFiltersOpen(false);
+      return;
+    }
+    if (dropdown === "subcategory" && subcategoryFiltersOpen) {
+      setSubcategoryFiltersOpen(false);
+      return;
+    }
+    if (dropdown === "price" && priceFilterOpen) {
+      setPriceFilterOpen(false);
+      return;
+    }
 
-    if (dropdown === "category") setCategoryFiltersOpen(true);
-    if (dropdown === "subcategory") setSubcategoryFiltersOpen(true);
-    if (dropdown === "price") setPriceFilterOpen(true);
+    // Close all others, open clicked one
+    setCategoryFiltersOpen(dropdown === "category");
+    setSubcategoryFiltersOpen(dropdown === "subcategory");
+    setPriceFilterOpen(dropdown === "price");
   };
 
   const getAvailableSubcategoryCount = () => {
-    const subcatCounts: Record<string, number> = {};
+    let totalServices = 0; // ✅ Count TOTAL services
 
     services.forEach((service) => {
       const serviceCategory = service.services_packages?.categories?.name;
-      const subcatName = service.services_packages?.name;
-
       const categoryMatches =
         allServices ||
         (mainServices && serviceCategory === "main_service") ||
         (otherServices && serviceCategory === "other_service") ||
         (detailingServices && serviceCategory === "detailing_service");
 
-      if (subcatName && categoryMatches) {
-        subcatCounts[subcatName] = 1;
+      if (categoryMatches) {
+        totalServices++; // ✅ Count every matching service
       }
     });
-    return Object.keys(subcatCounts).length;
+
+    return totalServices; // ✅ Returns 12 for Main Services
+  };
+
+  const getSubcategoryCounts = () => {
+    const subcatCounts: Record<string, number> = {};
+    services.forEach((service) => {
+      const serviceCategory = service.services_packages?.categories?.name;
+      const subcatName = service.services_packages?.name;
+      const categoryMatches =
+        allServices ||
+        (mainServices && serviceCategory === "main_service") ||
+        (otherServices && serviceCategory === "other_service") ||
+        (detailingServices && serviceCategory === "detailing_service");
+      if (subcatName && categoryMatches) {
+        subcatCounts[subcatName] = (subcatCounts[subcatName] || 0) + 1;
+      }
+    });
+    return subcatCounts;
   };
 
   // Category filter handlers (unchanged)
@@ -140,6 +183,8 @@ const AllServicesTableClient = ({
     if (checked) {
       setRegularSub(false);
       setPremiumSub(false);
+      setPremiumPlusSub(false);
+      setExteriorWashSub(false);
       setAddOnSub(false);
       setCompleteDetailSub(false);
       setInteriorDetailSub(false);
@@ -218,24 +263,7 @@ const AllServicesTableClient = ({
 
   // Dynamic subcategory checkboxes (unchanged)
   const renderSubcategoryCheckboxes = () => {
-    const subcatCounts: Record<string, number> = {};
-
-    // ✅ ONLY count subcats that belong to SELECTED categories
-    services.forEach((service) => {
-      const serviceCategory = service.services_packages?.categories?.name;
-      const subcatName = service.services_packages?.name;
-
-      // Show subcat ONLY if its category matches selected filters
-      const categoryMatches =
-        allServices ||
-        (mainServices && serviceCategory === "main_service") ||
-        (otherServices && serviceCategory === "other_service") ||
-        (detailingServices && serviceCategory === "detailing_service");
-
-      if (subcatName && categoryMatches) {
-        subcatCounts[subcatName] = (subcatCounts[subcatName] || 0) + 1;
-      }
-    });
+    const subcatCounts = getSubcategoryCounts();
 
     const subcatOptions = [
       {
@@ -274,6 +302,12 @@ const AllServicesTableClient = ({
         label: "Paint Protection",
         state: paintProtectionSub,
         setter: setPaintProtectionSub,
+      },
+      {
+        key: "exterior_wash",
+        label: "Exterior Wash",
+        state: exteriorWashSub,
+        setter: setExteriorWashSub,
       },
     ];
 
@@ -318,6 +352,7 @@ const AllServicesTableClient = ({
     if (completeDetailSub) selected.push("Comp Detail");
     if (interiorDetailSub) selected.push("Int Detail");
     if (paintProtectionSub) selected.push("Paint Protection");
+    if (exteriorWashSub) selected.push("Exterior Wash");
     return selected.length ? selected.join(", ") : "All Subcats";
   };
 
@@ -355,6 +390,8 @@ const AllServicesTableClient = ({
       const matchesAddOn = addOnSub && serviceSubcategory === "add_on";
       const matchesComplete =
         completeDetailSub && serviceSubcategory === "complete_detail";
+      const matchesExterior =
+        exteriorWashSub && serviceSubcategory === "exterior_wash";
       const matchesInterior =
         interiorDetailSub && serviceSubcategory === "interior_detail";
       const matchesPaint =
@@ -366,6 +403,7 @@ const AllServicesTableClient = ({
         !matchesRegular &&
         !matchesPremium &&
         !matchesPremiumPlus &&
+        !matchesExterior &&
         !matchesAddOn &&
         !matchesComplete &&
         !matchesInterior &&
@@ -547,7 +585,7 @@ const AllServicesTableClient = ({
               </label>
               <div className="py-2">
                 {renderSubcategoryCheckboxes()}
-                {availableSubcategories.length === 0 && (
+                {Object.keys(getSubcategoryCounts()).length === 0 && (
                   <div className="px-4 py-6 text-center text-sm text-gray-500">
                     No subcategories available for selected categories
                   </div>
