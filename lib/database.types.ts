@@ -55,6 +55,8 @@ export interface Database {
           sort_order?: number | null;
           created_at: string;
           updated_at: string;
+          category: string;
+          sub_category: string;
         };
       };
       services_all: {

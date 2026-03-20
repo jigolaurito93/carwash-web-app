@@ -10,13 +10,30 @@ import { toast } from "sonner";
 import { deleteAllServiceRow } from "../services/actions";
 import AllServicesModal from "./AllServicesModal";
 
-type AllServiceRow = Database["public"]["Tables"]["services_all"]["Row"];
+type AllServiceRow = Database["public"]["Tables"]["all_services"]["Row"] & {
+  services_packages: {
+    name: string; // subcategory = "regular_wash"
+    categories: {
+      name: string; // category = "main_service"
+    } | null;
+  } | null;
+};
 
 const AllServicesTableClient = ({
   services,
 }: {
   services: AllServiceRow[];
 }) => {
+  console.log("🚨 SERVICES LENGTH:", services?.length || 0); // ← ADD THIS
+  console.log("🚨 FIRST SERVICE:", services?.[0] || "NO DATA"); // ← ADD THIS
+
+  useEffect(() => {
+    console.log("🔍 CATEGORIES FOUND:", [
+      ...new Set(services.map((s) => s.category).filter(Boolean)),
+    ]);
+    console.log("FIRST SERVICE:", services[0]);
+  }, [services]);
+
   const router = useRouter();
 
   // Category filters (unchanged)
@@ -32,6 +49,7 @@ const AllServicesTableClient = ({
   const [allSubcategories, setAllSubcategories] = useState(true);
   const [regularSub, setRegularSub] = useState(false);
   const [premiumSub, setPremiumSub] = useState(false);
+  const [premiumPlusSub, setPremiumPlusSub] = useState(false);
   const [paintProtectionSub, setPaintProtectionSub] = useState(false);
   const [addOnSub, setAddOnSub] = useState(false);
   const [completeDetailSub, setCompleteDetailSub] = useState(false);
@@ -49,12 +67,10 @@ const AllServicesTableClient = ({
     null,
   );
 
-  // Replace the existing useMemo with this safer version
   const availableSubcategories = useMemo(() => {
-    if (allServices) return services || []; // ✅ Always return array
+    if (allServices) return services;
 
-    const filteredByCategory = (services || []).filter((service) => {
-      // ✅ Safe filter
+    return services.filter((service) => {
       const matchesMain = mainServices && service.category === "main_service";
       const matchesOther =
         otherServices && service.category === "other_service";
@@ -62,9 +78,37 @@ const AllServicesTableClient = ({
         detailingServices && service.category === "detailing_service";
       return matchesMain || matchesOther || matchesDetailing;
     });
-
-    return filteredByCategory; // ✅ Always returns array
   }, [services, allServices, mainServices, otherServices, detailingServices]);
+
+  const toggleDropdown = (dropdown: "category" | "subcategory" | "price") => {
+    setCategoryFiltersOpen(false);
+    setSubcategoryFiltersOpen(false);
+    setPriceFilterOpen(false);
+
+    if (dropdown === "category") setCategoryFiltersOpen(true);
+    if (dropdown === "subcategory") setSubcategoryFiltersOpen(true);
+    if (dropdown === "price") setPriceFilterOpen(true);
+  };
+
+  const getAvailableSubcategoryCount = () => {
+    const subcatCounts: Record<string, number> = {};
+
+    services.forEach((service) => {
+      const serviceCategory = service.services_packages?.categories?.name;
+      const subcatName = service.services_packages?.name;
+
+      const categoryMatches =
+        allServices ||
+        (mainServices && serviceCategory === "main_service") ||
+        (otherServices && serviceCategory === "other_service") ||
+        (detailingServices && serviceCategory === "detailing_service");
+
+      if (subcatName && categoryMatches) {
+        subcatCounts[subcatName] = 1;
+      }
+    });
+    return Object.keys(subcatCounts).length;
+  };
 
   // Category filter handlers (unchanged)
   const handleAllServicesChange = (checked: boolean) => {
@@ -176,10 +220,20 @@ const AllServicesTableClient = ({
   const renderSubcategoryCheckboxes = () => {
     const subcatCounts: Record<string, number> = {};
 
-    availableSubcategories.forEach((service) => {
-      if (service.sub_category) {
-        subcatCounts[service.sub_category] =
-          (subcatCounts[service.sub_category] || 0) + 1;
+    // ✅ ONLY count subcats that belong to SELECTED categories
+    services.forEach((service) => {
+      const serviceCategory = service.services_packages?.categories?.name;
+      const subcatName = service.services_packages?.name;
+
+      // Show subcat ONLY if its category matches selected filters
+      const categoryMatches =
+        allServices ||
+        (mainServices && serviceCategory === "main_service") ||
+        (otherServices && serviceCategory === "other_service") ||
+        (detailingServices && serviceCategory === "detailing_service");
+
+      if (subcatName && categoryMatches) {
+        subcatCounts[subcatName] = (subcatCounts[subcatName] || 0) + 1;
       }
     });
 
@@ -195,6 +249,12 @@ const AllServicesTableClient = ({
         label: "Premium",
         state: premiumSub,
         setter: setPremiumSub,
+      },
+      {
+        key: "premium_plus_wash",
+        label: "Premium Plus",
+        state: premiumPlusSub,
+        setter: setPremiumPlusSub,
       },
       { key: "add_on", label: "Add-on", state: addOnSub, setter: setAddOnSub },
       {
@@ -217,29 +277,24 @@ const AllServicesTableClient = ({
       },
     ];
 
-    return subcatOptions.map(
-      ({ key, label, state, setter }, index) =>
-        subcatCounts[key] > 0 && (
-          <label
-            key={key}
-            className={`flex cursor-pointer items-center gap-3 border-t border-gray-100 px-4 py-3 text-sm hover:bg-gray-50 ${index === 0 ? "" : "border-t"}`}
-          >
-            <input
-              type="checkbox"
-              checked={state}
-              onChange={(e) =>
-                handleSubcategoryChange(setter, e.target.checked)
-              }
-              className="h-4 w-4 rounded border-gray-300 text-black focus:ring-black"
-            />
-            <span className="flex items-center gap-1">
-              {label}
-              <span className="text-xs text-gray-400">
-                ({subcatCounts[key]})
-              </span>
-            </span>
-          </label>
-        ),
+    return subcatOptions.map(({ key, label, state, setter }, index) =>
+      subcatCounts[key] > 0 ? ( // Still only show if data exists
+        <label
+          key={key}
+          className={`flex cursor-pointer items-center gap-3 border-t border-gray-100 px-4 py-3 text-sm hover:bg-gray-50 ${index === 0 ? "" : "border-t"}`}
+        >
+          <input
+            type="checkbox"
+            checked={state}
+            onChange={(e) => handleSubcategoryChange(setter, e.target.checked)}
+            className="h-4 w-4 rounded border-gray-300 text-black focus:ring-black"
+          />
+          <span className="flex items-center gap-1">
+            {label}
+            <span className="text-xs text-gray-400">({subcatCounts[key]})</span>
+          </span>
+        </label>
+      ) : null,
     );
   };
 
@@ -259,6 +314,7 @@ const AllServicesTableClient = ({
     if (regularSub) selected.push("Regular");
     if (premiumSub) selected.push("Premium");
     if (addOnSub) selected.push("Add-on");
+    if (premiumPlusSub) selected.push("Premium Plus");
     if (completeDetailSub) selected.push("Comp Detail");
     if (interiorDetailSub) selected.push("Int Detail");
     if (paintProtectionSub) selected.push("Paint Protection");
@@ -276,90 +332,89 @@ const AllServicesTableClient = ({
     return ranges[priceRange] || "All Prices";
   };
 
-  // UPDATED: Combined filtering logic with price range
   const filteredServices = services.filter((service) => {
+    // ✅ Extract from nested structure
+    const serviceCategory = service.services_packages?.categories?.name || "";
+    const serviceSubcategory = service.services_packages?.name || "";
+
     // Category filter
     if (!allServices) {
-      const matchesMain = mainServices && service.category === "main_service";
-      const matchesOther =
-        otherServices && service.category === "other_service";
+      const matchesMain = mainServices && serviceCategory === "main_service";
+      const matchesOther = otherServices && serviceCategory === "other_service";
       const matchesDetailing =
-        detailingServices && service.category === "detailing_service";
+        detailingServices && serviceCategory === "detailing_service";
       if (!matchesMain && !matchesOther && !matchesDetailing) return false;
     }
 
     // Subcategory filter
     if (!allSubcategories) {
       const matchesRegular =
-        regularSub && service.sub_category === "regular_wash";
+        regularSub && serviceSubcategory === "regular_wash";
       const matchesPremium =
-        premiumSub && service.sub_category === "premium_wash";
-      const matchesAddOn = addOnSub && service.sub_category === "add_on";
-      const matchesCompleteDetail =
-        completeDetailSub && service.sub_category === "complete_detail";
-      const matchesInteriorDetail =
-        interiorDetailSub && service.sub_category === "interior_detail";
-      const matchesPaintProtection =
-        paintProtectionSub && service.sub_category === "paint_protection";
+        premiumSub && serviceSubcategory === "premium_wash";
+      const matchesAddOn = addOnSub && serviceSubcategory === "add_on";
+      const matchesComplete =
+        completeDetailSub && serviceSubcategory === "complete_detail";
+      const matchesInterior =
+        interiorDetailSub && serviceSubcategory === "interior_detail";
+      const matchesPaint =
+        paintProtectionSub && serviceSubcategory === "paint_protection";
+      const matchesPremiumPlus =
+        premiumPlusSub && serviceSubcategory === "premium_plus_wash";
 
       if (
         !matchesRegular &&
         !matchesPremium &&
+        !matchesPremiumPlus &&
         !matchesAddOn &&
-        !matchesCompleteDetail &&
-        !matchesInteriorDetail &&
-        !matchesPaintProtection
+        !matchesComplete &&
+        !matchesInterior &&
+        !matchesPaint
       ) {
-        return false;
+        return false; // ❌ None match
       }
     }
 
-    // NEW: Price range filter
-    if (priceRange !== "all" && service.price !== null) {
-      const price = Number(service.price);
-      switch (priceRange) {
-        case "low":
-          return price >= 0 && price <= 20;
-        case "mid":
-          return price > 20 && price <= 50;
-        case "high":
-          return price > 50;
-        default:
-          return true;
-      }
+    if (priceRange !== "all") {
+      const price = Number(service.price || 0); // ✅ Number() handles both string/number
+      if (priceRange === "low" && price > 20) return false;
+      if (priceRange === "mid" && (price > 50 || price <= 20)) return false;
+      if (priceRange === "high" && price <= 50) return false;
     }
 
     return true;
   });
 
-  // Format functions (unchanged)
-  const formatCategory = (category: string | null) => {
-    if (!category) return "—";
+  const formatCategory = (service: AllServiceRow) => {
+    const cat = service.services_packages?.categories?.name; // ✅ Now gets STRING "main_service"
+    if (!cat) return "—";
+
     const displayNames: Record<string, string> = {
       main_service: "Main Services",
       other_service: "Other Services",
       detailing_service: "Detailing Services",
     };
     return (
-      displayNames[category] ||
-      category.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())
+      displayNames[cat] ||
+      cat.replace(/_/g, " ").replace(/\b\w/g, (l: string) => l.toUpperCase())
     );
   };
 
-  const formatSubCategory = (subCategory: string | null) => {
-    if (!subCategory) return "—";
+  const formatSubCategory = (service: AllServiceRow) => {
+    const subcat = service.services_packages?.name; // ✅ Already string per your type
+    if (!subcat) return "—";
+
     const displayNames: Record<string, string> = {
-      complete_detail: "Complete Detail",
-      interior_detail: "Interior Detail",
       regular_wash: "Regular Wash",
       premium_wash: "Premium Wash",
-      add_on: "Add On",
+      add_on: "Add-on",
+      complete_detail: "Complete Detail",
+      interior_detail: "Interior Detail",
       paint_protection: "Paint Protection",
-      premium_plus_wash: "Premium+ Wash",
     };
     return (
-      displayNames[subCategory] ||
-      subCategory.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())
+      displayNames[subcat] ||
+      subcat.replace(/_/g, " ").replace(/\b\w/g, (l: string) => l.toUpperCase())
     );
   };
 
@@ -387,7 +442,7 @@ const AllServicesTableClient = ({
         {/* Category Dropdown (unchanged) */}
         <div className="relative" ref={categoryDropdownRef}>
           <button
-            onClick={() => setCategoryFiltersOpen(!categoryFiltersOpen)}
+            onClick={() => toggleDropdown("category")}
             className={`flex cursor-pointer items-center gap-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all ${
               allServices || mainServices || otherServices || detailingServices
                 ? "bg-black text-white shadow-md"
@@ -459,7 +514,7 @@ const AllServicesTableClient = ({
         {/* Subcategory Dropdown (FIXED) */}
         <div className="relative" ref={subcategoryDropdownRef}>
           <button
-            onClick={() => setSubcategoryFiltersOpen(!subcategoryFiltersOpen)}
+            onClick={() => toggleDropdown("subcategory")}
             className={`flex cursor-pointer items-center gap-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all ${
               allSubcategories ||
               regularSub ||
@@ -488,7 +543,7 @@ const AllServicesTableClient = ({
                   }
                   className="h-4 w-4 rounded border-gray-300 text-black focus:ring-black"
                 />
-                All Categories ({availableSubcategories.length})
+                All Categories ({getAvailableSubcategoryCount()})
               </label>
               <div className="py-2">
                 {renderSubcategoryCheckboxes()}
@@ -506,7 +561,7 @@ const AllServicesTableClient = ({
         {/* NEW: Price Range Dropdown */}
         <div className="relative" ref={priceDropdownRef}>
           <button
-            onClick={() => setPriceFilterOpen(!priceFilterOpen)}
+            onClick={() => toggleDropdown("price")}
             className={`flex cursor-pointer items-center gap-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all ${
               priceRange !== "all"
                 ? "bg-black text-white shadow-md"
@@ -609,10 +664,10 @@ const AllServicesTableClient = ({
                     ${row.price || "—"}
                   </td>
                   <td className="px-4 py-3 text-gray-500">
-                    {formatCategory(row.category)}
+                    {formatCategory(row)}
                   </td>
                   <td className="px-4 py-3 text-gray-500">
-                    {formatSubCategory(row.sub_category)}
+                    {formatSubCategory(row)}
                   </td>
                   <td className="px-4 py-3">
                     <div className="ml-auto flex justify-end gap-2 font-questrial tracking-widest">
@@ -639,8 +694,12 @@ const AllServicesTableClient = ({
 
       {isModalOpen && (
         <AllServicesModal
-          service={selectedService}
+          service={selectedService} // ✅ No casting needed
           onClose={() => setIsModalOpen(false)}
+          onSuccess={() => {
+            setIsModalOpen(false);
+            router.refresh();
+          }}
         />
       )}
     </>

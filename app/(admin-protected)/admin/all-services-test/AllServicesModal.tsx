@@ -5,14 +5,7 @@ import { toast } from "sonner";
 import { FiX } from "react-icons/fi";
 import type { Database } from "@/lib/database.types";
 
-type ServiceRow = Database["public"]["Tables"]["all_services"]["Row"] & {
-  services_packages: {
-    name: string;
-    types: string[];
-    description: string | null;
-    categories: { name: string } | null;
-  } | null;
-};
+type ServiceRow = Database["public"]["Tables"]["all_services"]["Row"];
 
 interface AllServicesModalProps {
   service: ServiceRow | null;
@@ -33,8 +26,12 @@ export default function AllServicesModal({
   useEffect(() => {
     if (service) {
       setName(service.name);
-      setPrice(service.price || 0);
-      setSize(service.size || "");
+      setPrice(
+        typeof service.price === "string"
+          ? Number(service.price)
+          : service.price || 0,
+      );
+      setSize(""); // services_all view doesn't have 'size' field
     } else {
       setName("");
       setPrice(0);

@@ -31,8 +31,6 @@ export default async function AllServicesTestPage() {
       *,
       services_packages!package_id (
         name,
-        types,
-        description,
         categories!category_id (name)
       )
     `,
@@ -40,8 +38,14 @@ export default async function AllServicesTestPage() {
     .order("name");
 
   if (error) {
+    console.error("❌ SUPABASE ERROR:", error);
     return <div className="p-8 text-red-500">Error: {error.message}</div>;
   }
 
-  return <AllServicesTableClient services={services ?? []} />;
+  if (!services || services.length === 0) {
+    console.log("⚠️  NO SERVICES FOUND");
+    return <div className="p-8 text-gray-500">No services found</div>;
+  }
+
+  return <AllServicesTableClient services={services} />;
 }
