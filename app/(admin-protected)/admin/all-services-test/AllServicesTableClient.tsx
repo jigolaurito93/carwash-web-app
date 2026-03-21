@@ -72,6 +72,9 @@ const AllServicesTableClient = ({
   const [engineBaySub, setEngineBaySub] = useState(false);
   const [completeDetailSub, setCompleteDetailSub] = useState(false);
   const [interiorDetailSub, setInteriorDetailSub] = useState(false);
+  const [exteriorDetailSub, setExteriorDetailSub] = useState(false);
+  const [miniDetailSub, setMiniDetailSub] = useState(false);
+
   const subcategoryDropdownRef = useRef<HTMLDivElement>(null);
 
   // NEW: Price range filter
@@ -170,6 +173,8 @@ const AllServicesTableClient = ({
       setEngineBaySub(false);
       setCompleteDetailSub(false);
       setInteriorDetailSub(false);
+      setExteriorDetailSub(false);
+      setMiniDetailSub(false);
     }
   };
 
@@ -325,6 +330,18 @@ const AllServicesTableClient = ({
         state: exteriorWashSub,
         setter: setExteriorWashSub,
       },
+      {
+        key: "exterior_detail",
+        label: "Exterior Detail",
+        state: exteriorDetailSub,
+        setter: setExteriorDetailSub,
+      },
+      {
+        key: "mini_detail",
+        label: "Mini Detail",
+        state: miniDetailSub,
+        setter: setMiniDetailSub,
+      },
     ];
 
     return subcatOptions.map(({ key, label, state, setter }, index) =>
@@ -371,6 +388,8 @@ const AllServicesTableClient = ({
     if (exteriorWashSub) selected.push("Exterior Wash");
     if (handWaxSub) selected.push("Hand Wax");
     if (engineBaySub) selected.push("Engine Bay");
+    if (exteriorDetailSub) selected.push("Ext Detail");
+    if (miniDetailSub) selected.push("Mini Detail");
 
     return selected.length ? selected.join(", ") : "All Subcats";
   };
@@ -407,6 +426,10 @@ const AllServicesTableClient = ({
       const matchesPremium =
         premiumSub && serviceSubcategory === "premium_wash";
       const matchesAddOn = addOnSub && serviceSubcategory === "add_on";
+      const matchesExteriorDetail =
+        exteriorDetailSub && serviceSubcategory === "exterior_detail";
+      const matchesMiniDetail =
+        miniDetailSub && serviceSubcategory === "mini_detail";
       const matchesHandWax = handWaxSub && serviceSubcategory === "hand_wax";
       const matchesEngineBay =
         engineBaySub && serviceSubcategory === "engine_bay_cleaning";
@@ -423,10 +446,14 @@ const AllServicesTableClient = ({
 
       if (
         !matchesRegular &&
+        !matchesExteriorDetail &&
         !matchesPremium &&
         !matchesPremiumPlus &&
         !matchesExterior &&
         !matchesAddOn &&
+        !matchesMiniDetail &&
+        !matchesHandWax &&
+        !matchesEngineBay &&
         !matchesComplete &&
         !matchesInterior &&
         !matchesPaint
