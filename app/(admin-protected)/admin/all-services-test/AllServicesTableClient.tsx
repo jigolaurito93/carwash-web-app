@@ -68,6 +68,8 @@ const AllServicesTableClient = ({
   const [exteriorWashSub, setExteriorWashSub] = useState(false);
   const [paintProtectionSub, setPaintProtectionSub] = useState(false);
   const [addOnSub, setAddOnSub] = useState(false);
+  const [handWaxSub, setHandWaxSub] = useState(false);
+  const [engineBaySub, setEngineBaySub] = useState(false);
   const [completeDetailSub, setCompleteDetailSub] = useState(false);
   const [interiorDetailSub, setInteriorDetailSub] = useState(false);
   const subcategoryDropdownRef = useRef<HTMLDivElement>(null);
@@ -164,6 +166,8 @@ const AllServicesTableClient = ({
       setRegularSub(false);
       setPremiumSub(false);
       setAddOnSub(false);
+      setHandWaxSub(false);
+      setEngineBaySub(false);
       setCompleteDetailSub(false);
       setInteriorDetailSub(false);
     }
@@ -286,6 +290,18 @@ const AllServicesTableClient = ({
       },
       { key: "add_on", label: "Add-on", state: addOnSub, setter: setAddOnSub },
       {
+        key: "hand_wax",
+        label: "Hand Wax",
+        state: handWaxSub,
+        setter: setHandWaxSub,
+      },
+      {
+        key: "engine_bay_cleaning",
+        label: "Engine Bay",
+        state: engineBaySub,
+        setter: setEngineBaySub,
+      },
+      {
         key: "complete_detail",
         label: "Complete Detail",
         state: completeDetailSub,
@@ -353,6 +369,9 @@ const AllServicesTableClient = ({
     if (interiorDetailSub) selected.push("Int Detail");
     if (paintProtectionSub) selected.push("Paint Protection");
     if (exteriorWashSub) selected.push("Exterior Wash");
+    if (handWaxSub) selected.push("Hand Wax");
+    if (engineBaySub) selected.push("Engine Bay");
+
     return selected.length ? selected.join(", ") : "All Subcats";
   };
 
@@ -388,6 +407,9 @@ const AllServicesTableClient = ({
       const matchesPremium =
         premiumSub && serviceSubcategory === "premium_wash";
       const matchesAddOn = addOnSub && serviceSubcategory === "add_on";
+      const matchesHandWax = handWaxSub && serviceSubcategory === "hand_wax";
+      const matchesEngineBay =
+        engineBaySub && serviceSubcategory === "engine_bay_cleaning";
       const matchesComplete =
         completeDetailSub && serviceSubcategory === "complete_detail";
       const matchesExterior =
