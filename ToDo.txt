@@ -29,6 +29,9 @@ To Do:
         DONE - create modal has unlimited height 
         - Fix UI
         DONE - Add Toast to UI
+        - Dynamic Modal for services page
+        - Scheduler for appointments
+        - Assign button styling
     
     Main Dashboard:
         DONE - Display name on main page
