@@ -51,24 +51,25 @@ export default async function DisplayServices() {
     );
   }
 
-  // Filter category_id === 1 and get unique package_ids SORTED
-  const category1Packages = serviceCard
-    .filter((service) => service.services_packages?.categories?.id === 1)
-    .reduce(
-      (acc, service) => {
+  // Helper to get sorted packages for any category
+  const getCategoryPackages = (categoryId: number) =>
+    (serviceCard as any[])
+      .filter(
+        (service) => service.services_packages?.categories?.id === categoryId,
+      )
+      .reduce((acc: { pkgId: number; sortOrder: number }[], service: any) => {
         const pkgId = service.package_id;
         const pkgSortOrder = service.services_packages?.sort_order || 999;
         if (!acc.find((p) => p.pkgId === pkgId)) {
           acc.push({ pkgId, sortOrder: pkgSortOrder });
         }
         return acc;
-      },
-      [] as { pkgId: number; sortOrder: number }[],
-    )
-    .sort((a, b) => a.sortOrder - b.sortOrder)
-    .map((item) => item.pkgId);
+      }, [])
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .map((item) => item.pkgId);
 
-  console.log("Category 1 unique packages:", category1Packages);
+  const washPackages = getCategoryPackages(1); // Regular, Premium, etc.
+  const detailingPackages = getCategoryPackages(3); // Detailing services
 
   return (
     <div className="flex flex-col px-4 pt-20 pb-32">
@@ -77,10 +78,25 @@ export default async function DisplayServices() {
         Services and Pricing
       </div>
 
+      {/* Wash Services (category 1) */}
       <div className="max-w-9xl mx-auto grid gap-7 px-4 py-10 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-        {category1Packages.map((packageId) => (
+        {washPackages.map((packageId) => (
           <ServicesCard3
-            key={packageId}
+            key={`wash-${packageId}`}
+            services={serviceCard}
+            packageId={packageId}
+          />
+        ))}
+      </div>
+
+      {/* Detailing Services (category 3) */}
+      <div className="mx-auto py-10 font-lexend text-xl md:text-3xl">
+        Detailing Services
+      </div>
+      <div className="max-w-9xl mx-auto grid gap-7 px-4 pb-20 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+        {detailingPackages.map((packageId) => (
+          <ServicesCard3
+            key={`detail-${packageId}`}
             services={serviceCard}
             packageId={packageId}
           />
