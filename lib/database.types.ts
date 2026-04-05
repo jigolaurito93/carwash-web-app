@@ -117,3 +117,25 @@ export interface Database {
     };
   };
 }
+
+// Interface for the "services_packages" table, which is related to "all_services"
+export interface ServicesPackage {
+  name: string | null;
+  types: string[] | null;
+  description: string | null;
+  sort_order: number | null;
+  categories: {
+    id: number;
+    name: string | null;
+  } | null;
+}
+
+export interface AllService {
+  package_id: number;
+  name: string | null;
+  price: string | null;
+  size?: string | null;
+  is_active: boolean;
+  sort_order: number | null;
+  services_packages: ServicesPackage | null;
+}

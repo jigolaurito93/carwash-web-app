@@ -1,7 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
 import ServicesCard3 from "@/components/services/ServicesCard3";
+import ServicesCard4 from "@/components/services/ServicesCard4";
 import { cookies } from "next/headers";
-import type { Database } from "@/lib/database.types";
+import type { AllService, Database } from "@/lib/database.types";
 
 export default async function DisplayServices() {
   const cookieStore = await cookies();
@@ -22,7 +23,7 @@ export default async function DisplayServices() {
     },
   );
 
-  const { data: serviceCard, error } = await supabase
+  const { data: services, error } = await supabase
     .from("all_services")
     .select(
       `
@@ -39,7 +40,7 @@ export default async function DisplayServices() {
     .eq("is_active", true)
     .order("sort_order");
 
-  if (error || !serviceCard?.length) {
+  if (error || !services?.length) {
     return (
       <div className="flex flex-col px-4 pt-20 pb-32">
         <div className="fixed top-0 left-0 h-20 w-full bg-black" />
@@ -51,11 +52,12 @@ export default async function DisplayServices() {
     );
   }
 
-  // Helper to get sorted packages for any category
+  // Get sorted package IDs by category
   const getCategoryPackages = (categoryId: number) =>
-    (serviceCard as any[])
+    services
       .filter(
-        (service) => service.services_packages?.categories?.id === categoryId,
+        (service: AllService) =>
+          service.services_packages?.categories?.id === categoryId,
       )
       .reduce((acc: { pkgId: number; sortOrder: number }[], service: any) => {
         const pkgId = service.package_id;
@@ -68,40 +70,83 @@ export default async function DisplayServices() {
       .sort((a, b) => a.sortOrder - b.sortOrder)
       .map((item) => item.pkgId);
 
-  const washPackages = getCategoryPackages(1); // Regular, Premium, etc.
-  const detailingPackages = getCategoryPackages(3); // Detailing services
+  const washPackages = getCategoryPackages(1);
+  const detailingPackages = getCategoryPackages(3);
+
+  // Other Services (category 2) - grouped & sorted
+  const otherServicesCards = services
+    .filter((service: any) => service.services_packages?.categories?.id === 2)
+    .reduce((acc: any[], service: any) => {
+      const pkg = service.services_packages;
+      const existingCard = acc.find((card: any) => card.title === pkg?.name);
+
+      if (existingCard) {
+        existingCard.services.push({
+          service: service.name || "",
+          price: service.price?.toString() || "0",
+        });
+      } else {
+        acc.push({
+          title: pkg?.name || "Unknown",
+          subtitle: pkg?.description || "",
+          sortOrder: pkg?.sort_order || 999,
+          services: [
+            {
+              service: service.name || "",
+              price: service.price?.toString() || "0",
+            },
+          ],
+        });
+      }
+      return acc;
+    }, [])
+    .sort((a: any, b: any) => (a.sortOrder || 999) - (b.sortOrder || 999));
 
   return (
     <div className="flex flex-col px-4 pt-20 pb-32">
       <div className="fixed top-0 left-0 h-20 w-full bg-black" />
-      <div className="mx-auto py-10 font-lexend text-xl md:text-3xl">
-        Services and Pricing
-      </div>
 
-      {/* Wash Services (category 1) */}
-      <div className="max-w-9xl mx-auto grid gap-7 px-4 py-10 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+      <h1 className="mx-auto py-10 font-lexend text-xl md:text-3xl">
+        Services and Pricing
+      </h1>
+
+      {/* Wash Services */}
+      <section className="max-w-9xl mx-auto grid gap-7 px-4 py-10 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
         {washPackages.map((packageId) => (
           <ServicesCard3
             key={`wash-${packageId}`}
-            services={serviceCard}
+            services={services}
             packageId={packageId}
           />
         ))}
-      </div>
+      </section>
 
-      {/* Detailing Services (category 3) */}
-      <div className="mx-auto py-10 font-lexend text-xl md:text-3xl">
+      {/* Other Services */}
+      <h2 className="mx-auto py-10 font-lexend text-xl md:text-3xl">
+        Other Services
+      </h2>
+      <section className="max-w-9xl mx-auto grid gap-7 px-4 pb-20 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+        {otherServicesCards.map((serviceCard: any, index: number) => (
+          <ServicesCard4
+            key={`${serviceCard.title}-${index}`}
+            serviceCard={serviceCard}
+          />
+        ))}
+      </section>
+
+      {/* Detailing Services */}
+      <h2 className="mx-auto py-10 font-lexend text-xl md:text-3xl">
         Detailing Services
-      </div>
-      <div className="max-w-9xl mx-auto grid gap-7 px-4 pb-20 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+      </h2>
+      <section className="max-w-9xl mx-auto grid gap-7 px-4 pb-20 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
         {detailingPackages.map((packageId) => (
           <ServicesCard3
             key={`detail-${packageId}`}
-            services={serviceCard}
+            services={services}
             packageId={packageId}
           />
         ))}
-      </div>
+      </section>
     </div>
   );
 }
