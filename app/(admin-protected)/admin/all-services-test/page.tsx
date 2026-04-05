@@ -28,13 +28,14 @@ export default async function AllServicesTestPage() {
     .from("all_services")
     .select(
       `
+    *,
+    services_packages!package_id (
       *,
-      services_packages!package_id (
-        name,
-        categories!category_id (name)
-      )
-    `,
+      categories!category_id (name)
     )
+  `,
+    )
+    .eq("is_active", true) // ✅ Only active services
     .order("name");
 
   if (error) {

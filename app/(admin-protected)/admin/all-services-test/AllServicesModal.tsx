@@ -5,7 +5,14 @@ import { toast } from "sonner";
 import { FiX } from "react-icons/fi";
 import type { Database } from "@/lib/database.types";
 
-type ServiceRow = Database["public"]["Tables"]["all_services"]["Row"];
+type ServiceRow = Database["public"]["Tables"]["all_services"]["Row"] & {
+  services_packages?: {
+    name: string;
+    categories?: { name: string };
+  } | null;
+  size: string;
+  is_active: boolean;
+};
 
 interface AllServicesModalProps {
   service: ServiceRow | null;
@@ -22,6 +29,7 @@ export default function AllServicesModal({
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [size, setSize] = useState("");
+  const [isActive, setIsActive] = useState(true);
 
   useEffect(() => {
     if (service) {
@@ -32,10 +40,12 @@ export default function AllServicesModal({
           : service.price || 0,
       );
       setSize(""); // services_all view doesn't have 'size' field
+      setIsActive(service.is_active || false);
     } else {
       setName("");
       setPrice(0);
       setSize("");
+      setIsActive(true);
     }
   }, [service]);
 
@@ -114,6 +124,20 @@ export default function AllServicesModal({
                 placeholder="small"
               />
             </div>
+          </div>
+
+          <div>
+            <label className="flex cursor-pointer items-center gap-3">
+              <input
+                type="checkbox"
+                checked={isActive}
+                onChange={(e) => setIsActive(e.target.checked)}
+                className="h-5 w-5 rounded border-gray-300 text-black focus:ring-black"
+              />
+              <span className="text-sm font-medium text-gray-700">
+                Service is Active (visible to customers)
+              </span>
+            </label>
           </div>
 
           <div className="flex justify-end gap-4 pt-4">

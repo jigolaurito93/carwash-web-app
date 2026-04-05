@@ -12,11 +12,18 @@ import AllServicesModal from "./AllServicesModal";
 
 type AllServiceRow = Database["public"]["Tables"]["all_services"]["Row"] & {
   services_packages: {
-    name: string; // subcategory = "regular_wash"
+    id: number;
+    name: string; // "regular_wash"
+    types: string;
+    description: string;
+    category_id: number;
     categories: {
-      name: string; // category = "main_service"
+      name: string; // "main_service"
     } | null;
   } | null;
+  size: string; // Now included!
+  is_active: boolean;
+  sort_order: number;
 };
 
 const AllServicesTableClient = ({
@@ -530,10 +537,11 @@ const AllServicesTableClient = ({
         <div className="relative" ref={categoryDropdownRef}>
           <button
             onClick={() => toggleDropdown("category")}
-            className={`flex cursor-pointer items-center gap-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all ${allServices || mainServices || otherServices || detailingServices
+            className={`flex cursor-pointer items-center gap-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all ${
+              allServices || mainServices || otherServices || detailingServices
                 ? "bg-black text-white shadow-md"
                 : "border border-gray-200 bg-white text-gray-700 hover:bg-gray-100"
-              }`}
+            }`}
           >
             Services
             <FiChevronDown
@@ -601,16 +609,17 @@ const AllServicesTableClient = ({
         <div className="relative" ref={subcategoryDropdownRef}>
           <button
             onClick={() => toggleDropdown("subcategory")}
-            className={`flex cursor-pointer items-center gap-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all ${allSubcategories ||
-                regularSub ||
-                premiumSub ||
-                addOnSub ||
-                completeDetailSub ||
-                interiorDetailSub ||
-                paintProtectionSub
+            className={`flex cursor-pointer items-center gap-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all ${
+              allSubcategories ||
+              regularSub ||
+              premiumSub ||
+              addOnSub ||
+              completeDetailSub ||
+              interiorDetailSub ||
+              paintProtectionSub
                 ? "bg-black text-white shadow-md"
                 : "border border-gray-200 bg-white text-gray-700 hover:bg-gray-100"
-              }`}
+            }`}
           >
             Category
             <FiChevronDown
@@ -647,10 +656,11 @@ const AllServicesTableClient = ({
         <div className="relative" ref={priceDropdownRef}>
           <button
             onClick={() => toggleDropdown("price")}
-            className={`flex cursor-pointer items-center gap-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all ${priceRange !== "all"
+            className={`flex cursor-pointer items-center gap-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all ${
+              priceRange !== "all"
                 ? "bg-black text-white shadow-md"
                 : "border border-gray-200 bg-white text-gray-700 hover:bg-gray-100"
-              }`}
+            }`}
           >
             {getPriceButtonText()}
             <FiChevronDown
@@ -723,6 +733,7 @@ const AllServicesTableClient = ({
               <th className="px-4 py-3 font-semibold text-gray-700">
                 Subcategory
               </th>
+              <th className="px-4 py-3 font-semibold text-gray-700">Active</th>
               <th className="px-4 py-3 text-right font-bold text-gray-700">
                 Actions
               </th>
@@ -755,6 +766,7 @@ const AllServicesTableClient = ({
                   <td className="px-4 py-3 text-gray-500">
                     {formatSubCategory(row)}
                   </td>
+                  <td>{row.is_active ? "✅" : "❌"}</td>
                   <td className="px-4 py-3">
                     <div className="ml-auto flex justify-end gap-2 font-questrial tracking-widest">
                       <button
