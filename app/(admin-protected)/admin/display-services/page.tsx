@@ -13,7 +13,7 @@ import {
 import ServicesCard from "@/components/services/ServicesCard";
 import ServicesCard2 from "@/components/services/ServicesCard2";
 
-const ServicesPage = () => {
+const DisplayServices = () => {
   return (
     <div className="flex flex-col px-4 pt-20 pb-32">
       {/* Black bar on top of navbar */}
@@ -57,4 +57,4 @@ const ServicesPage = () => {
   );
 };
 
-export default ServicesPage;
+export default DisplayServices;
