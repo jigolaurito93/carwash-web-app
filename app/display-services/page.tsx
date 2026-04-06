@@ -1,3 +1,11 @@
+import React from "react";
+
+const DisplayServicesPage = () => {
+  return <div>DisplayServicesPage</div>;
+};
+
+export default DisplayServicesPage;
+
 // import { createServerClient } from "@supabase/ssr";
 // import ServicesCard3 from "@/components/services/ServicesCard3";
 // import ServicesCard4 from "@/components/services/ServicesCard4";
