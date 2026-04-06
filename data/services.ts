@@ -277,4 +277,4 @@ export const SUBCATEGORY_NAMES = {
 } as const;
 
 export type CategoryId = (typeof CATEGORIES)[number]["id"];
-export type SubcategoryId = (typeof SUBCATEGORIES)[number]["id"];
+// export type SubcategoryId = (typeof SUBCATEGORIES)[number]["id"];
