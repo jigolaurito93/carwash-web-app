@@ -1,8 +1,10 @@
+import { FaCheck } from "react-icons/fa";
+
 type CustomerService = {
   id: number;
   name: string;
   description?: string;
-  features: string | Array<{ service: string; price: number }>;
+  features: string[];
   price_small?: number | null;
   price_medium?: number | null;
   price_large?: number | null;
@@ -19,71 +21,37 @@ interface TieredCardProps {
 
 export function TieredCard({ service }: TieredCardProps) {
   return (
-    <div className="mb-12 rounded-2xl border border-gray-100 bg-white p-8 shadow-xl transition-all hover:shadow-2xl">
-      {/* Header */}
-      <div className="mb-6 flex items-start justify-between">
-        <h2 className="flex-1 pr-4 text-3xl font-bold text-gray-900">
-          {service.name}
-        </h2>
+    <div className="mx-auto flex w-full max-w-80 flex-col gap-5 rounded-md border border-black/30 p-4 pb-10 shadow-lg sm:max-w-300 md:max-w-90">
+      <header className="shrink-0 rounded-md bg-black/10 p-2 text-black">
+        <h3 className="text-center font-lexend text-xl">{service.name}</h3>
         {service.description && (
-          <div className="bg-liner-to-r rounded-full from-blue-500 to-purple-600 px-4 py-1 text-sm font-semibold text-white">
+          <p className="px-2 text-center font-lexend text-xs">
             {service.description}
-          </div>
+          </p>
         )}
-      </div>
+      </header>
 
-      {/* Features - FIXED split */}
-      {typeof service.features === "string" && service.features && (
-        <div className="mb-8">
-          <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-800">
-            What's Included
-            <span className="rounded-full bg-green-100 px-2 py-1 text-sm text-green-800">
-              Everything above +
-            </span>
-          </h3>
-          <ul className="list-none space-y-2 text-gray-700">
-            {service.features
-              .split("\n") // ✅ Fixed: single quotes, not escaped
-              .filter((line) => line.trim())
-              .map((feature, index) => (
-                <li
-                  key={index}
-                  className="relative flex items-start gap-3 pl-6 before:absolute before:top-1 before:left-0 before:h-2 before:w-2 before:rounded-full before:bg-blue-500"
-                >
-                  <span>{feature.trim()}</span>
-                </li>
-              ))}
-          </ul>
+      <ul className="flex min-h-0 flex-1 flex-col gap-2">
+        {service.features?.map((feature: string) => (
+          <li key={feature} className="flex items-center gap-3 pl-3">
+            <FaCheck className="shrink-0 text-xl text-yellow-500" />
+            <span className="font-questrial text-sm">{feature}</span>
+          </li>
+        ))}
+      </ul>
+
+      <div className="space-y-2">
+        <div className="flex justify-between px-4 font-questrial">
+          <span>Most Cars / Sedan:</span>
+          <span>${service.price_small}</span>
         </div>
-      )}
-
-      {/* Pricing Grid */}
-      <div className="grid grid-cols-1 gap-6 rounded-xl bg-linear-to-r from-gray-50 to-blue-50 p-6 md:grid-cols-3">
-        <div className="text-center">
-          <div className="mb-1 text-sm font-medium tracking-wide text-gray-500 uppercase">
-            Most Cars / Sedan
-          </div>
-          <div className="text-3xl font-bold text-gray-900">
-            ${service.price_small?.toFixed(2) || "—"}
-          </div>
+        <div className="flex justify-between px-4 font-questrial">
+          <span>Mid-Size / Crossover:</span>
+          <span>${service.price_medium}</span>
         </div>
-
-        <div className="text-center">
-          <div className="mb-1 text-sm font-medium text-gray-500 uppercase">
-            Mid-Size / Crossover
-          </div>
-          <div className="text-3xl font-bold text-gray-900">
-            ${service.price_medium?.toFixed(2) || "—"}
-          </div>
-        </div>
-
-        <div className="text-center">
-          <div className="mb-1 text-sm font-medium text-gray-500 uppercase">
-            Full-Size / SUV
-          </div>
-          <div className="text-3xl font-bold text-gray-900">
-            ${service.price_large?.toFixed(2) || "—"}
-          </div>
+        <div className="flex justify-between px-4 font-questrial">
+          <span>Full-Size / SUV:</span>
+          <span>${service.price_large}</span>
         </div>
       </div>
     </div>

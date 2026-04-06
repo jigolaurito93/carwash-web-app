@@ -75,3 +75,9 @@ Find Out:
 1. const router = useRouter();
    const isEdit = !!service;
          - !! is double negation to convert any value to a boolean.
+
+=============================================================================================================
+servicespage
+    - Find out if its right to put category: 'main' | 'detailing' | 'other'; if im gonna add a new category in the future using UI
+
+- Separate actions for fetching data from supabase

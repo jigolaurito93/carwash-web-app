@@ -24,41 +24,26 @@ export function OtherCard({ service }: OtherCardProps) {
       : [];
 
   return (
-    <div className="mb-12 rounded-2xl border border-gray-100 bg-white p-8 shadow-xl transition-all hover:shadow-2xl">
-      {/* Header */}
-      <div className="mb-6 flex items-start justify-between">
-        <h2 className="flex-1 pr-4 text-3xl font-bold text-gray-900">
-          {service.name}
-        </h2>
+    <div className="mx-auto flex w-full max-w-80 flex-col gap-5 rounded-md border border-black/30 p-4 pb-10 shadow-lg sm:max-w-300 md:max-w-90">
+      <div className="flex flex-col gap-1 rounded-md bg-black/10 px-2 py-2">
+        <h3 className="text-center font-lexend text-xl">{service.name}</h3>
         {service.description && (
-          <div className="rounded-full bg-linear-to-r from-green-500 to-emerald-600 px-4 py-1 text-sm font-semibold text-white">
+          <p className="px-2 text-center font-lexend text-xs">
             {service.description}
-          </div>
+          </p>
         )}
       </div>
-
-      {/* Price List */}
-      <div className="mb-8 space-y-3">
-        {prices.map((item, index) => (
+      <div className="flex flex-col gap-2 px-3 lg:px-3">
+        {prices.map((other, i) => (
           <div
-            key={index}
-            className="group flex items-center justify-between rounded-xl border border-gray-200 px-6 py-4 transition-all hover:bg-gray-50"
+            key={`${other.service}-${i}`}
+            className="flex justify-between font-questrial text-sm"
           >
-            <span className="text-lg font-semibold text-gray-900 group-hover:text-gray-800">
-              {item.service}
-            </span>
-            <span className="rounded-lg bg-linear-to-r from-gray-900 to-gray-700 px-4 py-2 text-2xl font-bold text-gray-900 shadow-md">
-              ${Number(item.price).toFixed(2)}
-            </span>
+            <span>{other.service}</span>
+            <span>${other.price}</span>
           </div>
         ))}
       </div>
-
-      {prices.length === 0 && (
-        <div className="py-12 text-center text-gray-500">
-          No pricing available
-        </div>
-      )}
     </div>
   );
 }
