@@ -21,11 +21,11 @@
 // }
 
 export default function AllServicesModal() {
-//     {
-//   service,
-//   onClose,
-//   onSuccess,
-// }: AllServicesModalProps
+  //     {
+  //   service,
+  //   onClose,
+  //   onSuccess,
+  // }: AllServicesModalProps
   //   const [saving, setSaving] = useState(false);
   //   const [name, setName] = useState("");
   //   const [price, setPrice] = useState(0);

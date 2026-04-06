@@ -1,3 +1,11 @@
+import React from "react";
+
+const AdminServicesPage = () => {
+  return <div>AdminServicesPage</div>;
+};
+
+export default AdminServicesPage;
+
 // import { supabase } from "@/lib/supabase";
 // import ServicesTable from "./ServicesTable";
 // import OtherServicesTable from "./OtherServices";

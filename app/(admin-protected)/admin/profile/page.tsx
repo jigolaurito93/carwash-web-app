@@ -1,3 +1,11 @@
+import React from "react";
+
+const AdminProfilePage = () => {
+  return <div>AdminProfilePage</div>;
+};
+
+export default AdminProfilePage;
+
 // "use client";
 
 // import { useEffect, useState } from "react";

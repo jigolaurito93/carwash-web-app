@@ -1,3 +1,10 @@
+import React from "react";
+
+const AllServicesTable = () => {
+  return <div>AllServicesTable</div>;
+};
+
+export default AllServicesTable;
 // "use client";
 
 // import { FiPlusCircle, FiChevronDown } from "react-icons/fi";
