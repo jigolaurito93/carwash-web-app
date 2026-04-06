@@ -1,3 +1,11 @@
+import React from "react";
+
+const AllServicesTableClient = () => {
+  return <div>AllServicesTableClient</div>;
+};
+
+export default AllServicesTableClient;
+
 // "use client";
 
 // import { FiPlusCircle, FiChevronDown } from "react-icons/fi";
@@ -527,13 +535,12 @@
 //         </button>
 //       </div>
 
-//       {/* Filter Buttons - UPDATED */}
 //       <div className="mb-1 font-questrial text-sm font-bold tracking-wider text-gray-400">
 //         Filter
 //       </div>
 //       <hr />
 //       <div className="flex flex-wrap gap-2 rounded-xl bg-gray-50 p-4">
-//         {/* Category Dropdown (unchanged) */}
+
 //         <div className="relative" ref={categoryDropdownRef}>
 //           <button
 //             onClick={() => toggleDropdown("category")}
@@ -605,7 +612,6 @@
 //           )}
 //         </div>
 
-//         {/* Subcategory Dropdown (FIXED) */}
 //         <div className="relative" ref={subcategoryDropdownRef}>
 //           <button
 //             onClick={() => toggleDropdown("subcategory")}
@@ -652,7 +658,6 @@
 //           )}
 //         </div>
 
-//         {/* NEW: Price Range Dropdown */}
 //         <div className="relative" ref={priceDropdownRef}>
 //           <button
 //             onClick={() => toggleDropdown("price")}
@@ -720,7 +725,6 @@
 //       </div>
 //       <hr />
 
-//       {/* Table (unchanged) */}
 //       <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
 //         <table className="min-w-full divide-y divide-gray-200 text-left text-sm">
 //           <thead className="bg-gray-50 font-questrial">
