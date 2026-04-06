@@ -1,6 +1,16 @@
+'use server";';
+
+//DELETE
+import { revalidatePath } from "next/cache";
+export async function createAppointment() {
+  revalidatePath("/admin/appointment");
+  return { success: true };
+}
+//DELETE
+
 // "use server";
 
-// import { revalidatePath } from "next/cache";
+// import { revalidatePth } from "next/cache";
 // // 1. USE THE SERVER CLIENT (SSR)
 // import { createServerClient } from "@supabase/ssr";
 // import { cookies } from "next/headers";
