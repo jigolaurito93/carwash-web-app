@@ -1,3 +1,10 @@
+import React from "react";
+
+const OtherServicesModal = () => {
+  return <div>OtherServicesModal</div>;
+};
+
+export default OtherServicesModal;
 // "use client";
 
 // import { useState, FormEvent } from "react";
