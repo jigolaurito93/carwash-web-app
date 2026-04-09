@@ -89,8 +89,18 @@ export default async function AdminServicesPage() {
               <div className="mx-auto h-1 w-24 rounded-full bg-linear-to-r from-emerald-500 to-teal-600"></div>
             </div>
             <section className="mx-auto grid max-w-375 gap-8 px-4 pb-20 sm:max-w-200 sm:grid-cols-2 lg:max-w-300 lg:grid-cols-3 2xl:max-w-350 2xl:grid-cols-4">
-              {detailingServices.map((service) => (
-                <TieredCard key={service.id} service={service} />
+              {detailingServices.map((service, i) => (
+                <div key={i}>
+                  <div className="mb-4 flex justify-end gap-4">
+                    <div className="rounded border bg-red-600 px-4 py-2 text-white">
+                      Delete
+                    </div>
+                    <div className="rounded border bg-green-600 px-4 py-2 text-white">
+                      Edit
+                    </div>
+                  </div>
+                  <TieredCard key={service.id} service={service} />
+                </div>
               ))}
             </section>
           </section>
