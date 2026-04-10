@@ -69,7 +69,7 @@ export default async function ServicesPageTest() {
               {category.name}
             </h2>
 
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
               {categoryServices.map((service) => {
                 const isLayout1 = category.card_layout === "layout1";
                 const isLayout2 = category.card_layout === "layout2";
