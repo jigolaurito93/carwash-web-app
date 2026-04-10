@@ -1,112 +1,110 @@
-import { supabase } from "@/lib/supabase";
-import ServicesCard2 from "@/components/services/ServicesCard2";
-import ServicesCard from "@/components/services/ServicesCard";
+// app/services1/page.tsx
+import Layout1Card from "@/components/services/Layout1Card";
+import Layout2Card from "@/components/services/Layout2Card";
+import { ServiceRow } from "@/lib/database.types";
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
 
-const TestServices = async () => {
-  // Fetch main services
-  const { data: services, error: servicesError } = await supabase
-    .from("services")
+export default async function ServicesPageTest() {
+  const cookieStore = await cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            cookieStore.set(name, value, options),
+          );
+        },
+      },
+    },
+  );
+
+  // fetch all categories
+  const { data: categories } = await supabase
+    .from("categories1")
     .select("*")
+    .order("id");
+
+  // fetch all active services and include their category
+  const { data: services }: { data: ServiceRow[] | null } = await supabase
+    .from("services1")
+    .select(`*, categories1(name, card_layout)`)
     .eq("is_active", true)
-    .order("sort_order", { ascending: true });
+    .order("sort_order");
 
-  // Fetch other services
-  const { data: otherServices, error: otherError } = await supabase
-    .from("otherServices")
-    .select("*")
-    .eq("is_active", true)
-    .order("sort_order", { ascending: true });
-
-  // Fetch detailing services
-  const { data: detailingServices, error: detailingError } = await supabase
-    .from("detailingServices")
-    .select("*")
-    .order("sort_order", { ascending: true });
-
-  // Check for errors
-  if (servicesError || otherError || detailingError) {
+  if (!categories?.length) {
     return (
-      <div className="flex items-center justify-center pt-40 text-red-500">
-        Failed to load services.
+      <div className="p-8">
+        <h1 className="mb-8 text-3xl font-bold">Services</h1>
+        <p className="text-gray-500">No categories found.</p>
       </div>
     );
   }
 
-  // Map main services to ServicesCard2 shape
-  const formattedServices = services?.map((s) => ({
-    title: s.name,
-    description: s.subtitle ?? "",
-    features: s.types ?? [],
-    vehicles: {
-      "Most Cars / Sedans": s.price_car ?? 0,
-      "Mid-Size / Crossover": s.price_mid ?? 0,
-      "Full-Size / Large": s.price_full ?? 0,
-    },
-  }));
-
-  // Map otherServices to ServicesCard shape
-  const formattedOtherServices = otherServices?.map((s) => ({
-    title: s.title,
-    subtitle: s.subtitle ?? "",
-    services: s.types ?? [],
-  }));
-
-  // Map detailingServices to ServicesCard shape
-  const formattedDetailingServices = detailingServices?.map((s) => ({
-    title: s.name,
-    description: s.subtitle ?? "",
-    features: s.types ?? [],
-    vehicles: {
-      "Most Cars / Sedans": s.price_car ?? 0,
-      "Mid-Size / Crossover": s.price_mid ?? 0,
-      "Full-Size / Large": s.price_full ?? 0,
-    },
-  }));
-
   return (
-    <div className="flex flex-col px-4 pt-20 pb-32">
-      {/* Black bar on top of navbar */}
-      <div className="fixed top-0 left-0 h-20 w-full bg-black" />
+    <div className="px-8 py-32">
+      <div className="fixed top-0 right-0 left-0 h-20 bg-black" />
+      <h1 className="mb-12 text-3xl font-bold">Services</h1>
 
-      {/* Services and Pricing */}
-      <div className="mx-auto py-10 font-lexend text-xl md:text-3xl">
-        Services and Pricing
-      </div>
-      <div className="max-w-9xl mx-auto grid justify-items-center gap-7 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-        {formattedServices?.map((service, i) => (
-          <ServicesCard2 key={i} serviceCard={service} />
-        ))}
-      </div>
+      {categories.map((category) => {
+        // filter services belonging to this category
+        const categoryServices = services?.filter(
+          (s) => s.category_id === category.id,
+        );
 
-      {/* Other Services */}
-      {formattedOtherServices && formattedOtherServices.length > 0 && (
-        <>
-          <div className="mx-auto py-10 font-lexend text-xl md:text-3xl">
-            Other Services
-          </div>
-          <div className="max-w-9xl mx-auto grid justify-items-center gap-7 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-            {formattedOtherServices.map((service, i) => (
-              <ServicesCard key={i} serviceCard={service} />
-            ))}
-          </div>
-        </>
-      )}
+        // skip rendering section if no services in this category
+        if (!categoryServices?.length) return null;
 
-      {/* Detailing Services */}
-      {formattedDetailingServices && formattedDetailingServices.length > 0 && (
-        <>
-          <div className="mx-auto py-10 font-lexend text-xl md:text-3xl">
-            Detailing Services
-          </div>
-          <div className="max-w-9xl mx-auto grid gap-7 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-            {formattedDetailingServices.map((service, i) => (
-              <ServicesCard2 key={i} serviceCard={service} />
-            ))}
-          </div>
-        </>
-      )}
+        return (
+          <section key={category.id} className="mb-12">
+            <h2
+              id={category.slug}
+              className="mb-6 text-2xl font-bold text-gray-900"
+            >
+              {category.name}
+            </h2>
+
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+              {categoryServices.map((service) => {
+                const isLayout1 = category.card_layout === "layout1";
+                const isLayout2 = category.card_layout === "layout2";
+
+                return (
+                  <div
+                    key={service.id}
+                    className="max-w-80 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-lg transition-shadow hover:shadow-xl"
+                  >
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold text-gray-900">
+                        {service.name}
+                      </h3>
+
+                      {service.description && (
+                        <p className="mt-2 text-gray-600">
+                          {service.description}
+                        </p>
+                      )}
+
+                      {isLayout1 && service.layout1_data && (
+                        <Layout1Card service={service} />
+                      )}
+
+                      {isLayout2 && service.layout2_data && (
+                        <Layout2Card service={service} />
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        );
+      })}
     </div>
   );
-};
-
-export default TestServices;
+}
