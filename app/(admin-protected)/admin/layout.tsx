@@ -41,6 +41,21 @@ export default async function AdminLayout({
           <Link href="/admin/profile" className="block hover:text-yellow-400">
             Account Setting
           </Link>
+          <Link
+            href="/admin/services1test"
+            className="block hover:text-yellow-400"
+          >
+            Display Services
+          </Link>
+          <Link
+            href="/admin/categories1"
+            className="block hover:text-yellow-400"
+          >
+            Edit Categories
+          </Link>
+          <Link href="/admin/services1" className="block hover:text-yellow-400">
+            Edit Services
+          </Link>
         </nav>
 
         {/* This pushes everything below it to the bottom */}
