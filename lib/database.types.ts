@@ -139,3 +139,31 @@ export interface AllService {
   sort_order: number | null;
   services_packages: ServicesPackage | null;
 }
+
+//////////////////////////////////////////////////////////////////////////
+// types.ts
+export type Layout1Data = {
+  includes: string[];
+  small_car_price: number;
+  medium_car_price: number;
+  large_car_price: number;
+};
+
+export type Layout2Data = {
+  items: Record<string, number>;
+};
+
+// This must match your Supabase RLS‑generated type for `services1`
+export type ServiceRow = {
+  id: number;
+  name: string;
+  description: string | null;
+  category_id: number;
+  layout1_data: Layout1Data | null;
+  layout2_data: Layout2Data | null;
+  is_active: boolean;
+  categories1: {
+    name: string;
+    card_layout: "layout1" | "layout2";
+  };
+};
