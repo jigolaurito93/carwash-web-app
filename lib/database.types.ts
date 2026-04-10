@@ -167,3 +167,11 @@ export type ServiceRow = {
     card_layout: "layout1" | "layout2";
   };
 };
+
+// types.ts (or lib/types.ts)
+export type Category = {
+  id: number;
+  name: string;
+  slug: string;
+  card_layout: "layout1" | "layout2";
+};
