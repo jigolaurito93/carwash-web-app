@@ -55,7 +55,7 @@ const GalleryPage = () => {
           </h1>
           <p className="mt-4 font-questrial text-sm text-white/80 sm:text-base lg:text-lg">
             A look behind the shine. Explore real moments from the Onyx Hand
-            Premium Wash experience—from foamy hand washes to flawless finishes.
+            Premium Wash experience from foamy hand washes to flawless finishes.
           </p>
         </div>
       </section>
@@ -68,7 +68,7 @@ const GalleryPage = () => {
               key={image.src}
               type="button"
               onClick={() => setSelectedImage(image)}
-              className="group relative aspect-[4/3] overflow-hidden rounded-lg border border-white/10 bg-black/40 shadow-lg transition-transform duration-300 hover:-translate-y-1 hover:border-yellow-400/80"
+              className="group relative aspect-4/3 overflow-hidden rounded-lg border border-white/10 bg-black/40 shadow-lg transition-transform duration-300 hover:-translate-y-1 hover:border-yellow-400/80"
             >
               <div className="relative h-full w-full">
                 <Image
@@ -79,7 +79,7 @@ const GalleryPage = () => {
                   className="object-cover object-center transition-transform duration-500 group-hover:scale-110"
                 />
               </div>
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-90" />
+              <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/80 via-black/10 to-transparent opacity-90" />
               <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col gap-1 p-4 text-left">
                 <div className="font-lexend text-sm font-semibold tracking-tight sm:text-base">
                   {image.label}
@@ -103,7 +103,7 @@ const GalleryPage = () => {
             className="relative w-full max-w-4xl rounded-lg border border-white/15 bg-black/60 p-3 shadow-2xl sm:p-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="relative aspect-[16/9] w-full overflow-hidden rounded-md">
+            <div className="relative aspect-video w-full overflow-hidden rounded-md">
               <Image
                 src={selectedImage.src}
                 alt={selectedImage.alt}

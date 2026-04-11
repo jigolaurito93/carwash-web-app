@@ -47,29 +47,40 @@ export default async function ServicesPageTest() {
   }
 
   return (
-    <div className="px-8 py-32">
-      <div className="fixed top-0 right-0 left-0 h-20 bg-black" />
-      <h1 className="mb-12 text-3xl font-bold">Services</h1>
+    <main className="min-h-screen bg-[#121212] text-white">
+      {/* Title */}
+      <section className="px-6 pt-20 sm:px-10 lg:px-24 lg:py-24">
+        <div className="mx-auto max-w-4xl text-center">
+          <h1 className="font-lexend text-4xl font-extrabold tracking-tight text-yellow-400 drop-shadow-2xl sm:text-5xl lg:text-6xl">
+            Services
+          </h1>
+          <p className="mt-4 font-questrial text-sm text-white/80 sm:text-base lg:text-lg">
+            Behind every perfect finish. See the full range of our premium
+            washes, detailing services, and add-ons designed to make your car
+            look showroom-ready.
+          </p>
+        </div>
+      </section>
 
       {categories.map((category) => {
-        // filter services belonging to this category
         const categoryServices = services?.filter(
           (s) => s.category_id === category.id,
         );
 
-        // skip rendering section if no services in this category
         if (!categoryServices?.length) return null;
 
         return (
-          <section key={category.id} className="mb-12">
+          <section key={category.id} className="px-4 py-20">
+            {/* Category Title */}
             <h2
               id={category.slug}
-              className="mb-6 text-2xl font-bold text-gray-900"
+              className="mb-12 text-center font-lexend text-3xl font-extrabold tracking-tight text-white drop-shadow-2xl"
             >
               {category.name}
             </h2>
 
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+            {/* Service Cards */}
+            <div className="mx-auto grid max-w-7xl grid-cols-1 gap-7 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
               {categoryServices.map((service) => {
                 const isLayout1 = category.card_layout === "layout1";
                 const isLayout2 = category.card_layout === "layout2";
@@ -77,26 +88,66 @@ export default async function ServicesPageTest() {
                 return (
                   <div
                     key={service.id}
-                    className="max-w-80 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-lg transition-shadow hover:shadow-xl"
+                    className="hover:shadow-3xl grid min-h-125 w-full grid-rows-[96px_1fr_120px] overflow-hidden rounded-2xl bg-[#1c1c1c] shadow-2xl backdrop-blur-sm transition-all"
                   >
-                    <div className="p-6">
-                      <h3 className="text-xl font-bold text-gray-900">
-                        {service.name}
-                      </h3>
+                    {/* Row 1: Header */}
+                    <div className="row-start-1 flex h-24 shrink-0 items-center justify-center bg-yellow-400 p-4">
+                      <div className="space-y-1 text-center">
+                        <h3 className="font-lexend text-xl leading-tight font-bold text-gray-900">
+                          {service.name}
+                        </h3>
+                        {service.description && (
+                          <p className="font-lexend text-xs leading-tight text-gray-700">
+                            {service.description}
+                          </p>
+                        )}
+                      </div>
+                    </div>
 
-                      {service.description && (
-                        <p className="mt-2 text-gray-600">
-                          {service.description}
-                        </p>
-                      )}
-
+                    {/* Row 2: Features only */}
+                    <div className="row-start-2 overflow-y-auto p-6">
                       {isLayout1 && service.layout1_data && (
-                        <Layout1Card service={service} />
+                        <div className="space-y-2">
+                          <h4 className="text-sm font-semibold tracking-wide text-white">
+                            What's included
+                          </h4>
+                          <ul className="list-inside list-disc space-y-1 pr-2 text-sm text-white/90">
+                            {service.layout1_data?.includes
+                              ?.filter((i: string) => i.trim())
+                              .map((item, idx) => (
+                                <li key={idx}>{item.trim()}</li>
+                              ))}
+                          </ul>
+                        </div>
                       )}
+                    </div>
 
-                      {isLayout2 && service.layout2_data && (
-                        <Layout2Card service={service} />
-                      )}
+                    {/* Row 3: Prices - PERFECTLY ALIGNED */}
+                    <div className="row-start-3 flex flex-col justify-center space-y-1 border-t border-white/10 bg-gray-900/50 p-6 pt-4">
+                      <div className="flex justify-between text-xs">
+                        <span className="font-medium text-gray-400">
+                          Most Cars / Sedans:
+                        </span>
+                        <span className="font-bold text-white">
+                          ${service.layout1_data?.small_car_price?.toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span className="font-medium text-gray-400">
+                          Mid-Size / Crossover:
+                        </span>
+                        <span className="font-bold text-white">
+                          ${service.layout1_data?.medium_car_price?.toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span className="font-medium text-gray-400">
+                          Full-Size / Large:
+                        </span>
+                        <span className="font-bold text-white">
+                          ${service.layout1_data?.large_car_price?.toFixed(2)}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 );
@@ -105,6 +156,6 @@ export default async function ServicesPageTest() {
           </section>
         );
       })}
-    </div>
+    </main>
   );
 }

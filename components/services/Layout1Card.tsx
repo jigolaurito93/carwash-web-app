@@ -9,35 +9,41 @@ export default function Layout1Card({ service }: Props) {
   const data = service.layout1_data;
 
   return (
-    <div className="mt-4">
-      <h4 className="mb-2 text-sm font-semibold text-gray-800">
-        What&apos;s included
-      </h4>
-      <ul className="mb-3 list-inside list-disc text-sm text-gray-600">
-        {data?.includes
-          .filter((i: string) => i.trim())
-          .map((item, idx) => (
-            <li key={idx}>{item.trim()}</li>
-          ))}
-      </ul>
+    <div className="flex h-full flex-col p-6">
+      {/* Features */}
+      <div className="flex-1 space-y-3 overflow-y-auto pr-2 pb-12">
+        <h4 className="text-sm font-semibold tracking-wide text-white">
+          What's included
+        </h4>
+        <ul className="list-inside list-disc space-y-1 text-sm text-white/90">
+          {data?.includes
+            ?.filter((i: string) => i.trim())
+            .map((item, idx) => (
+              <li key={idx}>{item.trim()}</li>
+            ))}
+        </ul>
+      </div>
 
-      <div className="grid grid-cols-3 gap-3 text-sm">
-        <div>
-          <span className="text-gray-600">Small:</span>{" "}
-          <span className="font-semibold">
-            ${data?.small_car_price.toFixed(2)}
+      {/* Prices - simple flex, no grid */}
+      <div className="shrink-0 space-y-1 border-t border-white/10 pt-4">
+        <div className="flex justify-between text-xs">
+          <span className="font-medium text-gray-400">Most Cars / Sedans:</span>
+          <span className="font-bold text-white">
+            ${data?.small_car_price?.toFixed(2)}
           </span>
         </div>
-        <div>
-          <span className="text-gray-600">Medium:</span>{" "}
-          <span className="font-semibold">
-            ${data?.medium_car_price.toFixed(2)}
+        <div className="flex justify-between text-xs">
+          <span className="font-medium text-gray-400">
+            Mid-Size / Crossover:
+          </span>
+          <span className="font-bold text-white">
+            ${data?.medium_car_price?.toFixed(2)}
           </span>
         </div>
-        <div>
-          <span className="text-gray-600">Large:</span>{" "}
-          <span className="font-semibold">
-            ${data?.large_car_price.toFixed(2)}
+        <div className="flex justify-between text-xs">
+          <span className="font-medium text-gray-400">Full-Size / Large:</span>
+          <span className="font-bold text-white">
+            ${data?.large_car_price?.toFixed(2)}
           </span>
         </div>
       </div>
