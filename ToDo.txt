@@ -83,7 +83,12 @@ servicespage
 - Separate actions for fetching data from supabase
 - TestServices page
     - Add padding bottom of page
-    - Add underline to categories
+    DONE - Add underline to categories
     - if price doesnt have decimal, dont put .00 at the end
     - Add order_by to order by category
+    - Add order_by to order by service
+    - Add main Image to services page
+- Modal for categories
+    - Add order_by to order by category
+- Modal for services
     - Add order_by to order by service

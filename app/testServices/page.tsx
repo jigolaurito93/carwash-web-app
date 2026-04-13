@@ -71,12 +71,15 @@ export default async function ServicesPageTest() {
         return (
           <section key={category.id} className="px-4 py-10">
             {/* Category Title */}
-            <h2
-              id={category.slug}
-              className="mb-12 text-center font-lexend text-3xl font-extrabold tracking-tight text-white drop-shadow-2xl"
-            >
-              {category.name}
-            </h2>
+            <div className="mb-12 text-center">
+              <h2
+                id={category.slug}
+                className="mb-4 font-lexend text-3xl font-extrabold tracking-tight text-white drop-shadow-2xl"
+              >
+                {category.name}
+              </h2>
+              <div className="mx-auto h-1 w-24 rounded-full bg-linear-to-r from-blue-500 to-purple-600"></div>
+            </div>
 
             {/* Service Cards */}
             <div className="mx-auto grid max-w-350 grid-cols-1 gap-8 sm:max-w-200 sm:grid-cols-2 lg:max-w-250 lg:grid-cols-3 xl:max-w-355 xl:grid-cols-4">
