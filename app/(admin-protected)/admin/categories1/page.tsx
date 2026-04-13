@@ -3,16 +3,10 @@
 
 import { useEffect, useState } from "react";
 import { FiEdit2, FiTrash2, FiPlusCircle } from "react-icons/fi";
+import { Category } from "@/lib/database.types";
 
 import CategoryModal from "@/components/admin/CategoryModal";
 import DeleteCategoryModal from "@/components/admin/DeleteCategoryModal";
-
-type Category = {
-  id: number;
-  name: string;
-  slug: string;
-  sort_order: number;
-};
 
 export default function CategoriesAdminPage() {
   const [categories, setCategories] = useState<Category[]>([]);
