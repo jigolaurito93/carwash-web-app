@@ -90,8 +90,10 @@ servicespage
     DONE - Add order_by to order by category
 - Modal for services
     DONE - Add order_by to order by service
-    - if price doesnt have decimal, dont put .00 at the end
+    DONE - if price doesnt have decimal, dont put .00 at the end
     - Make service input field dynamic by adding a button to add new service
 - Services1 Admin
-    - Display services by categories
-    - Add order_by to order by category
+    DONE - Display services by categories
+    DONE - Add order_by to order by category
+- Category1 Admin
+    DONE - Add order_by to order by category

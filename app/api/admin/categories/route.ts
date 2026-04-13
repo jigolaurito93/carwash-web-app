@@ -24,7 +24,7 @@ export async function GET() {
   const { data: categories } = await supabase
     .from("categories1")
     .select("*")
-    .order("id");
+    .order("sort_order");
 
   return Response.json({ data: categories, error: null });
 }

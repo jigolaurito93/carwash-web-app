@@ -166,6 +166,7 @@ export type ServiceRow = {
     name: string;
     card_layout: "layout1" | "layout2";
   };
+  sort_order: number | null;
 };
 
 // types.ts (or lib/types.ts)

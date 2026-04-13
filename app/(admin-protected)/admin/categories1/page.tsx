@@ -11,6 +11,7 @@ type Category = {
   id: number;
   name: string;
   slug: string;
+  sort_order: number;
 };
 
 export default function CategoriesAdminPage() {
@@ -90,6 +91,9 @@ export default function CategoriesAdminPage() {
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
                   Slug
                 </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                  Sort Order
+                </th>
                 <th className="px-6 py-4 text-right text-sm font-semibold text-gray-700">
                   Actions
                 </th>
@@ -100,6 +104,7 @@ export default function CategoriesAdminPage() {
                 <tr key={cat.id} className="border-t border-gray-100">
                   <td className="px-6 py-4 text-gray-900">{cat.name}</td>
                   <td className="px-6 py-4 text-gray-600">{cat.slug}</td>
+                  <td className="px-6 py-4 text-gray-600">{cat.sort_order}</td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2">
                       <button
