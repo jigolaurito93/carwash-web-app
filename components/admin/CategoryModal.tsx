@@ -9,7 +9,7 @@ type Category = {
   id: number;
   name: string;
   slug: string;
-  order_by: number;
+  sort_order: number;
 };
 
 type Props = {
@@ -28,7 +28,7 @@ export default function CategoryModal({
   const [formData, setFormData] = useState<Partial<Category>>({
     name: mode === "create" ? "" : category?.name || "",
     slug: mode === "create" ? "" : category?.slug || "",
-    order_by: mode === "create" ? 0 : category?.order_by || 0,
+    sort_order: mode === "create" ? 0 : category?.sort_order || 0,
   });
   const [takenValues, setTakenValues] = useState<number[]>([]);
   const [nextAvailable, setNextAvailable] = useState<number>(1);
@@ -37,10 +37,10 @@ export default function CategoryModal({
     const fetchOrderValues = async () => {
       const { data } = await supabase
         .from("categories1")
-        .select("order_by")
+        .select("sort_order")
         .neq("id", mode === "edit" ? category?.id : -1);
 
-      const taken = (data || []).map((d) => d.order_by).sort((a, b) => a - b);
+      const taken = (data || []).map((d) => d.sort_order).sort((a, b) => a - b);
       setTakenValues(taken);
 
       // Find next available (max + 10)
@@ -56,16 +56,16 @@ export default function CategoryModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate order_by is not taken (unless it's the same category being edited)
-    if (mode === "create" && takenValues.includes(formData.order_by || 0)) {
-      toast.error(`Order value ${formData.order_by} is already taken.`);
+    // Validate sort_order is not taken (unless it's the same category being edited)
+    if (mode === "create" && takenValues.includes(formData.sort_order || 0)) {
+      toast.error(`Order value ${formData.sort_order} is already taken.`);
       return;
     }
 
     const payload = {
       name: formData.name!,
       slug: formData.slug!,
-      order_by: formData.order_by || nextAvailable,
+      sort_order: formData.sort_order || nextAvailable,
     };
 
     let error;
@@ -155,11 +155,11 @@ export default function CategoryModal({
                 required
                 type="number"
                 inputMode="numeric"
-                value={formData.order_by || ""}
+                value={formData.sort_order || ""}
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    order_by: parseInt(e.target.value) || 0,
+                    sort_order: parseInt(e.target.value) || 0,
                   })
                 }
                 className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
@@ -170,11 +170,12 @@ export default function CategoryModal({
                   Taken: {takenValues.join(", ")}
                 </p>
               )}
-              {formData.order_by && takenValues.includes(formData.order_by) && (
-                <p className="text-xs text-red-500">
-                  ⚠ This order value is already taken
-                </p>
-              )}
+              {formData.sort_order &&
+                takenValues.includes(formData.sort_order) && (
+                  <p className="text-xs text-red-500">
+                    ⚠ This order value is already taken
+                  </p>
+                )}
             </div>
           </div>
 
