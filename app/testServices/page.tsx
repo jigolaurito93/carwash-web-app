@@ -46,7 +46,7 @@ export default async function ServicesPageTest() {
   }
 
   return (
-    <main className="min-h-screen bg-[#121212] text-white sm:px-6">
+    <main className="min-h-screen bg-[#121212] pb-20 text-white sm:px-6">
       {/* Title */}
       <section className="px-6 pt-28 sm:px-10 lg:px-24 lg:pt-24">
         <div className="mx-auto max-w-4xl text-center">
@@ -159,7 +159,10 @@ export default async function ServicesPageTest() {
                             Most Cars / Sedans:
                           </span>
                           <span className="font-bold text-white">
-                            ${service.layout1_data.small_car_price.toFixed(2)}
+                            $
+                            {service.layout1_data.small_car_price
+                              .toFixed(2)
+                              .replace(/\.?0+$/, "")}
                           </span>
                         </div>
                         <div className="flex justify-between text-sm">
@@ -167,7 +170,10 @@ export default async function ServicesPageTest() {
                             Mid-Size / Crossover:
                           </span>
                           <span className="font-bold text-white">
-                            ${service.layout1_data.medium_car_price.toFixed(2)}
+                            $
+                            {service.layout1_data.medium_car_price
+                              .toFixed(2)
+                              .replace(/\.?0+$/, "")}
                           </span>
                         </div>
                         <div className="flex justify-between text-sm">
@@ -175,7 +181,10 @@ export default async function ServicesPageTest() {
                             Full-Size / Large:
                           </span>
                           <span className="font-bold text-white">
-                            ${service.layout1_data.large_car_price.toFixed(2)}
+                            $
+                            {service.layout1_data.large_car_price
+                              .toFixed(2)
+                              .replace(/\.?0+$/, "")}
                           </span>
                         </div>
                       </div>
