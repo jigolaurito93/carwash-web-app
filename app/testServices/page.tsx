@@ -49,7 +49,7 @@ export default async function ServicesPageTest() {
   return (
     <main className="min-h-screen bg-[#121212] text-white">
       {/* Title */}
-      <section className="px-6 pt-20 sm:px-10 lg:px-24 lg:py-24">
+      <section className="px-6 pt-28 sm:px-10 lg:px-24 lg:pt-24">
         <div className="mx-auto max-w-4xl text-center">
           <h1 className="font-lexend text-4xl font-extrabold tracking-tight text-yellow-400 drop-shadow-2xl sm:text-5xl lg:text-6xl">
             Services
