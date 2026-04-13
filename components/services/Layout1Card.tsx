@@ -13,7 +13,7 @@ export default function Layout1Card({ service }: Props) {
       {/* Features */}
       <div className="flex-1 space-y-3 overflow-y-auto pr-2 pb-12">
         <h4 className="text-sm font-semibold tracking-wide text-white">
-          What's included
+          What&apos;s included
         </h4>
         <ul className="list-inside list-disc space-y-1 text-sm text-white/90">
           {data?.includes
