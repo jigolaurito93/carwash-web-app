@@ -97,3 +97,73 @@ servicespage
     DONE - Add order_by to order by category
 - Category1 Admin
     DONE - Add order_by to order by category
+
+
+Screen sizes
+
+* sm: 640px and up col-2
+* md: 768px and up.
+* lg: 1024px and up. Col-3
+* xl: 1280px and up. Col-4
+* 2xl: 1536px and up.
+
+
+Privacy policy
+Consent checkbox w link to privacy policy 
+
+{
+  name,
+  email,
+  message,
+  consent: true,
+  created_at: new Date()
+}
+
+Add a small banner:
+
+“This site uses third-party services like Google Maps which may use cookies. By using this site, you agree to our Privacy Policy.”
+
+Or 
+
+Only load the map after user clicks “Enable Map”
+
+Homepage 
+- position of address and hours
+- Change logo
+- Pricing section change color
+
+Footer
+- add my name under
+
+Services
+- add ask for quote card
+- Add optional notes in layout1 card
+- Daily specials: early bird
+- Add attention section 
+- Card/section for other service, ceramic : call for quote 
+    - Title, description, ask quote button
+
+
+General
+- Editable address
+- Editable phone number
+- Separate blocks to make components
+- Add to db
+    - Address
+    - Phone
+    - Hours
+    - FAQ
+
+Gallery
+- add margin top to title 
+- Add more photos, how to upload to db
+
+Contact
+- Position of address and hours
+- Editable FAQ
+- Connect contact form
+
+Admin
+- input schedule to dashboard
+- How to upload images to db
+- 
