@@ -2,6 +2,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { ServiceRow } from "@/lib/database.types";
+import { HiShieldCheck } from "react-icons/hi";
 
 export default async function ServicesPageTest() {
   const cookieStore = await cookies();
@@ -45,7 +46,7 @@ export default async function ServicesPageTest() {
   }
 
   return (
-    <main className="min-h-screen bg-[#121212] text-white">
+    <main className="min-h-screen bg-[#121212] text-white sm:px-6">
       {/* Title */}
       <section className="px-6 pt-28 sm:px-10 lg:px-24 lg:pt-24">
         <div className="mx-auto max-w-4xl text-center">
@@ -68,7 +69,7 @@ export default async function ServicesPageTest() {
         if (!categoryServices?.length) return null;
 
         return (
-          <section key={category.id} className="px-4 py-20">
+          <section key={category.id} className="px-4 py-10">
             {/* Category Title */}
             <h2
               id={category.slug}
@@ -78,7 +79,7 @@ export default async function ServicesPageTest() {
             </h2>
 
             {/* Service Cards */}
-            <div className="mx-auto grid max-w-350 grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="mx-auto grid max-w-350 grid-cols-1 gap-8 sm:max-w-200 sm:grid-cols-2 lg:max-w-250 lg:grid-cols-3 xl:max-w-335 xl:grid-cols-4">
               {categoryServices.map((service) => {
                 const isLayout1 = service.card_layout === "layout1";
                 const isLayout2 = service.card_layout === "layout2";
@@ -86,7 +87,7 @@ export default async function ServicesPageTest() {
                 return (
                   <div
                     key={service.id}
-                    className="hover:shadow-3xl mx-auto grid w-full max-w-100 grid-rows-[96px_1fr] overflow-hidden rounded-2xl bg-[#1c1c1c] backdrop-blur-sm transition-all xl:max-w-200"
+                    className="hover:shadow-3xl mx-auto grid w-full max-w-90 grid-rows-[96px_1fr] overflow-hidden rounded-2xl bg-[#1c1c1c] backdrop-blur-sm transition-all xl:max-w-200"
                   >
                     {/* Row 1: Header */}
                     <div className="row-start-1 flex h-24 shrink-0 items-center justify-center bg-yellow-400 p-4">
@@ -106,30 +107,40 @@ export default async function ServicesPageTest() {
                     <div className="row-start-2 overflow-y-auto p-6">
                       {isLayout1 && service.layout1_data && (
                         <div className="mb-8 space-y-2">
-                          <h4 className="text-sm font-semibold tracking-wide text-white">
+                          <h4 className="text-md mb-4 font-semibold tracking-wide text-yellow-400">
                             What&apos;s included
                           </h4>
-                          <ul className="list-inside list-disc space-y-1 pr-2 text-sm text-white/90">
+                          <ul className="space-y-2 text-sm text-white/90">
                             {service.layout1_data.includes
                               ?.filter((i: string) => i.trim())
                               .map((item, idx) => (
-                                <li key={idx}>{item.trim()}</li>
+                                <div
+                                  key={idx}
+                                  className="flex items-start gap-2"
+                                >
+                                  <HiShieldCheck className="mt-1 h-4 w-4 shrink-0 text-green-400" />
+                                  <span className="leading-5">
+                                    {item.trim()}
+                                  </span>
+                                </div>
                               ))}
                           </ul>
                         </div>
                       )}
                       {isLayout2 && service.layout2_data && (
                         <div className="mb-8 space-y-2">
-                          <h4 className="text-sm font-semibold tracking-wide text-white">
+                          <h4 className="text-md mb-4 font-semibold tracking-wide text-yellow-400">
                             What&apos;s included
                           </h4>
                           <ul className="space-y-1 text-sm text-white/90">
                             {Object.entries(
                               service.layout2_data.items || {},
                             ).map(([name, price]) => (
-                              <li key={name} className="flex justify-between">
-                                <span>{name}</span>
-                                <span>${price.toFixed(2)}</span>
+                              <li key={name} className="flex items-start gap-2">
+                                <span className="leading-5">{name}</span>
+                                <span className="ml-auto font-medium">
+                                  ${price.toFixed(2)}
+                                </span>
                               </li>
                             ))}
                           </ul>
@@ -140,24 +151,24 @@ export default async function ServicesPageTest() {
                     {/* Row 3: Only layout1 has the 3‑line price block */}
                     {isLayout1 && service.layout1_data && (
                       <div className="row-start-3 flex flex-col justify-center space-y-1 border-t border-white/10 bg-gray-900/50 p-6 pt-4">
-                        <div className="flex justify-between text-xs">
-                          <span className="font-medium text-gray-400">
+                        <div className="flex justify-between text-sm">
+                          <span className="font-bold text-gray-400">
                             Most Cars / Sedans:
                           </span>
                           <span className="font-bold text-white">
                             ${service.layout1_data.small_car_price.toFixed(2)}
                           </span>
                         </div>
-                        <div className="flex justify-between text-xs">
-                          <span className="font-medium text-gray-400">
+                        <div className="flex justify-between text-sm">
+                          <span className="font-bold text-gray-400">
                             Mid-Size / Crossover:
                           </span>
                           <span className="font-bold text-white">
                             ${service.layout1_data.medium_car_price.toFixed(2)}
                           </span>
                         </div>
-                        <div className="flex justify-between text-xs">
-                          <span className="font-medium text-gray-400">
+                        <div className="flex justify-between text-sm">
+                          <span className="font-bold text-gray-400">
                             Full-Size / Large:
                           </span>
                           <span className="font-bold text-white">
