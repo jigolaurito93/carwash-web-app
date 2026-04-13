@@ -87,7 +87,11 @@ servicespage
     DONE - if price doesnt have decimal, dont put .00 at the end
     - Add main Image to services page
 - Modal for categories
-    - Add order_by to order by category
+    DONE - Add order_by to order by category
 - Modal for services
-    - Add order_by to order by service
+    DONE - Add order_by to order by service
     - if price doesnt have decimal, dont put .00 at the end
+    - Make service input field dynamic by adding a button to add new service
+- Services1 Admin
+    - Display services by categories
+    - Add order_by to order by category
