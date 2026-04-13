@@ -81,3 +81,9 @@ servicespage
     - Find out if its right to put category: 'main' | 'detailing' | 'other'; if im gonna add a new category in the future using UI
 
 - Separate actions for fetching data from supabase
+- TestServices page
+    - Add padding bottom of page
+    - Add underline to categories
+    - if price doesnt have decimal, dont put .00 at the end
+    - Add order_by to order by category
+    - Add order_by to order by service

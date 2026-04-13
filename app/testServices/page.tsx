@@ -79,7 +79,7 @@ export default async function ServicesPageTest() {
             </h2>
 
             {/* Service Cards */}
-            <div className="mx-auto grid max-w-350 grid-cols-1 gap-8 sm:max-w-200 sm:grid-cols-2 lg:max-w-250 lg:grid-cols-3 xl:max-w-335 xl:grid-cols-4">
+            <div className="mx-auto grid max-w-350 grid-cols-1 gap-8 sm:max-w-200 sm:grid-cols-2 lg:max-w-250 lg:grid-cols-3 xl:max-w-355 xl:grid-cols-4">
               {categoryServices.map((service) => {
                 const isLayout1 = service.card_layout === "layout1";
                 const isLayout2 = service.card_layout === "layout2";
@@ -87,7 +87,7 @@ export default async function ServicesPageTest() {
                 return (
                   <div
                     key={service.id}
-                    className="hover:shadow-3xl mx-auto grid w-full max-w-90 grid-rows-[96px_1fr] overflow-hidden rounded-2xl bg-[#1c1c1c] backdrop-blur-sm transition-all xl:max-w-200"
+                    className="hover:shadow-3xl mx-auto grid w-full max-w-90 grid-rows-[96px_1fr] overflow-hidden rounded-2xl bg-[#1c1c1c] backdrop-blur-sm transition-all xl:max-w-250"
                   >
                     {/* Row 1: Header */}
                     <div className="row-start-1 flex h-24 shrink-0 items-center justify-center bg-yellow-400 p-4">
