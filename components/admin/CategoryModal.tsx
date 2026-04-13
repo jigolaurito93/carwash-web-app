@@ -1,7 +1,7 @@
 "use client";
 
 import { supabase } from "@/lib/supabase";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FiX } from "react-icons/fi";
 import { toast } from "sonner";
 
@@ -9,6 +9,7 @@ type Category = {
   id: number;
   name: string;
   slug: string;
+  order_by: number;
 };
 
 type Props = {
@@ -27,14 +28,44 @@ export default function CategoryModal({
   const [formData, setFormData] = useState<Partial<Category>>({
     name: mode === "create" ? "" : category?.name || "",
     slug: mode === "create" ? "" : category?.slug || "",
+    order_by: mode === "create" ? 0 : category?.order_by || 0,
   });
+  const [takenValues, setTakenValues] = useState<number[]>([]);
+  const [nextAvailable, setNextAvailable] = useState<number>(1);
+
+  useEffect(() => {
+    const fetchOrderValues = async () => {
+      const { data } = await supabase
+        .from("categories1")
+        .select("order_by")
+        .neq("id", mode === "edit" ? category?.id : -1);
+
+      const taken = (data || []).map((d) => d.order_by).sort((a, b) => a - b);
+      setTakenValues(taken);
+
+      // Find next available (max + 10)
+      const maxValue = taken.length > 0 ? Math.max(...taken) : 0;
+      setNextAvailable(maxValue + 10);
+    };
+
+    if (isOpen) {
+      fetchOrderValues();
+    }
+  }, [isOpen, mode, category?.id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validate order_by is not taken (unless it's the same category being edited)
+    if (mode === "create" && takenValues.includes(formData.order_by || 0)) {
+      toast.error(`Order value ${formData.order_by} is already taken.`);
+      return;
+    }
+
     const payload = {
       name: formData.name!,
       slug: formData.slug!,
+      order_by: formData.order_by || nextAvailable,
     };
 
     let error;
@@ -113,6 +144,38 @@ export default function CategoryModal({
               className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
               placeholder="main-wash"
             />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-gray-700">
+              Order *
+            </label>
+            <div className="space-y-2">
+              <input
+                required
+                type="number"
+                inputMode="numeric"
+                value={formData.order_by || ""}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    order_by: parseInt(e.target.value) || 0,
+                  })
+                }
+                className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
+                placeholder={`${nextAvailable} (recommended)`}
+              />
+              {takenValues.length > 0 && (
+                <p className="text-xs text-gray-500">
+                  Taken: {takenValues.join(", ")}
+                </p>
+              )}
+              {formData.order_by && takenValues.includes(formData.order_by) && (
+                <p className="text-xs text-red-500">
+                  ⚠ This order value is already taken
+                </p>
+              )}
+            </div>
           </div>
 
           <div className="flex justify-end gap-4 pt-4">

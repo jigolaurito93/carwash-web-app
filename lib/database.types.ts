@@ -173,5 +173,5 @@ export type Category = {
   id: number;
   name: string;
   slug: string;
-  card_layout: "layout1" | "layout2";
+  order_by: number;
 };

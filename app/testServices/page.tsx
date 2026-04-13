@@ -27,6 +27,7 @@ export default async function ServicesPageTest() {
   const { data: categories } = await supabase
     .from("categories1")
     .select("*")
+    .order("order_by")
     .order("id");
 
   // fetch all active services and include their category

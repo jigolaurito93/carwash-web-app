@@ -85,8 +85,6 @@ servicespage
     DONE - Add padding bottom of page
     DONE - Add underline to categories
     DONE - if price doesnt have decimal, dont put .00 at the end
-    - Add order_by to order by category
-    - Add order_by to order by service
     - Add main Image to services page
 - Modal for categories
     - Add order_by to order by category
