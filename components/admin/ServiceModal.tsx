@@ -314,7 +314,10 @@ export default function ServiceModal({
                   value="layout1"
                   checked={formData.layout === "layout1"}
                   onChange={(e) =>
-                    setFormData({ ...formData, layout: e.target.value })
+                    setFormData({
+                      ...formData,
+                      layout: e.target.value as "layout1" | "layout2",
+                    })
                   }
                 />
                 Layout 1 (Package)
@@ -326,7 +329,10 @@ export default function ServiceModal({
                   value="layout2"
                   checked={formData.layout === "layout2"}
                   onChange={(e) =>
-                    setFormData({ ...formData, layout: e.target.value })
+                    setFormData({
+                      ...formData,
+                      layout: e.target.value as "layout1" | "layout2",
+                    })
                   }
                 />
                 Layout 2 (Add‑ons)

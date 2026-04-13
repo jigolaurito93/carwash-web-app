@@ -159,13 +159,21 @@ export type ServiceRow = {
   name: string;
   description: string | null;
   category_id: number;
-  layout1_data: Layout1Data | null;
-  layout2_data: Layout2Data | null;
+  card_layout: "layout1" | "layout2" | null;
   is_active: boolean;
   categories1: {
     name: string;
     card_layout: "layout1" | "layout2";
   };
+  layout1_data: {
+    includes: string[];
+    small_car_price: number;
+    medium_car_price: number;
+    large_car_price: number;
+  } | null;
+  layout2_data: {
+    items: Record<string, number>;
+  } | null;
   sort_order: number | null;
 };
 
@@ -174,5 +182,6 @@ export type Category = {
   id: number;
   name: string;
   slug: string;
-  order_by: number;
+  sort_order: number;
+  card_layout: "layout1" | "layout2";
 };
