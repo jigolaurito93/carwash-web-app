@@ -1,6 +1,6 @@
+// app/admin/services1/page.tsx
 "use client";
 
-// app/admin/services1/page.tsx
 import { useState, useEffect } from "react";
 import { ServiceRow, Category } from "@/lib/database.types";
 import { supabase } from "@/lib/supabase";
@@ -21,8 +21,9 @@ export default function ServicesAdminPage() {
 
   useEffect(() => {
     const fetchAll = async () => {
+      // No card_layout on categories now, so just select *
       const [{ data: servicesData }, { data: cats }] = await Promise.all([
-        supabase.from("services1").select(`*, categories1(name, card_layout)`),
+        supabase.from("services1").select(`*, categories1(name)`), // layout will come from service field
         supabase.from("categories1").select("*"),
       ]);
 
@@ -91,12 +92,14 @@ export default function ServicesAdminPage() {
                 <td className="px-6 py-4">
                   <span
                     className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                      service.categories1?.card_layout === "layout1"
+                      service.card_layout === "layout1"
                         ? "bg-blue-100 text-blue-800"
-                        : "bg-green-100 text-green-800"
+                        : service.card_layout === "layout2"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-gray-100 text-gray-600"
                     }`}
                   >
-                    {service.categories1?.card_layout}
+                    {service.card_layout || "—"}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-right">

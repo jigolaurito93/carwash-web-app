@@ -33,7 +33,8 @@ export default async function ServicesPageTest() {
   // fetch all active services and include their category
   const { data: services }: { data: ServiceRow[] | null } = await supabase
     .from("services1")
-    .select(`*, categories1(name, card_layout)`)
+    // card_layout is on services1 now, not on categories1
+    .select(`*, categories1(name)`)
     .eq("is_active", true)
     .order("sort_order");
 
@@ -80,15 +81,15 @@ export default async function ServicesPageTest() {
             </h2>
 
             {/* Service Cards */}
-            <div className="mx-auto grid max-w-7xl grid-cols-1 gap-7 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+            <div className="mx-auto grid max-w-350 grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {categoryServices.map((service) => {
-                const isLayout1 = category.card_layout === "layout1";
-                const isLayout2 = category.card_layout === "layout2";
+                const isLayout1 = service.card_layout === "layout1";
+                const isLayout2 = service.card_layout === "layout2";
 
                 return (
                   <div
                     key={service.id}
-                    className="hover:shadow-3xl grid min-h-125 w-full grid-rows-[96px_1fr_120px] overflow-hidden rounded-2xl bg-[#1c1c1c] shadow-2xl backdrop-blur-sm transition-all"
+                    className="hover:shadow-3xl mx-auto grid min-h-125 w-full max-w-100 grid-rows-[96px_1fr_120px] overflow-hidden rounded-2xl bg-[#1c1c1c] backdrop-blur-sm transition-all xl:max-w-200"
                   >
                     {/* Row 1: Header */}
                     <div className="row-start-1 flex h-24 shrink-0 items-center justify-center bg-yellow-400 p-4">
@@ -104,15 +105,15 @@ export default async function ServicesPageTest() {
                       </div>
                     </div>
 
-                    {/* Row 2: Features only */}
+                    {/* Row 2: Features or Add-ons */}
                     <div className="row-start-2 overflow-y-auto p-6">
                       {isLayout1 && service.layout1_data && (
                         <div className="space-y-2">
                           <h4 className="text-sm font-semibold tracking-wide text-white">
-                            What's included
+                            What&apos;s included
                           </h4>
                           <ul className="list-inside list-disc space-y-1 pr-2 text-sm text-white/90">
-                            {service.layout1_data?.includes
+                            {service.layout1_data.includes
                               ?.filter((i: string) => i.trim())
                               .map((item, idx) => (
                                 <li key={idx}>{item.trim()}</li>
@@ -120,34 +121,47 @@ export default async function ServicesPageTest() {
                           </ul>
                         </div>
                       )}
+                      {isLayout2 && service.layout2_data && (
+                        <Layout2Card service={service} />
+                      )}
                     </div>
 
-                    {/* Row 3: Prices - PERFECTLY ALIGNED */}
+                    {/* Row 3: Prices */}
                     <div className="row-start-3 flex flex-col justify-center space-y-1 border-t border-white/10 bg-gray-900/50 p-6 pt-4">
-                      <div className="flex justify-between text-xs">
-                        <span className="font-medium text-gray-400">
-                          Most Cars / Sedans:
-                        </span>
-                        <span className="font-bold text-white">
-                          ${service.layout1_data?.small_car_price?.toFixed(2)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-xs">
-                        <span className="font-medium text-gray-400">
-                          Mid-Size / Crossover:
-                        </span>
-                        <span className="font-bold text-white">
-                          ${service.layout1_data?.medium_car_price?.toFixed(2)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-xs">
-                        <span className="font-medium text-gray-400">
-                          Full-Size / Large:
-                        </span>
-                        <span className="font-bold text-white">
-                          ${service.layout1_data?.large_car_price?.toFixed(2)}
-                        </span>
-                      </div>
+                      {isLayout1 && service.layout1_data && (
+                        <>
+                          <div className="flex justify-between text-xs">
+                            <span className="font-medium text-gray-400">
+                              Most Cars / Sedans:
+                            </span>
+                            <span className="font-bold text-white">
+                              ${service.layout1_data.small_car_price.toFixed(2)}
+                            </span>
+                          </div>
+                          <div className="flex justify-between text-xs">
+                            <span className="font-medium text-gray-400">
+                              Mid-Size / Crossover:
+                            </span>
+                            <span className="font-bold text-white">
+                              $
+                              {service.layout1_data.medium_car_price.toFixed(2)}
+                            </span>
+                          </div>
+                          <div className="flex justify-between text-xs">
+                            <span className="font-medium text-gray-400">
+                              Full-Size / Large:
+                            </span>
+                            <span className="font-bold text-white">
+                              ${service.layout1_data.large_car_price.toFixed(2)}
+                            </span>
+                          </div>
+                        </>
+                      )}
+                      {isLayout2 && !service.layout1_data && (
+                        <p className="text-xs text-white/70">
+                          Add‑on prices shown in list above.
+                        </p>
+                      )}
                     </div>
                   </div>
                 );

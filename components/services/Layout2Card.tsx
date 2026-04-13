@@ -12,12 +12,11 @@ export default function Layout2Card({ service }: Props) {
 
   return (
     <div className="mt-4">
-      <h4 className="mb-2 text-sm font-semibold text-gray-800">Add‑ons</h4>
-      <ul className="space-y-1 text-sm text-gray-600">
+      <ul className="space-y-1 text-sm text-white/90">
         {Object.entries(items).map(([name, price]) => (
           <li key={name} className="flex justify-between">
             <span>{name}</span>
-            <span className="font-semibold">${price.toFixed(2)}</span>
+            <span className="">${price.toFixed(2)}</span>
           </li>
         ))}
       </ul>

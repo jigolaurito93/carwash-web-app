@@ -9,7 +9,7 @@ import { toast } from "sonner";
 type Category = {
   id: number;
   name: string;
-  card_layout: "layout1" | "layout2";
+  // card_layout removed here too; category doesn’t control layout
 };
 
 type Service = {
@@ -17,6 +17,7 @@ type Service = {
   name: string;
   description: string | null;
   category_id: number;
+  card_layout: "layout1" | "layout2" | null;
   layout1_data: {
     includes: string[];
     small_car_price: number;
@@ -33,8 +34,8 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   mode: "create" | "edit";
-  service?: Service; // `edit` only
-  categories: Category[]; // to populate the category dropdown
+  service?: Service;
+  categories: Category[];
 };
 
 function parseLayout2Items(raw: string = ""): Record<string, number> {
@@ -47,7 +48,6 @@ function parseLayout2Items(raw: string = ""): Record<string, number> {
       const nameTrimmed = name?.trim();
       const price = Number(priceStr?.trim());
 
-      // Only include valid entries
       if (nameTrimmed && !isNaN(price) && price >= 0) {
         acc[nameTrimmed] = price;
       }
@@ -66,16 +66,14 @@ export default function ServiceModal({
     name: mode === "create" ? "" : service?.name || "",
     description: mode === "create" ? "" : service?.description || "",
     category_id: mode === "create" ? "" : service?.category_id.toString() || "",
-
+    layout: mode === "create" ? "layout1" : service?.card_layout || "layout1",
     // layout1
     layout1_includes: service?.layout1_data?.includes
       ? service.layout1_data.includes.filter((i) => i.trim()).join("\n")
       : "",
-
     layout1_small: service?.layout1_data?.small_car_price ?? 0,
     layout1_medium: service?.layout1_data?.medium_car_price ?? 0,
     layout1_large: service?.layout1_data?.large_car_price ?? 0,
-
     // layout2
     layout2_items: (() => {
       const items = service?.layout2_data?.items || {};
@@ -89,11 +87,8 @@ export default function ServiceModal({
     })(),
   });
 
-  const currentCategory = categories.find(
-    (c) => c.id === Number(formData.category_id),
-  );
-  const isLayout1 = currentCategory?.card_layout === "layout1";
-  const isLayout2 = currentCategory?.card_layout === "layout2";
+  const isLayout1 = formData.layout === "layout1";
+  const isLayout2 = formData.layout === "layout2";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,36 +97,36 @@ export default function ServiceModal({
       name: formData.name,
       description: formData.description || null,
       category_id: Number(formData.category_id),
+      card_layout: formData.layout as "layout1" | "layout2" | null,
       is_active: true,
     };
 
-    const payload =
-      isLayout1 && currentCategory
+    const payload = isLayout1
+      ? {
+          ...basePayload,
+          layout1_data: {
+            includes: formData.layout1_includes
+              .split("\n")
+              .filter((i) => i.trim()),
+            small_car_price: Number(formData.layout1_small),
+            medium_car_price: Number(formData.layout1_medium),
+            large_car_price: Number(formData.layout1_large),
+          },
+          layout2_data: null,
+        }
+      : isLayout2
         ? {
             ...basePayload,
-            layout1_data: {
-              includes: isLayout1
-                ? formData.layout1_includes.split("\n").filter((i) => i.trim())
-                : [],
-              small_car_price: Number(formData.layout1_small),
-              medium_car_price: Number(formData.layout1_medium),
-              large_car_price: Number(formData.layout1_large),
+            layout1_data: null,
+            layout2_data: {
+              items: parseLayout2Items(formData.layout2_items),
             },
-            layout2_data: null,
           }
-        : isLayout2 && currentCategory
-          ? {
-              ...basePayload,
-              layout1_data: null,
-              layout2_data: {
-                items: parseLayout2Items(formData.layout2_items),
-              },
-            }
-          : {
-              ...basePayload,
-              layout1_data: null,
-              layout2_data: null,
-            };
+        : {
+            ...basePayload,
+            layout1_data: null,
+            layout2_data: null,
+          };
 
     let error;
     if (mode === "create") {
@@ -229,10 +224,43 @@ export default function ServiceModal({
               <option value="">-- Choose category --</option>
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
-                  {cat.name} ({cat.card_layout})
+                  {cat.name}
                 </option>
               ))}
             </select>
+          </div>
+
+          {/* Layout (now user choice per service) */}
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-gray-700">
+              Card Layout *
+            </label>
+            <div className="flex gap-4">
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="layout"
+                  value="layout1"
+                  checked={formData.layout === "layout1"}
+                  onChange={(e) =>
+                    setFormData({ ...formData, layout: e.target.value })
+                  }
+                />
+                Layout 1 (Package)
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="layout"
+                  value="layout2"
+                  checked={formData.layout === "layout2"}
+                  onChange={(e) =>
+                    setFormData({ ...formData, layout: e.target.value })
+                  }
+                />
+                Layout 2 (Add‑ons)
+              </label>
+            </div>
           </div>
 
           {/* Layout 1 fields */}
@@ -256,7 +284,10 @@ export default function ServiceModal({
                   }
                   className="w-full rounded-xl border border-gray-200 p-3"
                   rows={4}
-                  placeholder="Hand wash exterior\nBasic vacuum\nWindow cleaning"
+                  placeholder="Hand Exterior Wash & Dry
+Basic Interior Vacuum (Floors & Seats)
+Window Cleaning (Inside & Out)
+Dusting of Dashboard"
                 />
               </div>
 
@@ -276,7 +307,7 @@ export default function ServiceModal({
                       })
                     }
                     className="w-full rounded-xl border border-gray-200 p-3"
-                    placeholder="19.99"
+                    placeholder="14.99"
                   />
                 </div>
                 <div>
@@ -294,7 +325,7 @@ export default function ServiceModal({
                       })
                     }
                     className="w-full rounded-xl border border-gray-200 p-3"
-                    placeholder="24.99"
+                    placeholder="19.99"
                   />
                 </div>
                 <div>
@@ -312,7 +343,7 @@ export default function ServiceModal({
                       })
                     }
                     className="w-full rounded-xl border border-gray-200 p-3"
-                    placeholder="29.99"
+                    placeholder="24.99"
                   />
                 </div>
               </div>
@@ -337,7 +368,11 @@ export default function ServiceModal({
                 }
                 className="w-full rounded-xl border border-gray-200 p-3"
                 rows={6}
-                placeholder="Spray Wax=5.00\nTire Shine=3.00"
+                placeholder="Tire Dressing=5.00
+Window Cleaning=5.00
+Paint Protection & Sealant (Cars)=120.00
+Paint Protection & Sealant (Mid Size)=150.00
+Paint Protection & Sealant (Full Size)=180.00"
               />
             </div>
           )}

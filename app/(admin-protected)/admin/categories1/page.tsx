@@ -1,18 +1,16 @@
+// app/admin/categories1/page.tsx
 "use client";
 
-import CategoryModal from "@/components/admin/CategoryModal";
-import DeleteCategoryModal from "@/components/admin/DeleteCategoryModal";
-// app/admin/categories1/page.tsx
 import { useEffect, useState } from "react";
 import { FiEdit2, FiTrash2, FiPlusCircle } from "react-icons/fi";
 
-// reuse your category modal setup
+import CategoryModal from "@/components/admin/CategoryModal";
+import DeleteCategoryModal from "@/components/admin/DeleteCategoryModal";
 
 type Category = {
   id: number;
   name: string;
   slug: string;
-  card_layout: "layout1" | "layout2";
 };
 
 export default function CategoriesAdminPage() {
@@ -92,9 +90,6 @@ export default function CategoriesAdminPage() {
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
                   Slug
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                  Layout
-                </th>
                 <th className="px-6 py-4 text-right text-sm font-semibold text-gray-700">
                   Actions
                 </th>
@@ -105,17 +100,6 @@ export default function CategoriesAdminPage() {
                 <tr key={cat.id} className="border-t border-gray-100">
                   <td className="px-6 py-4 text-gray-900">{cat.name}</td>
                   <td className="px-6 py-4 text-gray-600">{cat.slug}</td>
-                  <td className="px-6 py-4">
-                    <span
-                      className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                        cat.card_layout === "layout1"
-                          ? "bg-blue-100 text-blue-800"
-                          : "bg-green-100 text-green-800"
-                      }`}
-                    >
-                      {cat.card_layout}
-                    </span>
-                  </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2">
                       <button

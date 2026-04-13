@@ -1,9 +1,7 @@
-// components/admin/CategoryModal.tsx
 "use client";
 
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";
-
 import { FiX } from "react-icons/fi";
 import { toast } from "sonner";
 
@@ -11,14 +9,13 @@ type Category = {
   id: number;
   name: string;
   slug: string;
-  card_layout: "layout1" | "layout2";
 };
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
   mode: "create" | "edit";
-  category?: Category; // present only in "edit" mode
+  category?: Category;
 };
 
 export default function CategoryModal({
@@ -30,8 +27,6 @@ export default function CategoryModal({
   const [formData, setFormData] = useState<Partial<Category>>({
     name: mode === "create" ? "" : category?.name || "",
     slug: mode === "create" ? "" : category?.slug || "",
-    card_layout:
-      mode === "create" ? "layout1" : category?.card_layout || "layout1",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -40,7 +35,6 @@ export default function CategoryModal({
     const payload = {
       name: formData.name!,
       slug: formData.slug!,
-      card_layout: formData.card_layout!,
     };
 
     let error;
@@ -119,26 +113,6 @@ export default function CategoryModal({
               className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
               placeholder="main-wash"
             />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-semibold text-gray-700">
-              Card Layout *
-            </label>
-            <select
-              required
-              value={formData.card_layout || "layout1"}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  card_layout: e.target.value as "layout1" | "layout2",
-                })
-              }
-              className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="layout1">Layout 1 (Package)</option>
-              <option value="layout2">Layout 2 (Add‑ons)</option>
-            </select>
           </div>
 
           <div className="flex justify-end gap-4 pt-4">
