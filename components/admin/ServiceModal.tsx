@@ -84,7 +84,7 @@ export default function ServiceModal({
           ([name, price]) =>
             typeof name === "string" && typeof price === "number",
         )
-        .map(([name, price]) => `${name}=${price.toFixed(2)}`)
+        .map(([name, price]) => `${name}=${price}`)
         .join("\n");
     })(),
   });
