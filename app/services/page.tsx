@@ -106,6 +106,7 @@ export default async function ServicesPageTest() {
                 {categoryServices.map((service) => {
                   const isLayout1 = service.card_layout === "layout1";
                   const isLayout2 = service.card_layout === "layout2";
+                  const isLayout3 = service.card_layout === "layout3";
 
                   return (
                     <div
@@ -148,6 +149,11 @@ export default async function ServicesPageTest() {
                                   </div>
                                 ))}
                             </ul>
+                            {service.notes && (
+                              <p className="mt-10 text-sm text-gray-400 italic">
+                                {service.notes}
+                              </p>
+                            )}
                           </div>
                         )}
                         {isLayout2 && service.layout2_data && (
@@ -173,10 +179,13 @@ export default async function ServicesPageTest() {
                             </ul>
                           </div>
                         )}
-                        {service.notes && (
-                          <p className="text-sm text-gray-400 italic">
-                            {service.notes}
-                          </p>
+
+                        {isLayout3 && service.layout3_data && (
+                          <div className="mb-8 space-y-2">
+                            <p className="text-md whitespace-pre-wrap text-white/90">
+                              {service.layout3_data}
+                            </p>
+                          </div>
                         )}
                       </div>
 

@@ -18,7 +18,7 @@ type Service = {
   description: string | null;
   notes?: string | null;
   category_id: number;
-  card_layout: "layout1" | "layout2" | null;
+  card_layout: "layout1" | "layout2" | "layout3" | null;
   layout1_data: {
     includes: string[];
     small_car_price: number;
@@ -28,6 +28,7 @@ type Service = {
   layout2_data: {
     items: Record<string, number | string>;
   } | null;
+  layout3_data: string | null;
   is_active: boolean;
   sort_order: number | null;
 };
@@ -72,6 +73,7 @@ export default function ServiceModal({
     category_id: mode === "create" ? "" : service?.category_id.toString() || "",
     layout: mode === "create" ? "layout1" : service?.card_layout || "layout1",
     sort_order: mode === "create" ? "" : service?.sort_order?.toString() || "",
+    layout3_info: service?.layout3_data || "",
     // layout1
     layout1_includes: service?.layout1_data?.includes
       ? service.layout1_data.includes.filter((i) => i.trim()).join("\n")
@@ -119,6 +121,7 @@ export default function ServiceModal({
 
   const isLayout1 = formData.layout === "layout1";
   const isLayout2 = formData.layout === "layout2";
+  const isLayout3 = formData.layout === "layout3";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -140,7 +143,7 @@ export default function ServiceModal({
       description: formData.description || null,
       notes: formData.notes || null,
       category_id: Number(formData.category_id),
-      card_layout: formData.layout as "layout1" | "layout2" | null,
+      card_layout: formData.layout as "layout1" | "layout2" | "layout3" | null,
       sort_order: sortOrderValue,
       is_active: true,
     };
@@ -165,12 +168,21 @@ export default function ServiceModal({
             layout2_data: {
               items: parseLayout2Items(formData.layout2_items),
             },
+            layout3_data: null,
           }
-        : {
-            ...basePayload,
-            layout1_data: null,
-            layout2_data: null,
-          };
+        : isLayout3
+          ? {
+              ...basePayload,
+              layout1_data: null,
+              layout2_data: null,
+              layout3_data: formData.layout3_info || null,
+            }
+          : {
+              ...basePayload,
+              layout1_data: null,
+              layout2_data: null,
+              layout3_data: null,
+            };
 
     let error;
     if (mode === "create") {
@@ -332,7 +344,10 @@ export default function ServiceModal({
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      layout: e.target.value as "layout1" | "layout2",
+                      layout: e.target.value as
+                        | "layout1"
+                        | "layout2"
+                        | "layout3",
                     })
                   }
                 />
@@ -347,11 +362,32 @@ export default function ServiceModal({
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      layout: e.target.value as "layout1" | "layout2",
+                      layout: e.target.value as
+                        | "layout1"
+                        | "layout2"
+                        | "layout3",
                     })
                   }
                 />
                 Layout 2 (Add‑ons)
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="layout"
+                  value="layout3"
+                  checked={formData.layout === "layout3"}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      layout: e.target.value as
+                        | "layout1"
+                        | "layout2"
+                        | "layout3",
+                    })
+                  }
+                />
+                Layout 3 (Custom Info)
               </label>
             </div>
           </div>
@@ -466,6 +502,27 @@ Window Cleaning=5.00
 Paint Protection & Sealant (Cars)=120.00
 Paint Protection & Sealant (Mid Size)=150.00
 Paint Protection & Sealant (Full Size)=180.00"
+              />
+            </div>
+          )}
+
+          {isLayout3 && (
+            <div className="border-t pt-6">
+              <h3 className="mb-4 text-lg font-semibold text-gray-800">
+                Layout 3 Data (Custom Info)
+              </h3>
+              <p className="mb-2 text-sm text-gray-600">
+                Enter any additional information for this service. Line breaks
+                are preserved.
+              </p>
+              <textarea
+                value={formData.layout3_info}
+                onChange={(e) =>
+                  setFormData({ ...formData, layout3_info: e.target.value })
+                }
+                className="w-full rounded-xl border border-gray-200 p-3"
+                rows={6}
+                placeholder="Enter custom details, notes, or instructions here..."
               />
             </div>
           )}

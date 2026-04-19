@@ -159,12 +159,12 @@ export type ServiceRow = {
   name: string;
   description: string | null;
   category_id: number;
-  card_layout: "layout1" | "layout2" | null;
+  card_layout: "layout1" | "layout2" | "layout3" | null;
   notes?: string | null;
   is_active: boolean;
   categories1: {
     name: string;
-    card_layout: "layout1" | "layout2";
+    card_layout: "layout1" | "layout2" | "layout3";
   };
   layout1_data: {
     includes: string[];
@@ -175,7 +175,7 @@ export type ServiceRow = {
   layout2_data: {
     items: Record<string, number>;
   } | null;
-  sort_order: number | null;
+  layout3_data: string | null; // Assuming layout3 is just a string description for now
 };
 
 // types.ts (or lib/types.ts)
@@ -184,5 +184,5 @@ export type Category = {
   name: string;
   slug: string;
   sort_order: number;
-  card_layout: "layout1" | "layout2";
+  card_layout: "layout1" | "layout2" | "layout3";
 };
