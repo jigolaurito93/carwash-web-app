@@ -18,17 +18,26 @@ type Service = {
   description: string | null;
   notes?: string | null;
   category_id: number;
-  card_layout: "layout1" | "layout2" | "layout3" | null;
+  card_layout: "layout1" | "layout2" | "layout3" | "layout4" | null;
   layout1_data: {
     includes: string[];
     small_car_price: number;
     medium_car_price: number;
     large_car_price: number;
+    is_active: boolean;
+    sort_order: number | null;
   } | null;
+
   layout2_data: {
     items: Record<string, number | string>;
   } | null;
   layout3_data: string | null;
+  layout4_data: {
+    info: string;
+    small_car_price: number;
+    medium_car_price: number;
+    large_car_price: number;
+  } | null;
   is_active: boolean;
   sort_order: number | null;
 };
@@ -74,6 +83,10 @@ export default function ServiceModal({
     layout: mode === "create" ? "layout1" : service?.card_layout || "layout1",
     sort_order: mode === "create" ? "" : service?.sort_order?.toString() || "",
     layout3_info: service?.layout3_data || "",
+    layout4_info: service?.layout4_data?.info || "",
+    layout4_small: service?.layout4_data?.small_car_price ?? 0,
+    layout4_medium: service?.layout4_data?.medium_car_price ?? 0,
+    layout4_large: service?.layout4_data?.large_car_price ?? 0,
     // layout1
     layout1_includes: service?.layout1_data?.includes
       ? service.layout1_data.includes.filter((i) => i.trim()).join("\n")
@@ -122,6 +135,7 @@ export default function ServiceModal({
   const isLayout1 = formData.layout === "layout1";
   const isLayout2 = formData.layout === "layout2";
   const isLayout3 = formData.layout === "layout3";
+  const isLayout4 = formData.layout === "layout4";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -143,7 +157,12 @@ export default function ServiceModal({
       description: formData.description || null,
       notes: formData.notes || null,
       category_id: Number(formData.category_id),
-      card_layout: formData.layout as "layout1" | "layout2" | "layout3" | null,
+      card_layout: formData.layout as
+        | "layout1"
+        | "layout2"
+        | "layout3"
+        | "layout4"
+        | null,
       sort_order: sortOrderValue,
       is_active: true,
     };
@@ -176,13 +195,28 @@ export default function ServiceModal({
               layout1_data: null,
               layout2_data: null,
               layout3_data: formData.layout3_info || null,
+              layout4_data: null,
             }
-          : {
-              ...basePayload,
-              layout1_data: null,
-              layout2_data: null,
-              layout3_data: null,
-            };
+          : isLayout4
+            ? {
+                ...basePayload,
+                layout1_data: null,
+                layout2_data: null,
+                layout3_data: null,
+                layout4_data: {
+                  info: formData.layout4_info,
+                  small_car_price: Number(formData.layout4_small),
+                  medium_car_price: Number(formData.layout4_medium),
+                  large_car_price: Number(formData.layout4_large),
+                },
+              }
+            : {
+                ...basePayload,
+                layout1_data: null,
+                layout2_data: null,
+                layout3_data: null,
+                layout4_data: null,
+              };
 
     let error;
     if (mode === "create") {
@@ -347,7 +381,8 @@ export default function ServiceModal({
                       layout: e.target.value as
                         | "layout1"
                         | "layout2"
-                        | "layout3",
+                        | "layout3"
+                        | "layout4",
                     })
                   }
                 />
@@ -365,7 +400,8 @@ export default function ServiceModal({
                       layout: e.target.value as
                         | "layout1"
                         | "layout2"
-                        | "layout3",
+                        | "layout3"
+                        | "layout4",
                     })
                   }
                 />
@@ -383,11 +419,31 @@ export default function ServiceModal({
                       layout: e.target.value as
                         | "layout1"
                         | "layout2"
-                        | "layout3",
+                        | "layout3"
+                        | "layout4",
                     })
                   }
                 />
                 Layout 3 (Custom Info)
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="layout"
+                  value="layout4"
+                  checked={formData.layout === "layout4"}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      layout: e.target.value as
+                        | "layout1"
+                        | "layout2"
+                        | "layout3"
+                        | "layout4",
+                    })
+                  }
+                />
+                Layout 4 (Info + Prices)
               </label>
             </div>
           </div>
@@ -526,7 +582,85 @@ Paint Protection & Sealant (Full Size)=180.00"
               />
             </div>
           )}
+          {isLayout4 && (
+            <div className="border-t pt-6">
+              <h3 className="mb-4 text-lg font-semibold text-gray-800">
+                Layout 4 Data (Info + Prices)
+              </h3>
 
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-700">
+                  Info
+                </label>
+                <textarea
+                  value={formData.layout4_info}
+                  onChange={(e) =>
+                    setFormData({ ...formData, layout4_info: e.target.value })
+                  }
+                  className="w-full rounded-xl border border-gray-200 p-3"
+                  rows={4}
+                  placeholder="Enter custom details, notes, or instructions here..."
+                />
+              </div>
+
+              <div className="mt-4 grid grid-cols-3 gap-4">
+                <div>
+                  <label className="mb-2 block text-sm font-semibold text-gray-700">
+                    Small Car
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={formData.layout4_small}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        layout4_small: Number(e.target.value),
+                      })
+                    }
+                    className="w-full rounded-xl border border-gray-200 p-3"
+                    placeholder="14.99"
+                  />
+                </div>
+                <div>
+                  <label className="mb-2 block text-sm font-semibold text-gray-700">
+                    Medium Car
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={formData.layout4_medium}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        layout4_medium: Number(e.target.value),
+                      })
+                    }
+                    className="w-full rounded-xl border border-gray-200 p-3"
+                    placeholder="19.99"
+                  />
+                </div>
+                <div>
+                  <label className="mb-2 block text-sm font-semibold text-gray-700">
+                    Large Car
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={formData.layout4_large}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        layout4_large: Number(e.target.value),
+                      })
+                    }
+                    className="w-full rounded-xl border border-gray-200 p-3"
+                    placeholder="24.99"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
           <div className="flex justify-end gap-4 pt-6">
             <button
               type="button"

@@ -107,6 +107,7 @@ export default async function ServicesPageTest() {
                   const isLayout1 = service.card_layout === "layout1";
                   const isLayout2 = service.card_layout === "layout2";
                   const isLayout3 = service.card_layout === "layout3";
+                  const isLayout4 = service.card_layout === "layout4";
 
                   return (
                     <div
@@ -187,10 +188,19 @@ export default async function ServicesPageTest() {
                             </p>
                           </div>
                         )}
+
+                        {isLayout4 && service.layout4_data && (
+                          <div className="mb-8 space-y-2 text-sm">
+                            <p className="text-md whitespace-pre-wrap text-white/90">
+                              {service.layout4_data.info}
+                            </p>
+                          </div>
+                        )}
                       </div>
 
-                      {/* Row 3: Only layout1 has the 3‑line price block */}
-                      {isLayout1 && service.layout1_data && (
+                      {/* Row 3: Price block for layout1 and layout4 */}
+                      {((isLayout1 && service.layout1_data) ||
+                        (isLayout4 && service.layout4_data)) && (
                         <div className="row-start-3 flex flex-col justify-center space-y-1 border-t border-white/10 bg-gray-900/50 p-6 pt-4">
                           <div className="flex justify-between text-sm">
                             <span className="font-bold text-gray-400">
@@ -198,7 +208,11 @@ export default async function ServicesPageTest() {
                             </span>
                             <span className="font-bold text-white">
                               $
-                              {service.layout1_data.small_car_price
+                              {(
+                                (isLayout1
+                                  ? service.layout1_data?.small_car_price
+                                  : service.layout4_data?.small_car_price) ?? 0
+                              )
                                 .toFixed(2)
                                 .replace(/\.?0+$/, "")}
                             </span>
@@ -209,7 +223,11 @@ export default async function ServicesPageTest() {
                             </span>
                             <span className="font-bold text-white">
                               $
-                              {service.layout1_data.medium_car_price
+                              {(
+                                (isLayout1
+                                  ? service.layout1_data?.medium_car_price
+                                  : service.layout4_data?.medium_car_price) ?? 0
+                              )
                                 .toFixed(2)
                                 .replace(/\.?0+$/, "")}
                             </span>
@@ -220,7 +238,11 @@ export default async function ServicesPageTest() {
                             </span>
                             <span className="font-bold text-white">
                               $
-                              {service.layout1_data.large_car_price
+                              {(
+                                (isLayout1
+                                  ? service.layout1_data?.large_car_price
+                                  : service.layout4_data?.large_car_price) ?? 0
+                              )
                                 .toFixed(2)
                                 .replace(/\.?0+$/, "")}
                             </span>

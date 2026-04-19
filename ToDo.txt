@@ -139,7 +139,7 @@ DONE - Fetch hours and contact info
 
 Services
 DONE - add ask for quote card
-- Add optional notes in layout1 card
+DONE - Add optional notes in layout1 card
 - Daily specials: early bird
 - Add attention section 
 - Card/section for other service, ceramic : call for quote 

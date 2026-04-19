@@ -153,18 +153,26 @@ export type Layout2Data = {
   items: Record<string, number>;
 };
 
+export type Layout4Data = {
+  info: string;
+  small_car_price: number;
+  medium_car_price: number;
+  large_car_price: number;
+};
+
 // This must match your Supabase RLS‑generated type for `services1`
 export type ServiceRow = {
   id: number;
   name: string;
   description: string | null;
+  sort_order: number | null;
   category_id: number;
-  card_layout: "layout1" | "layout2" | "layout3" | null;
+  card_layout: "layout1" | "layout2" | "layout3" | "layout4" | null;
   notes?: string | null;
   is_active: boolean;
   categories1: {
     name: string;
-    card_layout: "layout1" | "layout2" | "layout3";
+    card_layout: "layout1" | "layout2" | "layout3" | "layout4";
   };
   layout1_data: {
     includes: string[];
@@ -176,6 +184,12 @@ export type ServiceRow = {
     items: Record<string, number>;
   } | null;
   layout3_data: string | null; // Assuming layout3 is just a string description for now
+  layout4_data: {
+    info: string;
+    small_car_price: number;
+    medium_car_price: number;
+    large_car_price: number;
+  } | null;
 };
 
 // types.ts (or lib/types.ts)
@@ -184,5 +198,5 @@ export type Category = {
   name: string;
   slug: string;
   sort_order: number;
-  card_layout: "layout1" | "layout2" | "layout3";
+  card_layout: "layout1" | "layout2" | "layout3" | "layout4";
 };
