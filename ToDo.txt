@@ -133,7 +133,9 @@ Homepage
 DONE - Pricing section change color 
 
 Footer
-- add my name under
+DONE - add my name under
+- Attach Links
+- Fetch hours and contact info
 
 Services
 - add ask for quote card
@@ -153,6 +155,7 @@ General
     - Phone
     - Hours
     - FAQ
+- Link css global variables
 
 Gallery
 - add margin top to title 

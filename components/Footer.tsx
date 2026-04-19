@@ -131,6 +131,7 @@ const Footer = () => {
       {/* Bottom Bar */}
       <div className="mx-auto mt-16 flex max-w-7xl flex-col items-center justify-between gap-4 border-t border-slate-900 px-6 pt-8 text-xs text-slate-500 md:flex-row">
         <p>© {currentYear} Onyx Premium Carwash. All rights reserved.</p>
+        <p>Developed by Jose Laurito</p>
         <div className="flex gap-6">
           <Link href="/privacy" className="hover:text-slate-300">
             Privacy Policy
