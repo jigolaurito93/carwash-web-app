@@ -147,9 +147,9 @@ DONE - Card/section for other service, ceramic : call for quote
 
 
 General
-- Editable address
-- Editable phone number
-- Separate blocks to make components
+- Editable address, phone, hours, email, social media
+- Editable faq
+- Separate blocks to make components/reusable
 - Add to db
     DONE - Address
     DONE - Phone
