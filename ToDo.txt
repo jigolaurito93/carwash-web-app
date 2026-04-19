@@ -134,8 +134,8 @@ DONE - Pricing section change color
 
 Footer
 DONE - add my name under
-- Attach Links
-- Fetch hours and contact info
+DONE - Attach Links
+DONE - Fetch hours and contact info
 
 Services
 - add ask for quote card
@@ -170,3 +170,6 @@ Admin
 - input schedule to dashboard
 - How to upload images to db
 - 
+
+Contact
+- Link hours and info

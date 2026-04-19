@@ -122,7 +122,10 @@ const Footer = async () => {
               </Link>
             </li>
             <li>
-              <Link href="/faq" className="transition-colors hover:text-white">
+              <Link
+                href="/contact"
+                className="transition-colors hover:text-white"
+              >
                 FAQs
               </Link>
             </li>
