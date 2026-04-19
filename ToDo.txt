@@ -100,7 +100,7 @@ servicespage
 
 
 Screen sizes
-
+* 320px and up
 * sm: 640px and up col-2
 * md: 768px and up.
 * lg: 1024px and up. Col-3
@@ -130,7 +130,7 @@ Only load the map after user clicks “Enable Map”
 Homepage 
 - position of address and hours
 - Change logo
-- Pricing section change color
+DONE - Pricing section change color 
 
 Footer
 - add my name under

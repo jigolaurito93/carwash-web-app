@@ -46,14 +46,12 @@ const ServicesSection = async () => {
   }
 
   return (
-    <div className="bg-[#121212] px-6 pt-6 pb-16 md:px-24 lg:px-40">
-      <div className="mb-12 text-center">
-        <h2 className="mb-4 font-lexend text-3xl font-extrabold tracking-tight text-white drop-shadow-2xl">
-          Services and Pricing
-        </h2>
-        <div className="mx-auto h-1 w-24 rounded-full bg-linear-to-r from-blue-500 to-purple-600"></div>
-      </div>
-      <div className="my-16 sm:px-6">
+    <div className="bg-[#121212] py-16">
+      <h2 className="text-center font-lexend text-3xl font-extrabold tracking-tight text-white drop-shadow-2xl sm:text-4xl">
+        Services and Pricing
+      </h2>
+
+      <div className="mt-2 sm:px-6">
         {categories.map((category) => {
           const categoryServices = services?.filter(
             (s) => s.category_id === category.id,
@@ -67,7 +65,7 @@ const ServicesSection = async () => {
               <div className="mb-12 text-center">
                 <h2
                   id={category.slug}
-                  className="mb-4 font-lexend text-3xl font-extrabold tracking-tight text-white drop-shadow-2xl"
+                  className="mb-4 font-lexend text-2xl font-extrabold tracking-tight text-white drop-shadow-2xl"
                 >
                   {category.name}
                 </h2>
@@ -193,7 +191,7 @@ const ServicesSection = async () => {
           );
         })}
       </div>
-      <div className="mx-auto mt-10 w-fit cursor-pointer rounded-md border border-black/50 bg-white px-7 py-3 text-center font-lexend text-sm shadow-2xl transition-colors duration-300 hover:bg-black/50 hover:text-white">
+      <div className="mx-auto mt-6 w-fit cursor-pointer rounded-md border border-black/50 bg-white px-7 py-3 text-center font-lexend text-sm shadow-2xl transition-colors duration-300 hover:bg-black/50 hover:text-white">
         <Link href="/services">See All Services</Link>
       </div>
     </div>
