@@ -38,6 +38,11 @@ export default async function ServicesPageTest() {
     .eq("is_active", true)
     .order("sort_order");
 
+  const { data: shopInfo } = await supabase
+    .from("shop_info")
+    .select("phone")
+    .single();
+
   if (!categories?.length) {
     return (
       <div className="p-8">
@@ -159,6 +164,9 @@ export default async function ServicesPageTest() {
                         )}
                         {isLayout2 && service.layout2_data && (
                           <div className="mb-8 space-y-2">
+                            <h4 className="text-md mb-4 font-semibold tracking-wide text-yellow-400">
+                              Add-Ons & Upgrades
+                            </h4>
                             <ul className="space-y-1 text-sm text-white/90">
                               {Object.entries(
                                 service.layout2_data.items || {},
@@ -183,9 +191,17 @@ export default async function ServicesPageTest() {
 
                         {isLayout3 && service.layout3_data && (
                           <div className="mb-8 space-y-2">
-                            <p className="text-md whitespace-pre-wrap text-white/90">
+                            <p className="text-sm leading-7 whitespace-pre-wrap text-white/90">
                               {service.layout3_data}
                             </p>
+                            <button className="btnSaveYlw mt-14">
+                              <a
+                                href={`tel:${shopInfo?.phone}`}
+                                className="hover:text-white"
+                              >
+                                Call for Quote
+                              </a>
+                            </button>
                           </div>
                         )}
 

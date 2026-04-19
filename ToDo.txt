@@ -140,9 +140,9 @@ DONE - Fetch hours and contact info
 Services
 DONE - add ask for quote card
 DONE - Add optional notes in layout1 card
-- Daily specials: early bird
+DONE - Daily specials: early bird
 - Add attention section 
-- Card/section for other service, ceramic : call for quote 
+DONE - Card/section for other service, ceramic : call for quote 
     - Title, description, ask quote button
 
 
