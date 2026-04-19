@@ -179,6 +179,8 @@ export type ServiceRow = {
     small_car_price: number;
     medium_car_price: number;
     large_car_price: number;
+    is_active: boolean;
+    sort_order: number | null;
   } | null;
   layout2_data: {
     items: Record<string, number>;
