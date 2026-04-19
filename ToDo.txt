@@ -138,7 +138,7 @@ DONE - Attach Links
 DONE - Fetch hours and contact info
 
 Services
-- add ask for quote card
+DONE - add ask for quote card
 - Add optional notes in layout1 card
 - Daily specials: early bird
 - Add attention section 

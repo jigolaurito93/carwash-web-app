@@ -152,9 +152,6 @@ export default async function ServicesPageTest() {
                         )}
                         {isLayout2 && service.layout2_data && (
                           <div className="mb-8 space-y-2">
-                            <h4 className="text-md mb-4 font-semibold tracking-wide text-yellow-400">
-                              What&apos;s included
-                            </h4>
                             <ul className="space-y-1 text-sm text-white/90">
                               {Object.entries(
                                 service.layout2_data.items || {},
