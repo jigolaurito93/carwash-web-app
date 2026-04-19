@@ -7,13 +7,27 @@ export async function handleAction(formData: FormData) {
   const email = formData.get("email") as string;
   const phone = formData.get("phone") as string;
   const address1 = formData.get("address1") as string;
+  const address2 = formData.get("address2") as string;
+  const city = formData.get("city") as string;
+  const state = formData.get("state") as string;
+  const zip = formData.get("zip") as string;
+  const facebook = formData.get("facebook") as string;
+  const twitter = formData.get("twitter") as string;
+  const instagram = formData.get("instagram") as string;
 
   const { error } = await supabase
-    .from("shopInfo") // or your actual table name
+    .from("shop_info") // same as your select
     .update({
-      email: email,
-      phone: phone,
-      address1: address1,
+      email,
+      phone,
+      address1,
+      address2,
+      city,
+      state,
+      zip,
+      facebook,
+      twitter,
+      instagram,
     })
     .eq("id", 1); // or the correct shop id
 

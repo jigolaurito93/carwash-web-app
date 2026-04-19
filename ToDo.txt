@@ -136,6 +136,7 @@ Footer
 DONE - add my name under
 DONE - Attach Links
 DONE - Fetch hours and contact info
+- Attach social media links to db
 
 Services
 DONE - add ask for quote card
@@ -145,9 +146,11 @@ DONE - Daily specials: early bird
 DONE - Card/section for other service, ceramic : call for quote 
     - Title, description, ask quote button
 
+Shop Info Page
+- Add toaster after form submission
 
 General
-- Editable address, phone, hours, email, social media
+DONE - Editable address, phone, hours, email, social media
 - Editable faq
 - Separate blocks to make components/reusable
 - Add to db

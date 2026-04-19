@@ -34,7 +34,7 @@ const ShopInfo = async () => {
           <label className="labelx block text-xs">Email Address</label>
           <input
             type="email"
-            value={shopInfo?.email || ""}
+            defaultValue={shopInfo?.email || ""}
             className="inputx text-sm"
           />
         </div>
