@@ -160,6 +160,7 @@ export type ServiceRow = {
   description: string | null;
   category_id: number;
   card_layout: "layout1" | "layout2" | null;
+  notes?: string | null;
   is_active: boolean;
   categories1: {
     name: string;

@@ -16,6 +16,7 @@ type Service = {
   id: number;
   name: string;
   description: string | null;
+  notes?: string | null;
   category_id: number;
   card_layout: "layout1" | "layout2" | null;
   layout1_data: {
@@ -67,6 +68,7 @@ export default function ServiceModal({
   const [formData, setFormData] = useState({
     name: mode === "create" ? "" : service?.name || "",
     description: mode === "create" ? "" : service?.description || "",
+    notes: mode === "create" ? "" : service?.notes || "",
     category_id: mode === "create" ? "" : service?.category_id.toString() || "",
     layout: mode === "create" ? "layout1" : service?.card_layout || "layout1",
     sort_order: mode === "create" ? "" : service?.sort_order?.toString() || "",
@@ -136,6 +138,7 @@ export default function ServiceModal({
     const basePayload = {
       name: formData.name,
       description: formData.description || null,
+      notes: formData.notes || null,
       category_id: Number(formData.category_id),
       card_layout: formData.layout as "layout1" | "layout2" | null,
       sort_order: sortOrderValue,
@@ -246,6 +249,22 @@ export default function ServiceModal({
               className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
               rows={2}
               placeholder="Quick description..."
+            />
+          </div>
+
+          {/* Notes */}
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-gray-700">
+              Notes
+            </label>
+            <textarea
+              value={formData.notes}
+              onChange={(e) =>
+                setFormData({ ...formData, notes: e.target.value })
+              }
+              className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
+              rows={3}
+              placeholder="Optional internal notes..."
             />
           </div>
 

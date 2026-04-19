@@ -173,6 +173,11 @@ export default async function ServicesPageTest() {
                             </ul>
                           </div>
                         )}
+                        {service.notes && (
+                          <p className="text-sm text-gray-400 italic">
+                            {service.notes}
+                          </p>
+                        )}
                       </div>
 
                       {/* Row 3: Only layout1 has the 3‑line price block */}
