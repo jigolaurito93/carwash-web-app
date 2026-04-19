@@ -143,7 +143,7 @@ DONE - Add optional notes in layout1 card
 DONE - Daily specials: early bird
 - Add attention section 
 DONE - Card/section for other service, ceramic : call for quote 
-    - Title, description, ask quote button
+DONE - Title, description, ask quote button
 
 
 General
@@ -165,14 +165,11 @@ Contact
 - Position of address and hours
 - Editable FAQ
 - Connect contact form
+- Link hours and info
 
 Admin
 - input schedule to dashboard
 - How to upload images to db
-- 
-
-Contact
-- Link hours and info
 
 ServiceModal
 - Make it dynamic and button to add more rows for services
