@@ -165,7 +165,11 @@ export default async function ServicesPageTest() {
                                 >
                                   <span className="leading-5">{name}</span>
                                   <span className="ml-auto font-medium">
-                                    ${price.toFixed(2)}
+                                    {typeof price === "number" ? (
+                                      `$${price.toFixed(2)}`
+                                    ) : (
+                                      <span className="italic">{price}</span>
+                                    )}
                                   </span>
                                 </li>
                               ))}

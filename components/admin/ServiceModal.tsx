@@ -25,7 +25,7 @@ type Service = {
     large_car_price: number;
   } | null;
   layout2_data: {
-    items: Record<string, number>;
+    items: Record<string, number | string>;
   } | null;
   is_active: boolean;
   sort_order: number | null;
@@ -39,19 +39,20 @@ type Props = {
   categories: Category[];
 };
 
-function parseLayout2Items(raw: string = ""): Record<string, number> {
+function parseLayout2Items(raw: string = ""): Record<string, number | string> {
   return raw
     .split("\n")
     .map((line) => line.trim())
     .filter(Boolean)
-    .reduce<Record<string, number>>((acc, line) => {
-      const [name, priceStr] = line.split("=");
-      const nameTrimmed = name?.trim();
-      const price = Number(priceStr?.trim());
+    .reduce<Record<string, number | string>>((acc, line) => {
+      const [name, valueStr] = line.split("=");
+      const key = name?.trim();
+      const value = valueStr?.trim();
 
-      if (nameTrimmed && !isNaN(price) && price >= 0) {
-        acc[nameTrimmed] = price;
-      }
+      if (!key || !value) return acc;
+
+      const num = Number(value);
+      acc[key] = Number.isFinite(num) && value !== "" ? num : value;
       return acc;
     }, {});
 }
@@ -80,11 +81,7 @@ export default function ServiceModal({
     layout2_items: (() => {
       const items = service?.layout2_data?.items || {};
       return Object.entries(items)
-        .filter(
-          ([name, price]) =>
-            typeof name === "string" && typeof price === "number",
-        )
-        .map(([name, price]) => `${name}=${price}`)
+        .map(([name, price]) => `${name}=${String(price)}`)
         .join("\n");
     })(),
   });

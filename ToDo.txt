@@ -151,9 +151,9 @@ General
 - Editable phone number
 - Separate blocks to make components
 - Add to db
-    - Address
-    - Phone
-    - Hours
+    DONE - Address
+    DONE - Phone
+    DONE - Hours
     - FAQ
 - Link css global variables
 
@@ -173,3 +173,6 @@ Admin
 
 Contact
 - Link hours and info
+
+ServiceModal
+- Make it dynamic and button to add more rows for services
