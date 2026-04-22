@@ -73,6 +73,9 @@ export default function RootLayout({
       )}
     >
       <body>
+        <div className="fixed top-0 left-0 z-20 w-screen bg-black py-2 text-center text-white">
+          Fresh deals and announcements coming soon
+        </div>
         <Navbar />
         {children}
         <Footer />

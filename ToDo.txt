@@ -159,6 +159,7 @@ DONE - Editable address, phone, hours, email, social media
     DONE - Hours
     - FAQ
 - Link css global variables
+- Add top banner
 
 Gallery
 - add margin top to title 
