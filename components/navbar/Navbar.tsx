@@ -39,7 +39,7 @@ const Navbar = () => {
 
   return (
     // Add z-50 and top-0 here
-    <nav className="fixed top-0 left-0 z-10 flex h-20 w-full">
+    <nav className="flex h-20 w-full">
       {/* For Nav Mobile */}
       <RxHamburgerMenu
         className="absolute top-8 right-7 cursor-pointer text-4xl text-white lg:hidden"
