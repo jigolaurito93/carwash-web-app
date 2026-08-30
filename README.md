@@ -112,6 +112,15 @@ Then open `http://localhost:3000` in your browser.
 
 ---
 
+---
+
+## Explanation
+
+- // Regenerates lib/database.types.ts from the linked Supabase DB schema (run after table/column changes)
+- "gen:types": "supabase gen types typescript --linked > lib/database.types.ts"
+
+---
+
 ## License
 
 This project is currently unlicensed. Add a license file (e.g. MIT) here if you intend to open‑source it.

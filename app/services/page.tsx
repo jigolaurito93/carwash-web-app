@@ -1,7 +1,7 @@
 // app/services1/page.tsx
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
-import { ServiceRow } from "@/lib/database.types";
+import { ServiceRow } from "@/lib/app.types";
 import { HiShieldCheck } from "react-icons/hi";
 import Image from "next/image";
 

@@ -1,7 +1,7 @@
 // app/services1/page.tsx
 import Layout1Card from "@/components/services/Layout1Card";
 import Layout2Card from "@/components/services/Layout2Card";
-import { ServiceRow } from "@/lib/database.types";
+import { ServiceRow } from "@/lib/app.types";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 

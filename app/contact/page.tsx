@@ -3,13 +3,20 @@ import ContactForm from "@/components/ContactForm";
 import FAQ from "@/components/FAQ";
 import ShopMap from "@/components/GoogleMapShop";
 import ShopInfoSection from "@/components/ShopInfoSection";
+import { supabase } from "@/lib/supabase";
 
 // sm: 640px
 // md: 768px
 // lg: 1024px
 // xl: 1280px
 
-const Contact = () => {
+
+const Contact = async () => {
+  const { data: shopAddress } = await supabase
+    .from("shop_info")
+    .select("address1, address2, city, state, zip, phone, email, latitude, longitude")
+    .single();
+
   return (
     <div>
       {/* Section 1 - Hero */}
@@ -28,7 +35,7 @@ const Contact = () => {
           Find Our Location
         </div>
         {/* Google Map */}
-        <ShopMap />
+        <ShopMap shopAddress=shopAddress/>
         {/* Google Map */}
       </div>
       {/* Section 3 */}

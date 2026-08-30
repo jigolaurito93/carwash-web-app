@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { FiEdit2, FiTrash2, FiPlusCircle } from "react-icons/fi";
-import { Category } from "@/lib/database.types";
+import { Category } from "@/lib/app.types";
 
 import CategoryModal from "@/components/admin/CategoryModal";
 import DeleteCategoryModal from "@/components/admin/DeleteCategoryModal";

@@ -1,4 +1,5 @@
 "use client";
+import { Database } from "@/lib/database.types";
 
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 
@@ -7,14 +8,29 @@ const containerStyle = {
   height: "500px",
 };
 
-const center = {
-  lat: 41.882657, // Chicago Bean latitude
-  lng: -87.623303, // Chicago Bean longitude (note the minus)
-};
-const ShopMap = () => {
-  const shopAddress = "123 Detailers Way, Auto City, ST 12345";
+const ShopMap = ({
+  shopAddress,
+}: {
+  shopAddress: Database["public"]["Tables"]["shop_info"]["Row"] | null;
+}) => {
+  const center = {
+    lat: shopAddress?.latitude, // Chicago Bean latitude
+    lng: shopAddress?.longitude, // Chicago Bean longitude (note the minus)
+  };
+
+  // Formats the address to look like this: "123 Main St, Chicago, IL 60601"
+  const formattedAddress = [
+    shopAddress?.address1,
+    shopAddress?.address2,
+    `${shopAddress?.city}, ${shopAddress?.state} ${shopAddress?.zip}`,
+  ]
+    .filter(Boolean)
+    .join(", ");
+
+  // It builds the URL for the “Get Directions” link. When someone clicks it, Google Maps opens with directions to your shop.
+  // It will look like this: "...&destination=123%20Main%20St%2C%20Chicago%2C%20IL%2060601"
   const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
-    shopAddress,
+    formattedAddress,
   )}`;
 
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
@@ -37,7 +53,7 @@ const ShopMap = () => {
         <div className="text-lg font-semibold text-yellow-400 sm:text-2xl">
           Onyx Premium Carwash
         </div>
-        <div className="sm:text-lg">{shopAddress}</div>
+        <div className="sm:text-lg">{formattedAddress}</div>
         <a
           href={directionsUrl}
           target="_blank"

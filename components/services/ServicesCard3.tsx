@@ -1,4 +1,4 @@
-import { AllService } from "@/lib/database.types";
+import { AllService } from "@/lib/app.types";
 import { FaCheck } from "react-icons/fa";
 
 interface ServicesCard3Props {

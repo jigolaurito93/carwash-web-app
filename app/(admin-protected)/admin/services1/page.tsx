@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ServiceRow, Category } from "@/lib/database.types";
+import { ServiceRow, Category } from "@/lib/app.types";
 import { supabase } from "@/lib/supabase";
 import { FiPlusCircle, FiEdit2, FiTrash2 } from "react-icons/fi";
 
