@@ -27,13 +27,13 @@ If Vitest is still missing, say so in one sentence, add the minimal config + `pa
 
 ## What to test
 
-| Target | Focus |
-|---|---|
-| Zod (`lib/validations/*`) | valid payload, missing fields, bad email |
-| Server Actions | success update, `revalidatePath` targets, error return — mock `@/lib/supabase` or `createServerClient` |
-| Route handlers | 400 on failed `safeParse`, 200 on Resend success — mock `resend` |
-| Pure helpers (`lib/us-states.ts`, `cn`) | real cases, no component mount |
-| Client components | submit, empty state, modal open — mock Supabase |
+| Target                                  | Focus                                                                                                  |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Zod (`lib/validations/*`)               | valid payload, missing fields, bad email                                                               |
+| Server Actions                          | success update, `revalidatePath` targets, error return — mock `@/lib/supabase` or `createServerClient` |
+| Route handlers                          | 400 on failed `safeParse`, 200 on Resend success — mock `resend`                                       |
+| Pure helpers (`lib/us-states.ts`, `cn`) | real cases, no component mount                                                                         |
+| Client components                       | submit, empty state, modal open — mock Supabase                                                        |
 
 Do **not** test: `lib/database.types.ts`, page layout/CSS, or legacy folders (`all-services*`, `servicespage`, `admin/services`) unless asked.
 
@@ -58,6 +58,7 @@ Do **not** test: `lib/database.types.ts`, page layout/CSS, or legacy folders (`a
 **Run:** `pnpm test [path]`
 
 **Cases:**
+
 - [ ] ...
 ```
 

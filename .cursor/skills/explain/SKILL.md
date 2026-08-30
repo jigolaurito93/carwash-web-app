@@ -35,15 +35,19 @@ Explain the user's **highlighted selection**, `@`-mentioned path, or focused fil
 **Where it sits:** public | admin live | stub/legacy | shared
 
 ## What it does
+
 3–6 bullets a new engineer can follow.
 
 ## How data moves
+
 Request → component/action/route → Supabase or Resend → UI. Say "none" if static.
 
 ## Related files
+
 - `path` — why it matters
 
 ## Watch-outs
+
 Legacy tables, commented CRUD, mixed clients, or stubs. Omit this section if none.
 ```
 

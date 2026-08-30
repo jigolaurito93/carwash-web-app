@@ -21,6 +21,7 @@ Review the user's **selection**, `@` paths, or **unstaged/branch diff**. If the 
 ## Required audit
 
 **Bugs**
+
 - Wrong table (`categories` / `all_services` / `services_packages` instead of `categories1` / `services1`)
 - Mutations that skip `revalidatePath` on admin **and** public pages (`/`, `/services`, `/contact`)
 - Auth gaps: new `/admin/*` routes that bypass `proxy.ts`; login moved into `(admin-protected)`
@@ -28,6 +29,7 @@ Review the user's **selection**, `@` paths, or **unstaged/branch diff**. If the 
 - Null-unsafe `.single()` / missing empty states
 
 **Performance leaks**
+
 - Client Supabase (`lib/supabase.ts`) in new Server Components
 - Waterfall fetches that could be `Promise.all`
 - Missing `revalidatePath` / over-fetching `select('*')` when a few columns suffice
@@ -35,6 +37,7 @@ Review the user's **selection**, `@` paths, or **unstaged/branch diff**. If the 
 - Unbounded lists without limit/order; images without `next/image` where the file already uses it
 
 **Type safety**
+
 - `any`, unchecked `json`, untyped `FormData`
 - Hand-edited `lib/database.types.ts` (should come from `pnpm gen:types`)
 - Layout JSON not matching `ServiceRow` / `layout1_data`–`layout4_data` in `lib/app.types.ts`
@@ -57,15 +60,19 @@ Review the user's **selection**, `@` paths, or **unstaged/branch diff**. If the 
 ## Findings
 
 ### 🔴 Critical
+
 - **[file:line]** Problem. Why it breaks. How to fix.
 
 ### 🟡 Warning
+
 - **[file:line]** ...
 
 ### 🟢 Note
+
 - **[file:line]** ...
 
 ## Summary
+
 1–3 sentences: ship / fix-first / blocked.
 ```
 

@@ -44,7 +44,8 @@ export default function ServiceModal({
     name: mode === "create" ? "" : service?.name || "",
     description: mode === "create" ? "" : service?.description || "",
     notes: mode === "create" ? "" : service?.notes || "",
-    category_id: mode === "create" ? "" : service?.category_id?.toString() || "",
+    category_id:
+      mode === "create" ? "" : service?.category_id?.toString() || "",
     layout: mode === "create" ? "layout1" : service?.card_layout || "layout1",
     sort_order: mode === "create" ? "" : service?.sort_order?.toString() || "",
     layout3_info: service?.layout3_data || "",

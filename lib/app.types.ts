@@ -65,10 +65,12 @@ export type ServiceRow = {
   categories1: {
     name: string;
   } | null;
-  layout1_data: (Layout1Data & {
-    is_active?: boolean;
-    sort_order?: number | null;
-  }) | null;
+  layout1_data:
+    | (Layout1Data & {
+        is_active?: boolean;
+        sort_order?: number | null;
+      })
+    | null;
   layout2_data: Layout2Data | null;
   layout3_data: string | null;
   layout4_data: Layout4Data | null;
