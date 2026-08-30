@@ -3,7 +3,7 @@
 import ContactForm from "@/components/ContactForm";
 import FAQ from "@/components/FAQ";
 import ShopMap from "@/components/GoogleMapShop";
-import ShopInfoSection2 from "@/components/ShopInfoSection2";
+import ShopInfoSection from "@/components/ShopInfoSection";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -69,7 +69,7 @@ const Contact = () => {
 
       <div>
         {/* Section 2 */}
-        <ShopInfoSection2 />
+        <ShopInfoSection variant="light" />
         {/* Section 2 */}
       </div>
 

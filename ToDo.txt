@@ -1,179 +1,186 @@
-To Do:
-    - /admin/login navbar, bg change to black
-    - fix position of error message in admin/login
-    - add cursor-pointer to buttons
-    - Mobile Navbar is shown in Admin UI tablet
-    DONE - Add Profile
-    - Import photos to grab from supabase
-    DONE - Display table on /testService
-    DONE - Fix is_active_bool in /testService
-    DONE - Fix browserclient and serverclient for supabase
-    - Make customized styling for buttons
-    
-    Other Services:
-        DONE - edit modal need  is_active and order field 
-        DONE - delete button to delete row in others services
-        DONE - Change add service to plus icon
-        - Fix UI
-        DONE - Add Toast to UI
-        DONE - Change modal placeholder
-        DONE - add cursor pointer to all buttons
-        DONE - Change "Edit" to gray in modal
-        DONE - Change font of title
-        DONE - Change Plus sign in + ADD VEHICLE OPTION
-        DONE - Change X to react icon
-        DONE - Add toast for successfully deleting file
-        DONE - Add toast for successfully adding, editing file
-    
-    Services:
-        DONE - create modal has unlimited height 
-        - Fix UI
-        DONE - Add Toast to UI
-        - Dynamic Modal for services page
-        - Scheduler for appointments
-        - Assign button styling
-    
-    Main Dashboard:
-        DONE - Display name on main page
-        DONE - Add Profile to Navbar
-    
-    Appointment:
-        - Make contact number look like this format (123) 1234-0021
-        - But store it as 1234123111
-        - If status column empty, put scheduled as default
+================================================================================
+ONYX PREMIUM CARWASH — PROJECT TO-DO
+Last updated: Aug 29, 2026
+================================================================================
+
+WHERE TO KEEP THIS LIST
+-----------------------
+- This file (ToDo.txt) — quick reference while coding (you are here)
+- GitHub Issues — if you want tracking per task with labels/milestones
+- Cursor chat — ask the agent to "work on the next item in ToDo.txt"
+
+Tip: Check off items by changing [ ] to [x] as you complete them.
 
 
-1. The Admin Sidebar (Left Side)
-Since it’s a vertical strip, group your items by "Task" to make it intuitive.
-Top (Branding):
-Your Logo or "ADMIN PANEL" in font-lexend.
-A "Back to Site" button with a small arrow icon.
-Middle (Core Navigation):
-Dashboard: (Home icon) Overview and stats.
-Main Services: (List icon) Links to your ServicesTable.
-Other Services: (Grid icon) Links to your OtherServicesTable.
-Detailing: (Sparkle icon) Links to your DetailingServices table.
-Bottom (Account/System):
-Settings: For site-wide changes (phone number, hours).
-Logout Button: (Power icon) Styled in red-400 or zinc-500.
+================================================================================
+PHASE 1 — GET READY TO SELL (DO THESE FIRST)
+================================================================================
 
-2. The Admin Dashboard (Main Content)
-Since you are using a sidebar, the main content area will be wide. Use that space for "Big Picture" Cards:
-Row 1: Summary Cards (Small Boxes)
-Live Services: "12 Active"
-Drafts/Hidden: "3 Hidden" (Helps you remember what’s not public yet).
-Last Update: Displays the timestamp of your last database change.
-Row 2: Quick Management (Two Columns)
-Left Column: A "Recently Modified" list showing the last 5 services you edited.
-Right Column: "Quick Toggles" to turn categories on or off without opening a modal.
-Row 3: Status Check
-A simple "Database Status" indicator to ensure Supabase is responding correctly.
+[ ] 1. FIX HARDCODED BUSINESS DATA
+    - Contact page: pull phone + email from shop_info (not placeholder values)
+    - Google Map: pull address + lat/lng from shop_info (not Chicago placeholder)
+    - Footer: link social icons to shop_info.facebook / instagram from DB
 
+[ ] 2. SHOP HOURS EDITOR (ADMIN)
+    - Hours already display on home + footer — add admin UI to edit them
+    - Table: shop_hours (day_name, open_time, close_time, is_closed)
 
+[ ] 3. GALLERY CMS
+    - Admin: upload, reorder, caption, delete images
+    - Public gallery page: read from gallery_images table (not hardcoded array)
+    - Storage: Supabase Storage bucket (see IMAGE STORAGE below)
 
-Find Out:
-1. const router = useRouter();
-   const isEdit = !!service;
-         - !! is double negation to convert any value to a boolean.
+[ ] 4. CLEAN UP CODEBASE
+    - Remove or hide test routes: services1test, all-services-test, old services pages
+    - Consolidate on categories1 + services1 as the only services model
+    - Remove dead code in data/services.ts if no longer used
+    - Fix admin nav: remove duplicate/confusing links (Services vs Edit Services vs Display Services)
 
-=============================================================================================================
-servicespage
-    - Find out if its right to put category: 'main' | 'detailing' | 'other'; if im gonna add a new category in the future using UI
+[ ] 5. MISSING PAGES
+    - Create /privacy page (footer links to it today — 404)
+    - Create /terms page
+    - Add consent checkbox + privacy link on contact form (see REFERENCE below)
 
-- Separate actions for fetching data from supabase
-- TestServices page
-    DONE - Add padding bottom of page
-    DONE - Add underline to categories
-    DONE - if price doesnt have decimal, dont put .00 at the end
-    - Add main Image to services page
-- Modal for categories
-    DONE - Add order_by to order by category
-- Modal for services
-    DONE - Add order_by to order by service
-    DONE - if price doesnt have decimal, dont put .00 at the end
-    - Make service input field dynamic by adding a button to add new service
-- Services1 Admin
-    DONE - Display services by categories
-    DONE - Add order_by to order by category
-- Category1 Admin
-    DONE - Add order_by to order by category
+[ ] 6. DEPLOYMENT PACKAGE (FOR BUYERS)
+    - Add .env.example with all required variables
+    - Export Supabase schema SQL (tables + RLS policies)
+    - Update README: setup steps, env vars, how to create admin user, Vercel deploy
+
+[ ] 7. SHOP INFO POLISH
+    - Add toast after shop-info form saves successfully
+    - Fix page title (currently says "Account Settings" — should be Shop Info)
 
 
-Screen sizes
-* 320px and up
-* sm: 640px and up col-2
-* md: 768px and up.
-* lg: 1024px and up. Col-3
-* xl: 1280px and up. Col-4
-* 2xl: 1536px and up.
+================================================================================
+PHASE 2 — CORE FEATURES
+================================================================================
+
+[ ] 8. APPOINTMENTS (ADMIN)
+    - Finish appointment table + CRUD (code is mostly commented out already)
+    - Wire dashboard stats to real data (not hardcoded 0)
+    - Phone format display: (123) 456-7890 — store as digits only
+    - Default status: "scheduled" when empty
+
+[ ] 9. CUSTOMER BOOKING (OPTIONAL BUT HIGH VALUE)
+    - Public booking form: name, phone, service, date/time
+    - Email confirmation via Resend
+    - Hero "Schedule an Appointment" button should link here
+
+[ ] 10. ABOUT PAGE CMS
+    - Make owner name, story, mission editable (currently hardcoded "Marcus Reynolds")
+
+[ ] 11. FAQ CMS
+    - Move FAQs from FAQ.tsx into Supabase so business can edit them
+
+[ ] 12. ADMIN POLISH
+    - Mobile admin nav (sidebar is desktop-only today)
+    - Finish /admin/profile page (password change, display name)
+    - Use server Supabase client in server actions (shop-info/actions.ts)
+    - Fix /admin/login: black navbar bg, error message position, cursor-pointer on buttons
 
 
-Privacy policy
-Consent checkbox w link to privacy policy 
+================================================================================
+PHASE 3 — PRODUCTIZE (SELL MULTIPLE TIMES)
+================================================================================
 
-{
-  name,
-  email,
-  message,
-  consent: true,
-  created_at: new Date()
-}
+[ ] 13. BRANDING CONFIG — business name, logo, tagline, colors in one place
+[ ] 14. IMAGE OPTIMIZATION — CDN, auto-resize, WebP via Cloudinary or Supabase transforms
+[ ] 15. SEO — per-page metadata, Open Graph image, sitemap.xml, robots.txt
+[ ] 16. ANALYTICS — Google Analytics or Plausible
+[ ] 17. ERROR HANDLING — contact form failure states, admin toast on all actions
+[ ] 18. RECORD A 5-MIN LOOM — how to use the admin panel (for client handoff)
 
-Add a small banner:
 
-“This site uses third-party services like Google Maps which may use cookies. By using this site, you agree to our Privacy Policy.”
+================================================================================
+IMAGE STORAGE (MOVE OFF public/images/)
+================================================================================
 
-Or 
+KEEP IN REPO (small, rarely change):
+    - Logo, favicon, SVG icons → public/images/
 
-Only load the map after user clicks “Enable Map”
+MOVE TO SUPABASE STORAGE (gallery, hero, team photos):
+    1. Create bucket: "gallery" (public read)
+    2. Admin uploads file → get public URL → save to gallery_images table
+    3. Public pages use that URL in next/image
 
-Homepage 
-- position of address and hours
-- Change logo
-DONE - Pricing section change color 
+ALTERNATIVES IF NEEDED:
+    - Cloudinary — best for auto-resize/optimization
+    - Vercel Blob — simple if deploying on Vercel
+    - Uploadthing — easy Next.js file upload integration
 
-Footer
-DONE - add my name under
-DONE - Attach Links
-DONE - Fetch hours and contact info
-- Attach social media links to db
 
-Services
-DONE - add ask for quote card
-DONE - Add optional notes in layout1 card
-DONE - Daily specials: early bird
-- Add attention section 
-DONE - Card/section for other service, ceramic : call for quote 
-DONE - Title, description, ask quote button
+================================================================================
+PEXELS IMAGES — LICENSE NOTE
+================================================================================
 
-Shop Info Page
-- Add toaster after form submission
+Pexels images are generally OK for commercial use (website, marketing).
+License: https://www.pexels.com/license/
 
-General
-DONE - Editable address, phone, hours, email, social media
-- Editable faq
-- Separate blocks to make components/reusable
-- Add to db
-    DONE - Address
-    DONE - Phone
-    DONE - Hours
-    - FAQ
-- Link css global variables
-- Add top banner
+Still recommended before going live:
+    - Keep a note of which Pexels URLs/photographers you used
+    - Replace with the business's own photos when possible (more authentic)
+    - Don't use images that show recognizable people/brands in a misleading way
+    - For a paying client, ask them to confirm they're happy with stock photos
+      or provide their own
 
-Gallery
-- add margin top to title 
-- Add more photos, how to upload to db
 
-Contact
-- Position of address and hours
-- Editable FAQ
-- Connect contact form
-- Link hours and info
+================================================================================
+QUICK WINS (DO ANYTIME)
+================================================================================
 
-Admin
-- input schedule to dashboard
-- How to upload images to db
+[ ] Gallery page: add margin-top to title (content hidden under navbar)
+[ ] Services page: add attention/specials section
+[ ] Homepage: fix position of address and hours section
+[ ] Contact page: fix position of address and hours section
+[ ] Add top banner message via site_announcements (already wired — just add data)
+[ ] ServiceModal: dynamic rows for adding more service line items
+[ ] Dashboard: "Recently Modified" list + quick category toggles (see design notes below)
 
-ServiceModal
-- Make it dynamic and button to add more rows for services
+
+================================================================================
+DONE (ARCHIVED)
+================================================================================
+
+[x] Services CMS — categories1 + services1 with 4 card layouts
+[x] Shop info in DB — address, phone, hours, email
+[x] Contact form — Zod validation + Resend email API
+[x] Admin auth — Supabase login + proxy.ts route protection
+[x] Footer — hours, contact info, links, developer credit
+[x] Services page — layout1/2/3/4 cards, call-for-quote, notes
+[x] Supabase browser + server client setup
+[x] Toast notifications in admin modals
+[x] Pricing section color on homepage
+
+
+================================================================================
+REFERENCE (KEEP FOR LATER)
+================================================================================
+
+Screen breakpoints:
+    320px+  |  sm: 640px (col-2)  |  md: 768px  |  lg: 1024px (col-3)
+    xl: 1280px (col-4)  |  2xl: 1536px
+
+Privacy / cookies banner idea:
+    "This site uses third-party services like Google Maps which may use cookies.
+     By using this site, you agree to our Privacy Policy."
+    OR: only load map after user clicks "Enable Map"
+
+Contact form consent field:
+    { name, email, message, consent: true, created_at }
+
+Admin dashboard design (future):
+    Row 1: Active services count | Hidden count | Last DB update
+    Row 2: Recently modified (left) | Quick category toggles (right)
+    Row 3: Database status indicator
+
+Admin sidebar grouping (future):
+    Top: Logo + "Back to Site"
+    Middle: Dashboard | Services | Gallery | Appointments
+    Bottom: Shop Info | Account | Logout
+
+.env variables needed:
+    NEXT_PUBLIC_SUPABASE_URL
+    NEXT_PUBLIC_SUPABASE_ANON_KEY
+    RESEND_API_KEY
+    OWNER_EMAIL
+    NEXT_PUBLIC_GOOGLE_MAPS_API_KEY

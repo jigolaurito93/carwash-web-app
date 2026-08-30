@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <div>
       <Hero />
-      <ShopInfoSection />
+      <ShopInfoSection variant="dark" />
       <ServicesSection />
       <Welcome />
     </div>

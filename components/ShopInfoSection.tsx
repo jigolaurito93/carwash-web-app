@@ -2,7 +2,11 @@
 import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope } from "react-icons/fa";
 import { supabase } from "@/lib/supabase";
 
-const ShopInfoSection = async () => {
+const ShopInfoSection = async ({
+  variant = "dark",
+}: {
+  variant: "dark" | "light";
+}) => {
   const { data: shop_hours, error } = await supabase
     .from("shop_hours")
     .select("day_name, open_time, close_time, is_closed")
@@ -48,7 +52,9 @@ const ShopInfoSection = async () => {
   const hasSun = shop_hours.some((h) => h.day_name === "Sunday");
 
   return (
-    <div className="bg-black/90 px-12 py-7 font-lexend text-white md:py-10">
+    <div
+      className={`${variant === "dark" ? "bg-black/90 text-white" : "bg-white text-black"} px-12 py-7 font-lexend md:py-10`}
+    >
       {/* Stack columns on small screens, row on md+ */}
       <div className="mx-auto flex max-w-5xl flex-col items-center justify-center gap-8 text-center sm:flex-row sm:items-start sm:gap-20 sm:text-left md:max-w-2xl md:gap-20 lg:gap-36">
         {/* Operating Hours */}
@@ -86,7 +92,7 @@ const ShopInfoSection = async () => {
 
             {/* Sunday (closed) */}
             {hasSun && (
-              <li className="flex justify-between text-blue-400">
+              <li className={`flex justify-between text-blue-400`}>
                 <span>Sunday:</span>
                 <span>Closed</span>
               </li>
