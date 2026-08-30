@@ -6,7 +6,13 @@ import { normalizeStateCode, US_STATES } from "@/lib/us-states";
 import type { ShopInfo } from "@/lib/supabase.types";
 import { handleAction } from "@/app/(admin-protected)/admin/shop-info/actions";
 
-export default function ShopInfoForm({ shopInfo }: { shopInfo: ShopInfo }) {
+export default function ShopInfoForm({
+  shopInfo,
+  userEmail,
+}: {
+  shopInfo: ShopInfo;
+  userEmail: string;
+}) {
   const [saving, setSaving] = useState(false);
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -35,9 +41,10 @@ export default function ShopInfoForm({ shopInfo }: { shopInfo: ShopInfo }) {
         <label className="labelx block text-xs">Email Address</label>
         <input
           type="email"
-          defaultValue={shopInfo?.email || ""}
-          className="inputx text-sm"
+          value={userEmail}
+          className="inputx cursor-not-allowed bg-gray-200 text-sm text-gray-500"
           disabled
+          readOnly
         />
       </div>
 
