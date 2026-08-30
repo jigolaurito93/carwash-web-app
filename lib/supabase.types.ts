@@ -5,4 +5,15 @@ export type Tables<T extends keyof Database["public"]["Tables"]> =
 
 export type ShopInfo = Tables<"shop_info">;
 
+export type ShopMapAddress = Pick<
+  ShopInfo,
+  | "address1"
+  | "address2"
+  | "city"
+  | "state"
+  | "zip"
+  | "latitude"
+  | "longitude"
+>;
+
 export type { Database };

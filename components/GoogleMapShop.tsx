@@ -1,21 +1,22 @@
 "use client";
-import { Database } from "@/lib/database.types";
-
+import type { ShopMapAddress } from "@/lib/supabase.types";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+
+type ShopMapProps = {
+  shopAddress: ShopMapAddress | null;
+};
 
 const containerStyle = {
   width: "100%",
   height: "500px",
 };
 
-const ShopMap = ({
-  shopAddress,
-}: {
-  shopAddress: Database["public"]["Tables"]["shop_info"]["Row"] | null;
-}) => {
+const DEFAULT_CENTER = { lat: 41.882657, lng: -87.623303 };
+
+const ShopMap = ({ shopAddress }: ShopMapProps) => {
   const center = {
-    lat: shopAddress?.latitude, // Chicago Bean latitude
-    lng: shopAddress?.longitude, // Chicago Bean longitude (note the minus)
+    lat: shopAddress?.latitude ?? DEFAULT_CENTER.lat,
+    lng: shopAddress?.longitude ?? DEFAULT_CENTER.lng,
   };
 
   // Formats the address to look like this: "123 Main St, Chicago, IL 60601"
