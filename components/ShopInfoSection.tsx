@@ -105,30 +105,39 @@ const ShopInfoSection = async ({
           <div className="text-center text-xl md:text-2xl">Contact Us</div>
           <div className="flex w-full flex-col justify-center space-y-1 font-questrial text-sm md:text-lg">
             {/* Address */}
-            <div className="flex items-start gap-3 text-left">
-              <FaMapMarkerAlt className="mt-1 shrink-0 text-blue-500" />
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: (shopInfo.address ?? "").replace(/\n/g, "<br />"),
-                }}
-              />
-            </div>
+            {shopInfo.address && (
+              <div className="flex items-start gap-3 text-left">
+                <FaMapMarkerAlt className="mt-1 shrink-0 text-blue-500" />
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: (shopInfo.address ?? "").replace(/\n/g, "<br />"),
+                  }}
+                />
+              </div>
+            )}
 
             {/* Phone */}
-            <div className="flex items-center gap-3">
-              <FaPhoneAlt className="shrink-0 text-blue-500" />
-              <a href={`tel:${shopInfo.phone}`} className="hover:text-white">
-                {shopInfo.phone}
-              </a>
-            </div>
+            {shopInfo.phone && (
+              <div className="flex items-center gap-3">
+                <FaPhoneAlt className="shrink-0 text-blue-500" />
+                <a href={`tel:${shopInfo.phone}`} className="hover:text-white">
+                  {shopInfo.phone}
+                </a>
+              </div>
+            )}
 
             {/* Email */}
-            <div className="flex items-center gap-3">
-              <FaEnvelope className="shrink-0 text-blue-500" />
-              <a href={`mailto:${shopInfo.email}`} className="hover:text-white">
-                {shopInfo.email}
-              </a>
-            </div>
+            {shopInfo.email && (
+              <div className="flex items-center gap-3">
+                <FaEnvelope className="shrink-0 text-blue-500" />
+                <a
+                  href={`mailto:${shopInfo.email}`}
+                  className="hover:text-white"
+                >
+                  {shopInfo.email}
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>

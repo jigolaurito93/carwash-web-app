@@ -9,10 +9,8 @@ import {
   Inter,
 } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/navbar/Navbar";
-import Footer from "@/components/Footer";
 import { cn } from "@/lib/utils";
-import TopBanner from "@/components/TopBanner";
+import AdminViewSwitcher from "@/components/admin/AdminViewSwitcher";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -74,12 +72,8 @@ export default function RootLayout({
       )}
     >
       <body>
-        <div className="fixed top-0 left-0 z-10">
-          <TopBanner />
-          <Navbar />
-        </div>
         {children}
-        <Footer />
+        <AdminViewSwitcher />
       </body>
     </html>
   );

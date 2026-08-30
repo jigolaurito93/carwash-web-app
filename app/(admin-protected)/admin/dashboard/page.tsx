@@ -8,11 +8,9 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="">
-      <div className="fixed top-0 left-0 h-20 w-full bg-black" />
-
       {/* Header */}
       <header className="flex flex-col gap-2">
-        <h1 className="mt-20 mb-1 font-lexend text-4xl font-bold">Dashboard</h1>
+        <h1 className="mb-1 font-lexend text-4xl font-bold">Dashboard</h1>
         <p className="font-questrial text-2xl font-bold text-gray-500">
           Welcome back, John Doe! Here&apos;s what&apos;s happening today.
         </p>

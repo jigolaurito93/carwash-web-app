@@ -4,6 +4,7 @@ import { useState } from "react";
 // 1. Change this import
 import { createBrowserClient } from "@supabase/ssr";
 import { FormEvent } from "react";
+import Link from "next/link";
 
 const supabase = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -42,6 +43,12 @@ export default function AdminLoginPage() {
         onSubmit={handleSubmit}
         className="w-full max-w-sm space-y-4 lg:max-w-md"
       >
+        <Link
+          href="/"
+          className="mb-6 inline-block font-questrial text-sm text-gray-500 hover:text-black"
+        >
+          ← Back to website
+        </Link>
         <h1 className="mb-10 font-lexend text-3xl font-bold md:text-4xl lg:mb-15 lg:text-5xl">
           Admin Login
         </h1>
