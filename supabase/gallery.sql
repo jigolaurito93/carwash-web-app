@@ -70,12 +70,9 @@ set
   file_size_limit = excluded.file_size_limit,
   allowed_mime_types = excluded.allowed_mime_types;
 
+-- Public buckets serve files by URL without a SELECT policy.
+-- A SELECT policy on storage.objects lets anyone list every file in the bucket.
 drop policy if exists "Public can view gallery files" on storage.objects;
-create policy "Public can view gallery files"
-  on storage.objects
-  for select
-  to public
-  using (bucket_id = 'gallery');
 
 drop policy if exists "Authenticated can upload gallery files" on storage.objects;
 create policy "Authenticated can upload gallery files"
