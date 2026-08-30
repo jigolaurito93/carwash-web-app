@@ -1,0 +1,20 @@
+---
+description: Onyx tech stack — frameworks, versions, and live surfaces
+alwaysApply: true
+---
+
+# Stack
+
+- Next.js 16.1.6 App Router, React 19.2.3, TypeScript 5 strict, Tailwind v4, pnpm
+- Supabase (`@supabase/ssr`) for Postgres + Auth — no Prisma/Drizzle
+- shadcn (radix-vega), react-hook-form + Zod, Resend, Google Maps, sonner
+- Auth gate is `proxy.ts` (not `middleware.ts`)
+- Alias `@/*` → repo root
+
+**Live tables:** `categories1`, `services1`, `shop_info`, `shop_hours`, `site_announcements`
+
+**Live admin:** `/admin/shop-info`, `/admin/categories1`, `/admin/services1`
+
+**Public:** `/`, `/about`, `/services`, `/gallery`, `/contact`. Login: `/admin/login`
+
+Env names only: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`, `RESEND_API_KEY`, `OWNER_EMAIL`

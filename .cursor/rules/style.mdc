@@ -1,0 +1,16 @@
+---
+description: Onyx code style, naming, and data-access patterns
+alwaysApply: true
+---
+
+# Style and patterns
+
+- Prettier + `prettier-plugin-tailwindcss`. Double quotes, semicolons. `.ts`/`.tsx` only.
+- Imports via `@/`. Pages default-export. Helpers/types named-export.
+- Server Components by default. `"use client"` only for state, effects, or events.
+- New server data: `createServerClient` from `@supabase/ssr` + `cookies()`. Client: `@/lib/supabase`.
+- Types: `Database` from `@/lib/database.types`, domain from `@/lib/app.types`. Do not hand-edit generated types — `pnpm gen:types`.
+- Server Actions in colocated `actions.ts`. After writes, `revalidatePath` admin + public pages.
+- Classes via `cn()`. Brand: black + `yellow-400`, `font-lexend` / `font-questrial`. Reuse `btnSaveYlw`, `btnCancel`, `adminHeader`.
+- Components `PascalCase.tsx`. Actions `camelCase` verbs. DB columns stay `snake_case`. Keep table names `categories1` / `services1`.
+- Auth only in `proxy.ts`. Do not re-check in `admin/layout.tsx`.

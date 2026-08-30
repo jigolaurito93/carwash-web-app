@@ -1,0 +1,127 @@
+# Onyx Premium Carwash — Project Rules
+
+These rules apply to every change in this repo. Follow existing patterns. Prefer editing live surfaces over inventing new ones.
+
+---
+
+## 1. Technical stack
+
+| Layer | Choice | Version / notes |
+|---|---|---|
+| Framework | Next.js App Router | `16.1.6` — React Compiler on (`next.config.ts`) |
+| UI runtime | React / React DOM | `19.2.3` |
+| Language | TypeScript | `^5`, `strict: true` |
+| Styling | Tailwind CSS v4 | `@import "tailwindcss"` in `app/globals.css` — no `tailwind.config.js` |
+| Components | shadcn/ui (radix-vega) | `components/ui/`, `components.json` |
+| Package manager | pnpm | Use `pnpm`, not npm or yarn |
+| Database / Auth | Supabase (Postgres + Auth) | `@supabase/ssr`, `@supabase/supabase-js` — no Prisma, no Drizzle |
+| Forms | react-hook-form + Zod + `@hookform/resolvers` | See `lib/validations/` |
+| Email | Resend | `app/api/contact/route.ts` |
+| Maps | `@react-google-maps/api` | `components/GoogleMapShop.tsx` |
+| Toasts | sonner | Admin layout |
+| Dates | date-fns, react-day-picker | Admin date UI |
+| Icons | `react-icons` (public/admin) and `lucide-react` (shadcn) | Match the file you are in |
+| Fonts | `next/font/google` | Lexend, Questrial, Inter, Geist, Bungee Hairline |
+| Path alias | `@/*` → repo root | `tsconfig.json` |
+
+**Auth gate:** `proxy.ts` (Next.js 16). Do not add `middleware.ts`.
+
+**Env names only (never hardcode values):**
+`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`, `RESEND_API_KEY`, `OWNER_EMAIL`.
+
+**Live data (use these):** `categories1`, `services1`, `shop_info`, `shop_hours`, `site_announcements`.
+
+**Live admin CMS:** `/admin/shop-info`, `/admin/categories1`, `/admin/services1`.
+
+**Public routes:** `/`, `/about`, `/services`, `/gallery`, `/contact`. Login is `/admin/login` (outside the protected group).
+
+---
+
+## 2. Code style, naming, and patterns
+
+### Formatting
+- Prettier + `prettier-plugin-tailwindcss` (`.prettierrc`). Keep class names in Tailwind sort order.
+- ESLint: `eslint-config-next` (core-web-vitals + typescript).
+- Double quotes, semicolons (match existing files).
+- TypeScript only for app code (`.ts` / `.tsx`). No new `.js` / `.jsx`.
+
+### Files and folders
+- Pages: `app/**/page.tsx`. Layouts: `layout.tsx`.
+- Protected admin lives in `app/(admin-protected)/admin/` — URLs stay `/admin/*`.
+- Login stays at `app/admin/login/page.tsx` (not inside the protected group).
+- Route handlers: `app/api/**/route.ts`.
+- Server Actions: colocated `actions.ts` next to the page (`"use server"`).
+- Public UI: `components/`. Admin UI: `components/admin/`. Primitives: `components/ui/`.
+- Shared types/clients: `lib/`. Domain types: `lib/app.types.ts`. Generated schema: `lib/database.types.ts` (regenerate with `pnpm gen:types`, do not hand-edit).
+- Zod schemas: `lib/validations/*-schema.ts`.
+- Import with `@/` — never deep relative paths like `../../../lib`.
+
+### Components
+- Default-export page/section components (`export default function ServicesPage`).
+- Named exports for helpers, schemas, and types.
+- Server Components by default. Add `"use client"` only for state, effects, event handlers, or browser APIs.
+- Functional components only. No class components.
+- Props: inline object type or a local `type Props = { ... }`.
+- Merge classes with `cn()` from `@/lib/utils`.
+- After mutations, `revalidatePath` the admin page **and** the public pages that read the same data (`/`, `/services`, `/contact`).
+
+### Data access
+- **New Server Components / Route Handlers / Server Actions:** `createServerClient` from `@supabase/ssr` + `cookies()` from `next/headers` (see `app/services/page.tsx`).
+- **Client components:** `import { supabase } from "@/lib/supabase"` or `createBrowserClient` from `@supabase/ssr`.
+- Do not introduce a third client helper. Prefer `@supabase/ssr` over new `@supabase/auth-helpers-nextjs` usage.
+- Type queries with `Database` from `@/lib/database.types` and domain shapes from `@/lib/app.types` (`ServiceRow`, `Category`, layout JSON).
+- Service cards use `card_layout`: `layout1` | `layout2` | `layout3` | `layout4` plus `layout1_data` / `layout2_data` / `layout3_data` / `layout4_data`.
+- Contact form: validate with `contactSchema`, POST `/api/contact`. Do not write inquiries to the database unless asked.
+
+### Auth
+- Gate `/admin/*` in `proxy.ts` only. Do not re-check auth in `admin/layout.tsx`.
+- Login: `signInWithPassword`. Logout: `signOut` then `/admin/login`.
+- Never log tokens, cookies, or env values.
+
+### UI / brand
+- Public site: dark surfaces (`bg-black`, `bg-[#121212]`), accent `yellow-400`, headings `font-lexend`, body `font-questrial`.
+- Reuse existing utilities: `btnSaveYlw`, `btnCancel`, `btnSave`, `adminHeader`, `labelx`, `inputx`.
+- Admin chrome: black sidebar, yellow hover, `Toaster` from sonner.
+- Responsive: mobile-first Tailwind (`sm` 640, `md` 768, `lg` 1024, `xl` 1280).
+
+### Naming
+- Components / types: `PascalCase` (`ShopInfoSection`, `ServiceRow`).
+- Files: `PascalCase.tsx` for components, `kebab-case` or existing folder names for routes (`shop-info`, `categories1`).
+- Functions / variables: `camelCase`. Server Actions: verb + noun (`updateShopHours`, `handleAction`, `updateProfile`).
+- DB columns stay snake_case (`sort_order`, `is_active`, `category_id`). Do not camelCase them in queries.
+- Do not rename `categories1` / `services1` to drop the `1` — those are the live table names.
+
+---
+
+## 3. What to avoid
+
+### Legacy / experimental — do not extend
+Treat as frozen scratch. Do not add features, new tables, or new routes here unless the user explicitly asks to migrate or delete them:
+
+- Admin: `all-services`, `all-services-test`, `servicespage`, `services1test`, `app/(admin-protected)/admin/services/` (legacy tables UI).
+- Stub / unfinished: `/admin/dashboard`, `/admin/appointment`, `/admin/gallery`, `/admin/profile` — wire existing components (`AppointmentsClient`, etc.) instead of creating parallel pages.
+- DB tables (schema only / leftover): `categories`, `all_services`, `services_packages`, `other_services`, `tiered_services`, `detailingServices`, `services_all`.
+- README mentions `data/services.ts` — that folder does not exist. Do not recreate a static services config.
+
+### Anti-patterns
+- Do not add `middleware.ts`. Auth stays in `proxy.ts`.
+- Do not add Prisma, Drizzle, Redux, Zustand, or a new CSS framework.
+- Do not use the browser Supabase client (`lib/supabase.ts`) in **new** Server Components. Use `createServerClient`.
+- Do not fetch public catalog from anything except `categories1` + `services1`.
+- Do not hardcode service prices or hours when they belong in Supabase.
+- Do not invent new card layouts without updating `lib/app.types.ts` and both public + admin renderers.
+- Do not put secrets in source, commits, or rules. Never print `.env.local` values.
+- Do not add `any`. Prefer `Database` / `ServiceRow` / Zod inference.
+- Do not add a `hooks/` tree unless a hook is reused in two+ places.
+- Do not install with npm/yarn. Do not commit `node_modules`, `.next`, or `.env*`.
+- Do not add Tailwind v3 `tailwind.config.js`. Theme tokens live in `app/globals.css` `@theme inline`.
+- Do not wrap admin pages in a second root navbar/footer — `app/layout.tsx` already does.
+- Do not bypass RLS with a service-role key in client or committed server code unless the user explicitly requests a server-only secret and it stays in env.
+- Do not “clean up” large commented blocks in experimental admin pages unless asked — they document intended direction.
+
+### When adding features
+- Shop content → `shop_info` / `shop_hours` + `admin/shop-info`.
+- Catalog → `categories1` / `services1` + `admin/categories1` + `admin/services1` + public `/services`.
+- Appointments → existing `appointment` table + `AppointmentsClient` / `AppointmentFormModal` (currently unwired).
+- Gallery → do not invent a new table until asked; public gallery is still static images.
+- After schema changes: `pnpm gen:types` and commit `lib/database.types.ts`.
