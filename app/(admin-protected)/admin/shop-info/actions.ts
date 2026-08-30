@@ -38,3 +38,33 @@ export async function handleAction(formData: FormData) {
 
   revalidatePath("/admin/shop-info");
 }
+
+export type ShopHourUpdate = {
+  id: number;
+  open_time: string | null;
+  close_time: string | null;
+  is_closed: boolean;
+};
+
+export async function updateShopHours(hours: ShopHourUpdate[]) {
+  for (const hour of hours) {
+    const { error } = await supabase
+      .from("shop_hours")
+      .update({
+        open_time: hour.is_closed ? null : hour.open_time,
+        close_time: hour.is_closed ? null : hour.close_time,
+        is_closed: hour.is_closed,
+      })
+      .eq("id", hour.id);
+
+    if (error) {
+      console.error("Failed to update shop hours:", error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  revalidatePath("/admin/shop-info");
+  revalidatePath("/");
+  revalidatePath("/contact");
+  return { success: true };
+}

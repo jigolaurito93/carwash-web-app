@@ -2,14 +2,18 @@ import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { LiaLongArrowAltLeftSolid } from "react-icons/lia";
 import { handleAction } from "./actions";
-
-// Import the Server Action
+import ShopHoursEditor from "@/components/admin/ShopHoursEditor";
 
 const ShopInfo = async () => {
   const { data: shopInfo, error: shopInfoError } = await supabase
     .from("shop_info") // match your table exactly
     .select("*")
     .single();
+
+  const { data: shopHours, error: shopHoursError } = await supabase
+    .from("shop_hours")
+    .select("*")
+    .order("id", { ascending: true });
 
   if (shopInfoError) {
     return <div>Failed to load shop info.</div>;
@@ -137,6 +141,12 @@ const ShopInfo = async () => {
           </button>
         </div>
       </form>
+
+      {shopHoursError || !shopHours ? (
+        <div className="mt-12 text-red-500">Failed to load shop hours.</div>
+      ) : (
+        <ShopHoursEditor hours={shopHours} />
+      )}
     </div>
   );
 };
