@@ -5,6 +5,7 @@ import {
   FaMapMarkerAlt,
   FaPhoneAlt,
   FaEnvelope,
+  FaTwitter,
 } from "react-icons/fa";
 import { MdLocalCarWash } from "react-icons/md";
 import { supabase } from "@/lib/supabase";
@@ -17,7 +18,9 @@ const Footer = async () => {
 
   const { data: shopInfo, error: shopError } = await supabase
     .from("shop_info")
-    .select("address1, address2, city, state, zip, phone, email")
+    .select(
+      "address1, address2, city, state, zip, phone, email, facebook, twitter, instagram, name, description2",
+    )
     .single();
 
   if (error || shopError || !shop_hours || !shopInfo) {
@@ -29,7 +32,7 @@ const Footer = async () => {
   }
 
   // Helper: format time to 12‑hour AM/PM
-  const formatTime = (time: string | null) => {
+  const formatTime = (time: string | null | undefined) => {
     if (!time) return "";
     const [h, m] = time.split(":").map(Number);
     const period = h < 12 ? "AM" : "PM";
@@ -64,28 +67,41 @@ const Footer = async () => {
           <div className="flex items-center gap-2 text-white">
             <MdLocalCarWash className="text-3xl text-blue-500" />
             <span className="font-lexend text-xl font-bold tracking-tighter">
-              ONYX PREMIUM
+              {shopInfo.name}
             </span>
           </div>
           <p className="font-questrial text-sm leading-relaxed">
-            Setting the gold standard in automotive care. We provide
-            professional, hand-wash services that protect your investment and
-            restore your pride.
+            {shopInfo?.description2}
           </p>
+
+          {/* Social Media Links */}
           <div className="flex gap-4 pt-2">
-            <Link
-              href="https://instagram.com"
-              className="transition-colors hover:text-blue-500"
-            >
-              <FaInstagram size={20} />
-            </Link>
-            <Link
-              href="https://facebook.com"
-              className="transition-colors hover:text-blue-500"
-            >
-              <FaFacebook size={20} />
-            </Link>
+            {shopInfo?.instagram && (
+              <Link
+                href={shopInfo?.instagram ?? ""}
+                className="transition-colors hover:text-blue-500"
+              >
+                <FaInstagram size={20} />
+              </Link>
+            )}
+            {shopInfo?.facebook && (
+              <Link
+                href={shopInfo?.facebook ?? ""}
+                className="transition-colors hover:text-blue-500"
+              >
+                <FaFacebook size={20} />
+              </Link>
+            )}
+            {shopInfo?.twitter && (
+              <Link
+                href={shopInfo?.twitter ?? ""}
+                className="transition-colors hover:text-blue-500"
+              >
+                <FaTwitter size={20} />
+              </Link>
+            )}
           </div>
+          {/* Social Media Links */}
         </div>
 
         {/* Column 2: Quick Links */}
@@ -212,7 +228,9 @@ const Footer = async () => {
 
       {/* Bottom Bar */}
       <div className="mx-auto mt-16 flex max-w-7xl flex-col items-center justify-between gap-4 border-t border-slate-900 px-6 pt-8 text-xs text-slate-500 md:flex-row">
-        <p>© {currentYear} Onyx Premium Carwash. All rights reserved.</p>
+        <p>
+          © {currentYear} {shopInfo.name}. All rights reserved.
+        </p>
         <p>Developed by Jose Laurito</p>
         <div className="flex gap-6">
           <Link href="/privacy" className="hover:text-slate-300">

@@ -10,11 +10,12 @@ import { supabase } from "@/lib/supabase";
 // lg: 1024px
 // xl: 1280px
 
-
 const Contact = async () => {
   const { data: shopAddress, error } = await supabase
     .from("shop_info")
-    .select("address1, address2, city, state, zip, phone, email, latitude, longitude, name")
+    .select(
+      "address1, address2, city, state, zip, phone, email, latitude, longitude, name",
+    )
     .single();
 
   if (error) {
@@ -39,7 +40,7 @@ const Contact = async () => {
           Find Our Location
         </div>
         {/* Google Map */}
-        <ShopMap shopAddress={shopAddress}/>
+        <ShopMap shopAddress={shopAddress} />
         {/* Google Map */}
       </div>
       {/* Section 3 */}

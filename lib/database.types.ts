@@ -402,6 +402,7 @@ export type Database = {
           city: string | null;
           created_at: string | null;
           description: string | null;
+          description2: string | null;
           email: string | null;
           facebook: string | null;
           id: number;
@@ -421,6 +422,7 @@ export type Database = {
           city?: string | null;
           created_at?: string | null;
           description?: string | null;
+          description2?: string | null;
           email?: string | null;
           facebook?: string | null;
           id?: number;
@@ -440,6 +442,7 @@ export type Database = {
           city?: string | null;
           created_at?: string | null;
           description?: string | null;
+          description2?: string | null;
           email?: string | null;
           facebook?: string | null;
           id?: number;
