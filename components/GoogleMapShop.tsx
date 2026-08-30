@@ -26,7 +26,7 @@ const ShopMap = () => {
   if (!isLoaded) return <div>Loading map...</div>;
 
   return (
-    <div className="mx-auto flex h-[450px] w-full max-w-[750px] flex-col space-y-3 sm:h-[550px]">
+    <div className="mx-auto flex h-112.5 w-full max-w-187.5 flex-col space-y-3 sm:h-137.5">
       <div className="overflow-hidden">
         <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={15}>
           <Marker position={center} />
