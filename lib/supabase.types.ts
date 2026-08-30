@@ -12,6 +12,7 @@ export type ShopMapAddress = Pick<
   | "city"
   | "state"
   | "zip"
+  | "name"
   | "latitude"
   | "longitude"
 >;

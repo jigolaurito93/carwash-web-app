@@ -52,7 +52,7 @@ const ShopMap = ({ shopAddress }: ShopMapProps) => {
 
       <div className="font-questrial text-sm text-gray-100">
         <div className="text-lg font-semibold text-yellow-400 sm:text-2xl">
-          Onyx Premium Carwash
+          {shopAddress?.name}
         </div>
         <div className="sm:text-lg">{formattedAddress}</div>
         <a

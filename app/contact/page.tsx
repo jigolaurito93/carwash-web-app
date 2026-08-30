@@ -14,7 +14,7 @@ import { supabase } from "@/lib/supabase";
 const Contact = async () => {
   const { data: shopAddress, error } = await supabase
     .from("shop_info")
-    .select("address1, address2, city, state, zip, phone, email, latitude, longitude")
+    .select("address1, address2, city, state, zip, phone, email, latitude, longitude, name")
     .single();
 
   if (error) {
