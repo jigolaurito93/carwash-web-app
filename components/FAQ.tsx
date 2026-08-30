@@ -1,40 +1,45 @@
-type FAQItem = {
-  question: string;
-  answer: string;
-};
-
-const faqs: FAQItem[] = [
-  {
-    question: "Do I need an appointment?",
-    answer:
-      "Walk-ins are welcome, but we recommend scheduling an appointment to ensure minimal wait times and guaranteed availability.",
-  },
-  {
-    question: "How long does a typical wash take?",
-    answer:
-      "Most hand washes take between 20–40 minutes depending on the service level and current queue.",
-  },
-  {
-    question: "What makes a hand wash better than an automatic wash?",
-    answer:
-      "Hand washing is gentler on your paint, reduces the risk of scratches from hard brushes, and allows us to focus on details machines often miss.",
-  },
-  {
-    question: "Do you offer interior detailing?",
-    answer:
-      "Yes, we offer a range of interior services including vacuuming, interior wipe-down, and deep detailing packages.",
-  },
-];
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
+import type { Database } from "@/lib/database.types";
 
 type FAQProps = {
   title?: string;
-  items?: FAQItem[];
 };
 
-const FAQ = ({
-  title = "Frequently Asked Questions",
-  items = faqs,
-}: FAQProps) => {
+const FAQ = async ({ title = "Frequently Asked Questions" }: FAQProps) => {
+  const cookieStore = await cookies();
+  const supabase = createServerClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            cookieStore.set(name, value, options),
+          );
+        },
+      },
+    },
+  );
+
+  const { data, error } = await supabase
+    .from("faqs")
+    .select("id, question, answer")
+    .eq("is_active", true)
+    .order("sort_order")
+    .order("id");
+
+  if (error) {
+    console.error("Failed to load FAQs:", error);
+    return null;
+  }
+
+  const items = data ?? [];
+  if (items.length === 0) return null;
+
   return (
     <section className="w-full bg-black/90 px-6 py-12 text-white sm:px-10 lg:px-24 lg:py-20">
       <div className="mx-auto flex max-w-4xl flex-col gap-8">
@@ -50,7 +55,7 @@ const FAQ = ({
         <div className="space-y-3">
           {items.map((item) => (
             <details
-              key={item.question}
+              key={item.id}
               className="group rounded-lg border border-white/10 bg-black/60 p-4 transition-colors duration-200 hover:border-yellow-400/70 sm:p-5"
             >
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3">

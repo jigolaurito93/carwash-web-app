@@ -29,9 +29,9 @@ These rules apply to every change in this repo. Follow existing patterns. Prefer
 **Env names only (never hardcode values):**
 `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`, `RESEND_API_KEY`, `OWNER_EMAIL`.
 
-**Live data (use these):** `categories1`, `services1`, `shop_info`, `shop_hours`, `site_announcements`.
+**Live data (use these):** `categories1`, `services1`, `shop_info`, `shop_hours`, `site_announcements`, `gallery_images`, `faqs`.
 
-**Live admin CMS:** `/admin/shop-info`, `/admin/categories1`, `/admin/services1`.
+**Live admin CMS:** `/admin/shop-info`, `/admin/categories1`, `/admin/services1`, `/admin/gallery`, `/admin/faq`.
 
 **Public routes:** `/`, `/about`, `/services`, `/gallery`, `/contact`. Login is `/admin/login` (outside the protected group).
 
@@ -99,7 +99,7 @@ These rules apply to every change in this repo. Follow existing patterns. Prefer
 Treat as frozen scratch. Do not add features, new tables, or new routes here unless the user explicitly asks to migrate or delete them:
 
 - Admin: `all-services`, `all-services-test`, `servicespage`, `services1test`, `app/(admin-protected)/admin/services/` (legacy tables UI).
-- Stub / unfinished: `/admin/dashboard`, `/admin/appointment`, `/admin/gallery`, `/admin/profile` — wire existing components (`AppointmentsClient`, etc.) instead of creating parallel pages.
+- Stub / unfinished: `/admin/dashboard`, `/admin/appointment`, `/admin/profile` — wire existing components (`AppointmentsClient`, etc.) instead of creating parallel pages.
 - DB tables (schema only / leftover): `categories`, `all_services`, `services_packages`, `other_services`, `tiered_services`, `detailingServices`, `services_all`.
 - README mentions `data/services.ts` — that folder does not exist. Do not recreate a static services config.
 
@@ -123,5 +123,6 @@ Treat as frozen scratch. Do not add features, new tables, or new routes here unl
 - Shop content → `shop_info` / `shop_hours` + `admin/shop-info`.
 - Catalog → `categories1` / `services1` + `admin/categories1` + `admin/services1` + public `/services`.
 - Appointments → existing `appointment` table + `AppointmentsClient` / `AppointmentFormModal` (currently unwired).
-- Gallery → do not invent a new table until asked; public gallery is still static images.
+- Gallery → `gallery_images` + `admin/gallery` + public `/gallery`.
+- FAQ → `faqs` + `admin/faq` + public contact FAQ section.
 - After schema changes: `pnpm gen:types` and commit `lib/database.types.ts`.

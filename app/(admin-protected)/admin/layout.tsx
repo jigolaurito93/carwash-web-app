@@ -59,6 +59,9 @@ export default async function AdminLayout({
           <Link href="/admin/shop-info" className="block hover:text-yellow-400">
             Shop Info
           </Link>
+          <Link href="/admin/faq" className="block hover:text-yellow-400">
+            FAQ
+          </Link>
         </nav>
 
         {/* This pushes everything below it to the bottom */}

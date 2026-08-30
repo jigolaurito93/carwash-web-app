@@ -94,3 +94,12 @@ export type GalleryImage = {
   is_active: boolean;
   created_at: string;
 };
+
+export type Faq = {
+  id: number;
+  question: string;
+  answer: string;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+};
