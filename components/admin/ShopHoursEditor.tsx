@@ -47,7 +47,9 @@ export default function ShopHoursEditor({ hours }: { hours: ShopHour[] }) {
   const handleSave = async () => {
     for (const row of rows) {
       if (!row.is_closed && (!row.open_time || !row.close_time)) {
-        toast.error(`Set open and close times for ${row.day_name}, or mark it closed.`);
+        toast.error(
+          `Set open and close times for ${row.day_name}, or mark it closed.`,
+        );
         return;
       }
     }
@@ -60,13 +62,17 @@ export default function ShopHoursEditor({ hours }: { hours: ShopHour[] }) {
       is_closed: row.is_closed,
     }));
 
-    const result = await updateShopHours(payload);
-    setSaving(false);
-
-    if (result.success) {
-      toast.success("Shop hours updated!");
-    } else {
-      toast.error(result.error || "Failed to update shop hours.");
+    try {
+      const result = await updateShopHours(payload);
+      if (result.success) {
+        toast.success("Shop hours updated!");
+      } else {
+        toast.error(result.error || "Failed to update shop hours.");
+      }
+    } catch {
+      toast.error("Failed to update shop hours.");
+    } finally {
+      setSaving(false);
     }
   };
 

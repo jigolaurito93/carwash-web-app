@@ -1,12 +1,12 @@
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { LiaLongArrowAltLeftSolid } from "react-icons/lia";
-import { handleAction } from "./actions";
 import ShopHoursEditor from "@/components/admin/ShopHoursEditor";
+import ShopInfoForm from "@/components/admin/ShopInfoForm";
 
 const ShopInfo = async () => {
   const { data: shopInfo, error: shopInfoError } = await supabase
-    .from("shop_info") // match your table exactly
+    .from("shop_info")
     .select("*")
     .single();
 
@@ -15,7 +15,7 @@ const ShopInfo = async () => {
     .select("*")
     .order("id", { ascending: true });
 
-  if (shopInfoError) {
+  if (shopInfoError || !shopInfo) {
     return <div>Failed to load shop info.</div>;
   }
 
@@ -32,115 +32,7 @@ const ShopInfo = async () => {
         </Link>
       </div>
 
-      <form action={handleAction} className="max-w-2xl space-y-6">
-        {/* Email - Read Only */}
-        <div>
-          <label className="labelx block text-xs">Email Address</label>
-          <input
-            type="email"
-            defaultValue={shopInfo?.email || ""}
-            className="inputx text-sm"
-          />
-        </div>
-
-        {/* Phone */}
-        <div>
-          <label className="labelx block text-xs">Phone</label>
-          <input
-            name="phone"
-            defaultValue={shopInfo?.phone || ""}
-            className="inputx w-full text-sm"
-          />
-        </div>
-
-        {/* Address Section */}
-        <div className="space-y-6">
-          <h2 className="adminHeader">Address</h2>
-          {/* Address 1 */}
-          <div>
-            <label className="labelx block text-xs">Address Line 1</label>
-            <input
-              name="address1"
-              defaultValue={shopInfo?.address1 || ""}
-              className="inputx w-full text-sm"
-            />
-          </div>
-
-          {/* Address 2 */}
-          <div>
-            <label className="labelx block text-xs">Address Line 2</label>
-            <input
-              name="address2"
-              defaultValue={shopInfo?.address2 || ""}
-              className="inputx w-full text-sm"
-            />
-          </div>
-
-          {/* City */}
-          <div>
-            <label className="labelx block text-xs">City</label>
-            <input
-              name="city"
-              defaultValue={shopInfo?.city || ""}
-              className="inputx w-full text-sm"
-            />
-          </div>
-
-          {/* State */}
-          <div>
-            <label className="labelx block text-xs">State</label>
-            <input
-              name="state"
-              defaultValue={shopInfo?.state || ""}
-              className="inputx w-full text-sm"
-            />
-          </div>
-
-          {/* Zip */}
-          <div>
-            <label className="labelx block text-xs">Zip</label>
-            <input
-              name="zip"
-              defaultValue={shopInfo?.zip || ""}
-              className="inputx w-full text-sm"
-            />
-          </div>
-        </div>
-
-        <div className="space-y-6">
-          <h2 className="adminHeader">Social Media</h2>
-          <div>
-            <label className="labelx block text-xs">Facebook Link</label>
-            <input
-              name="facebook"
-              defaultValue={shopInfo?.facebook || ""}
-              className="inputx w-full text-sm"
-            />
-          </div>
-          <div>
-            <label className="labelx block text-xs">Twitter Link</label>
-            <input
-              name="twitter"
-              defaultValue={shopInfo?.twitter || ""}
-              className="inputx w-full text-sm"
-            />
-          </div>
-          <div>
-            <label className="labelx block text-xs">Instagram Link</label>
-            <input
-              name="instagram"
-              defaultValue={shopInfo?.instagram || ""}
-              className="inputx w-full text-sm"
-            />
-          </div>
-        </div>
-
-        <div className="border-t pt-6">
-          <button type="submit" className="btnSaveYlw">
-            Save Changes
-          </button>
-        </div>
-      </form>
+      <ShopInfoForm shopInfo={shopInfo} />
 
       {shopHoursError || !shopHours ? (
         <div className="mt-12 text-red-500">Failed to load shop hours.</div>
