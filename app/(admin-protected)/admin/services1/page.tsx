@@ -31,8 +31,8 @@ export default function ServicesAdminPage() {
         supabase.from("categories1").select("*").order("sort_order"),
       ]);
 
-      if (servicesData) setServices(servicesData);
-      if (cats) setCategories(cats);
+      if (servicesData) setServices(servicesData as ServiceRow[]);
+      if (cats) setCategories(cats as Category[]);
       setLoading(false);
     };
     fetchAll();

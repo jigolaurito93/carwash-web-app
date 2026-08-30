@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
-import { ServiceRow } from "@/lib/database.types";
+import { ServiceRow } from "@/lib/app.types";
 import { HiShieldCheck } from "react-icons/hi";
 
 const ServicesSection = async () => {
@@ -30,11 +30,12 @@ const ServicesSection = async () => {
     .eq("id", 1);
 
   // fetch all active services and include their category
-  const { data: services }: { data: ServiceRow[] | null } = await supabase
+  const { data } = await supabase
     .from("services1")
     .select(`*, categories1(name)`)
     .eq("is_active", true)
     .order("sort_order");
+  const services = (data ?? []) as ServiceRow[];
 
   if (!categories?.length) {
     return (

@@ -9,7 +9,6 @@ type Category = {
   id: number;
   name: string;
   slug: string;
-  card_layout: "layout1" | "layout2" | "layout3" | "layout4";
 };
 
 type Props = {

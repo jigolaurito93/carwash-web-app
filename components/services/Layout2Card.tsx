@@ -1,5 +1,5 @@
 // components/cards/Layout2Card.tsx
-import type { ServiceRow } from "@/lib/database.types";
+import type { ServiceRow } from "@/lib/app.types";
 
 type Props = {
   service: ServiceRow;

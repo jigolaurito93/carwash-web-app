@@ -32,11 +32,12 @@ export default async function ServicesPageTest() {
     .order("id");
 
   // fetch all active services and include their category
-  const { data: services }: { data: ServiceRow[] | null } = await supabase
+  const { data: servicesData } = await supabase
     .from("services1")
     .select(`*, categories1(name)`)
     .eq("is_active", true)
     .order("sort_order");
+  const services = (servicesData ?? []) as ServiceRow[];
 
   const { data: shopInfo } = await supabase
     .from("shop_info")

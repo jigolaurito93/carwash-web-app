@@ -5,48 +5,13 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { FiX } from "react-icons/fi";
 import { toast } from "sonner";
-
-type Category = {
-  id: number;
-  name: string;
-  // card_layout removed here too; category doesn’t control layout
-};
-
-type Service = {
-  id: number;
-  name: string;
-  description: string | null;
-  notes?: string | null;
-  category_id: number;
-  card_layout: "layout1" | "layout2" | "layout3" | "layout4" | null;
-  layout1_data: {
-    includes: string[];
-    small_car_price: number;
-    medium_car_price: number;
-    large_car_price: number;
-    is_active: boolean;
-    sort_order: number | null;
-  } | null;
-
-  layout2_data: {
-    items: Record<string, number | string>;
-  } | null;
-  layout3_data: string | null;
-  layout4_data: {
-    info: string;
-    small_car_price: number;
-    medium_car_price: number;
-    large_car_price: number;
-  } | null;
-  is_active: boolean;
-  sort_order: number | null;
-};
+import type { Category, ServiceRow } from "@/lib/app.types";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
   mode: "create" | "edit";
-  service?: Service;
+  service?: ServiceRow;
   categories: Category[];
 };
 
@@ -79,7 +44,7 @@ export default function ServiceModal({
     name: mode === "create" ? "" : service?.name || "",
     description: mode === "create" ? "" : service?.description || "",
     notes: mode === "create" ? "" : service?.notes || "",
-    category_id: mode === "create" ? "" : service?.category_id.toString() || "",
+    category_id: mode === "create" ? "" : service?.category_id?.toString() || "",
     layout: mode === "create" ? "layout1" : service?.card_layout || "layout1",
     sort_order: mode === "create" ? "" : service?.sort_order?.toString() || "",
     layout3_info: service?.layout3_data || "",
@@ -114,7 +79,7 @@ export default function ServiceModal({
         .from("services1")
         .select("sort_order")
         .eq("category_id", Number(formData.category_id))
-        .neq("id", mode === "edit" ? service?.id : -1);
+        .neq("id", service?.id ?? -1);
 
       const taken = (data || [])
         .map((d) => d.sort_order)

@@ -48,45 +48,36 @@ export type Layout4Data = {
   large_car_price: number;
 };
 
-// This must match your Supabase RLS‑generated type for `services1`
+export type CardLayout = "layout1" | "layout2" | "layout3" | "layout4";
+
+// Domain shape for services1 + categories1(name) join.
+// Nullable fields match lib/database.types.ts (generated).
 export type ServiceRow = {
   id: number;
   name: string;
   description: string | null;
   sort_order: number | null;
-  category_id: number;
-  card_layout: "layout1" | "layout2" | "layout3" | "layout4" | null;
+  category_id: number | null;
+  card_layout: string | null;
   notes?: string | null;
-  is_active: boolean;
+  is_active: boolean | null;
+  created_at?: string | null;
   categories1: {
     name: string;
-    card_layout: "layout1" | "layout2" | "layout3" | "layout4";
-  };
-  layout1_data: {
-    includes: string[];
-    small_car_price: number;
-    medium_car_price: number;
-    large_car_price: number;
-    is_active: boolean;
-    sort_order: number | null;
   } | null;
-  layout2_data: {
-    items: Record<string, number>;
-  } | null;
-  layout3_data: string | null; // Assuming layout3 is just a string description for now
-  layout4_data: {
-    info: string;
-    small_car_price: number;
-    medium_car_price: number;
-    large_car_price: number;
-  } | null;
+  layout1_data: (Layout1Data & {
+    is_active?: boolean;
+    sort_order?: number | null;
+  }) | null;
+  layout2_data: Layout2Data | null;
+  layout3_data: string | null;
+  layout4_data: Layout4Data | null;
 };
 
-// types.ts (or lib/types.ts)
 export type Category = {
   id: number;
   name: string;
   slug: string;
-  sort_order: number;
-  card_layout: "layout1" | "layout2" | "layout3" | "layout4";
+  sort_order: number | null;
+  created_at?: string | null;
 };

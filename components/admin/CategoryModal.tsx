@@ -9,7 +9,7 @@ type Category = {
   id: number;
   name: string;
   slug: string;
-  sort_order: number;
+  sort_order: number | null;
 };
 
 type Props = {
@@ -38,9 +38,12 @@ export default function CategoryModal({
       const { data } = await supabase
         .from("categories1")
         .select("sort_order")
-        .neq("id", mode === "edit" ? category?.id : -1);
+        .neq("id", category?.id ?? -1);
 
-      const taken = (data || []).map((d) => d.sort_order).sort((a, b) => a - b);
+      const taken = (data || [])
+        .map((d) => d.sort_order)
+        .filter((n): n is number => n != null)
+        .sort((a, b) => a - b);
       setTakenValues(taken);
 
       // Find next available (max + 10)

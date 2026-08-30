@@ -26,7 +26,7 @@ const ShopInfoSection = async ({
   }
 
   // Helper: format time to 12‑hour AM/PM
-  const formatTime = (time: string | null) => {
+  const formatTime = (time: string | null | undefined) => {
     if (!time) return "";
     const [h, m] = time.split(":").map(Number);
     const period = h < 12 ? "AM" : "PM";
@@ -109,7 +109,7 @@ const ShopInfoSection = async ({
               <FaMapMarkerAlt className="mt-1 shrink-0 text-blue-500" />
               <span
                 dangerouslySetInnerHTML={{
-                  __html: shopInfo.address.replace(/\n/g, "<br />"),
+                  __html: (shopInfo.address ?? "").replace(/\n/g, "<br />"),
                 }}
               />
             </div>
