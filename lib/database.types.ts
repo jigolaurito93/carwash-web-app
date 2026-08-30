@@ -184,6 +184,39 @@ export type Database = {
         };
         Relationships: [];
       };
+      gallery_images: {
+        Row: {
+          alt_text: string;
+          caption: string | null;
+          created_at: string;
+          id: number;
+          image_url: string;
+          is_active: boolean;
+          sort_order: number;
+          storage_path: string;
+        };
+        Insert: {
+          alt_text?: string;
+          caption?: string | null;
+          created_at?: string;
+          id?: never;
+          image_url: string;
+          is_active?: boolean;
+          sort_order?: number;
+          storage_path: string;
+        };
+        Update: {
+          alt_text?: string;
+          caption?: string | null;
+          created_at?: string;
+          id?: never;
+          image_url?: string;
+          is_active?: boolean;
+          sort_order?: number;
+          storage_path?: string;
+        };
+        Relationships: [];
+      };
       other_services: {
         Row: {
           category: string | null;

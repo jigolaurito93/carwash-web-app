@@ -83,3 +83,14 @@ export type Category = {
   sort_order: number | null;
   created_at?: string | null;
 };
+
+export type GalleryImage = {
+  id: number;
+  storage_path: string;
+  image_url: string;
+  caption: string | null;
+  alt_text: string;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+};
