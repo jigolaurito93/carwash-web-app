@@ -1,9 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
-import Link from "next/link";
-import { LiaLongArrowAltLeftSolid } from "react-icons/lia";
 import type { Database } from "@/lib/database.types";
 import type { WelcomeContent } from "@/lib/app.types";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import WelcomeContentForm from "@/components/admin/WelcomeContentForm";
 
 export default async function AdminWelcomePage() {
@@ -57,16 +56,7 @@ export default async function AdminWelcomePage() {
 
   return (
     <div>
-      <div className="mb-12 flex items-center justify-between">
-        <h1 className="adminHeader">Welcome</h1>
-        <Link
-          href="/admin/dashboard"
-          className="btnSaveYlw flex items-center gap-2"
-        >
-          <LiaLongArrowAltLeftSolid className="h-6 w-6" />
-          <span>Back To Dashboard</span>
-        </Link>
-      </div>
+      <AdminPageHeader title="Welcome" />
       <WelcomeContentForm welcome={welcome} />
     </div>
   );
