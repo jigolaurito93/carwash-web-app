@@ -103,3 +103,18 @@ export type Faq = {
   is_active: boolean;
   created_at: string;
 };
+
+export type WhyChooseUsItem = {
+  title: string;
+  description: string;
+  icon?: string;
+};
+
+export type AboutContent = {
+  id: number;
+  owner_name: string;
+  story_paragraphs: string[];
+  mission: string;
+  why_choose_us: WhyChooseUsItem[];
+  updated_at: string;
+};

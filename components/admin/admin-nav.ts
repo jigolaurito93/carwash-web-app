@@ -7,4 +7,5 @@ export const adminNavLinks = [
   { href: "/admin/categories", label: "Edit Categories" },
   { href: "/admin/shop-info", label: "Shop Info" },
   { href: "/admin/faq", label: "FAQ" },
+  { href: "/admin/about", label: "About" },
 ] as const;

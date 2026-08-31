@@ -14,6 +14,33 @@ export type Database = {
   };
   public: {
     Tables: {
+      about_content: {
+        Row: {
+          id: number;
+          mission: string;
+          owner_name: string;
+          story_paragraphs: string[];
+          updated_at: string;
+          why_choose_us: Json;
+        };
+        Insert: {
+          id?: number;
+          mission: string;
+          owner_name: string;
+          story_paragraphs: string[];
+          updated_at?: string;
+          why_choose_us: Json;
+        };
+        Update: {
+          id?: number;
+          mission?: string;
+          owner_name?: string;
+          story_paragraphs?: string[];
+          updated_at?: string;
+          why_choose_us?: Json;
+        };
+        Relationships: [];
+      };
       all_services: {
         Row: {
           created_at: string;
