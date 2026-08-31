@@ -1,4 +1,5 @@
 // components/ShopInfoSection.tsx
+import { formatShopAddress } from "@/lib/format-shop-address";
 import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope } from "react-icons/fa";
 import { supabase } from "@/lib/supabase";
 
@@ -14,7 +15,7 @@ const ShopInfoSection = async ({
 
   const { data: shopInfo, error: shopError } = await supabase
     .from("shop_info")
-    .select("address, phone, email")
+    .select("address1, address2, city, state, zip, phone, email")
     .single();
 
   if (error || shopError || !shop_hours || !shopInfo) {
@@ -50,6 +51,7 @@ const ShopInfoSection = async ({
     (h) => h.day_name === "Saturday" && !h.is_closed,
   );
   const hasSun = shop_hours.some((h) => h.day_name === "Sunday");
+  const formattedAddress = formatShopAddress(shopInfo);
 
   return (
     <div
@@ -105,14 +107,10 @@ const ShopInfoSection = async ({
           <div className="text-center text-xl md:text-2xl">Contact Us</div>
           <div className="flex w-full flex-col justify-center space-y-1 font-questrial text-sm md:text-lg">
             {/* Address */}
-            {shopInfo.address && (
+            {formattedAddress && (
               <div className="flex items-start gap-3 text-left">
                 <FaMapMarkerAlt className="mt-1 shrink-0 text-blue-500" />
-                <span
-                  dangerouslySetInnerHTML={{
-                    __html: (shopInfo.address ?? "").replace(/\n/g, "<br />"),
-                  }}
-                />
+                <span>{formattedAddress}</span>
               </div>
             )}
 

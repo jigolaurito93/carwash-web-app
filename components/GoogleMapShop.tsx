@@ -1,4 +1,5 @@
 "use client";
+import { formatShopAddress } from "@/lib/format-shop-address";
 import type { ShopMapAddress } from "@/lib/supabase.types";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 
@@ -19,14 +20,7 @@ const ShopMap = ({ shopAddress }: ShopMapProps) => {
     lng: shopAddress?.longitude ?? DEFAULT_CENTER.lng,
   };
 
-  // Formats the address to look like this: "123 Main St, Chicago, IL 60601"
-  const formattedAddress = [
-    shopAddress?.address1,
-    shopAddress?.address2,
-    `${shopAddress?.city}, ${shopAddress?.state} ${shopAddress?.zip}`,
-  ]
-    .filter(Boolean)
-    .join(", ");
+  const formattedAddress = formatShopAddress(shopAddress);
 
   // It builds the URL for the “Get Directions” link. When someone clicks it, Google Maps opens with directions to your shop.
   // It will look like this: "...&destination=123%20Main%20St%2C%20Chicago%2C%20IL%2060601"

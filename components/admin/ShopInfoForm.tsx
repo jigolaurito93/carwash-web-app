@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, type SubmitEvent } from "react";
 import { toast } from "sonner";
 import { normalizeStateCode, US_STATES } from "@/lib/us-states";
 import type { ShopInfo } from "@/lib/supabase.types";
@@ -15,7 +15,7 @@ export default function ShopInfoForm({
 }) {
   const [saving, setSaving] = useState(false);
 
-  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSaving(true);
 

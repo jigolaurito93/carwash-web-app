@@ -8,6 +8,7 @@ import {
   FaTwitter,
 } from "react-icons/fa";
 import { MdLocalCarWash } from "react-icons/md";
+import { formatShopAddress } from "@/lib/format-shop-address";
 import { supabase } from "@/lib/supabase";
 
 const Footer = async () => {
@@ -57,6 +58,7 @@ const Footer = async () => {
   );
   const hasSun = shop_hours.some((h) => h.day_name === "Sunday");
 
+  const formattedAddress = formatShopAddress(shopInfo);
   const currentYear = new Date().getFullYear();
 
   return (
@@ -198,15 +200,10 @@ const Footer = async () => {
           <h4 className="mb-6 font-bold text-white">Contact Us</h4>
 
           {/* Address */}
-          {shopInfo.address1 && (
+          {formattedAddress && (
             <div className="flex items-start gap-3 text-left font-questrial text-sm">
               <FaMapMarkerAlt className="mt-1 shrink-0 text-blue-500" />
-              <span>
-                {shopInfo.address1},{shopInfo.address2 && <br />}
-                {shopInfo.address2}
-                <br />
-                {shopInfo.city}, {shopInfo.state} {shopInfo.zip}
-              </span>
+              <span>{formattedAddress}</span>
             </div>
           )}
 
