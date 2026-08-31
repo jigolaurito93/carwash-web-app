@@ -35,7 +35,7 @@ If Vitest is still missing, say so in one sentence, add the minimal config + `pa
 | Pure helpers (`lib/us-states.ts`, `cn`) | real cases, no component mount                                                                         |
 | Client components                       | submit, empty state, modal open — mock Supabase                                                        |
 
-Do **not** test: `lib/database.types.ts`, page layout/CSS, or legacy folders (`all-services*`, `servicespage`, `admin/services`) unless asked.
+Do **not** test: `lib/database.types.ts`, page layout/CSS, or unfinished stubs (`dashboard`, `appointment`, `profile`) unless asked.
 
 ## Patterns
 

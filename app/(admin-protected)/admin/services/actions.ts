@@ -57,7 +57,7 @@ async function assertSortOrderAvailable(
   excludeId?: number,
 ) {
   let query = supabase
-    .from("services1")
+    .from("services")
     .select("id")
     .eq("category_id", categoryId)
     .eq("sort_order", sortOrder);
@@ -96,7 +96,7 @@ export async function createService(input: unknown) {
   }
 
   const { error } = await supabase
-    .from("services1")
+    .from("services")
     .insert(toServiceRow(parsed.data));
 
   if (error) {
@@ -133,7 +133,7 @@ export async function updateService(id: number, input: unknown) {
   }
 
   const { error } = await supabase
-    .from("services1")
+    .from("services")
     .update(toServiceRow(parsed.data))
     .eq("id", id);
 
@@ -153,7 +153,7 @@ export async function toggleServiceActive(id: number, is_active: boolean) {
 
   const supabase = await getSupabase();
   const { error } = await supabase
-    .from("services1")
+    .from("services")
     .update({ is_active })
     .eq("id", id);
 
@@ -172,7 +172,7 @@ export async function deleteService(id: number) {
   }
 
   const supabase = await getSupabase();
-  const { error } = await supabase.from("services1").delete().eq("id", id);
+  const { error } = await supabase.from("services").delete().eq("id", id);
 
   if (error) {
     console.error("Failed to delete service:", error);

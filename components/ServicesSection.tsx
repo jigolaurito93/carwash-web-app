@@ -25,14 +25,14 @@ const ServicesSection = async () => {
 
   // fetch all categories
   const { data: categories } = await supabase
-    .from("categories1")
+    .from("categories")
     .select("*")
     .eq("id", 1);
 
   // fetch all active services and include their category
   const { data } = await supabase
-    .from("services1")
-    .select(`*, categories1(name)`)
+    .from("services")
+    .select(`*, categories(name)`)
     .eq("is_active", true)
     .order("sort_order");
   const services = (data ?? []) as ServiceRow[];

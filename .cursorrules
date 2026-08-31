@@ -29,9 +29,9 @@ These rules apply to every change in this repo. Follow existing patterns. Prefer
 **Env names only (never hardcode values):**
 `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`, `RESEND_API_KEY`, `OWNER_EMAIL`.
 
-**Live data (use these):** `categories1`, `services1`, `shop_info`, `shop_hours`, `site_announcements`, `gallery_images`, `faqs`.
+**Live data (use these):** `categories`, `services`, `shop_info`, `shop_hours`, `site_announcements`, `gallery_images`, `faqs`.
 
-**Live admin CMS:** `/admin/shop-info`, `/admin/categories1`, `/admin/services`, `/admin/gallery`, `/admin/faq`.
+**Live admin CMS:** `/admin/shop-info`, `/admin/categories`, `/admin/services`, `/admin/gallery`, `/admin/faq`.
 
 **Public routes:** `/`, `/about`, `/services`, `/gallery`, `/contact`. Login is `/admin/login` (outside the protected group).
 
@@ -86,10 +86,9 @@ These rules apply to every change in this repo. Follow existing patterns. Prefer
 
 ### Naming
 - Components / types: `PascalCase` (`ShopInfoSection`, `ServiceRow`).
-- Files: `PascalCase.tsx` for components, `kebab-case` or existing folder names for routes (`shop-info`, `categories1`).
+- Files: `PascalCase.tsx` for components, `kebab-case` or existing folder names for routes (`shop-info`, `categories`).
 - Functions / variables: `camelCase`. Server Actions: verb + noun (`updateShopHours`, `handleAction`, `updateProfile`).
 - DB columns stay snake_case (`sort_order`, `is_active`, `category_id`). Do not camelCase them in queries.
-- Do not rename `categories1` / `services1` to drop the `1` — those are the live table names.
 
 ---
 
@@ -98,16 +97,15 @@ These rules apply to every change in this repo. Follow existing patterns. Prefer
 ### Legacy / experimental — do not extend
 Treat as frozen scratch. Do not add features, new tables, or new routes here unless the user explicitly asks to migrate or delete them:
 
-- Admin: `all-services`, `all-services-test`, `servicespage`, `services1test`, `app/(admin-protected)/admin/services-legacy/` (legacy tables UI).
 - Stub / unfinished: `/admin/dashboard`, `/admin/appointment`, `/admin/profile` — wire existing components (`AppointmentsClient`, etc.) instead of creating parallel pages.
-- DB tables (schema only / leftover): `categories`, `all_services`, `services_packages`, `other_services`, `tiered_services`, `detailingServices`, `services_all`.
+- DB tables (schema only / leftover): `categories_legacy`, `all_services`, `services_packages`, `other_services`, `tiered_services`, `detailingServices`, `services_all`.
 - README mentions `data/services.ts` — that folder does not exist. Do not recreate a static services config.
 
 ### Anti-patterns
 - Do not add `middleware.ts`. Auth stays in `proxy.ts`.
 - Do not add Prisma, Drizzle, Redux, Zustand, or a new CSS framework.
 - Do not use the browser Supabase client (`lib/supabase.ts`) in **new** Server Components. Use `createServerClient`.
-- Do not fetch public catalog from anything except `categories1` + `services1`.
+- Do not fetch public catalog from anything except `categories` + `services`.
 - Do not hardcode service prices or hours when they belong in Supabase.
 - Do not invent new card layouts without updating `lib/app.types.ts` and both public + admin renderers.
 - Do not put secrets in source, commits, or rules. Never print `.env.local` values.
@@ -121,7 +119,7 @@ Treat as frozen scratch. Do not add features, new tables, or new routes here unl
 
 ### When adding features
 - Shop content → `shop_info` / `shop_hours` + `admin/shop-info`.
-- Catalog → `categories1` / `services1` + `admin/categories1` + `admin/services` + public `/services`.
+- Catalog → `categories` / `services` + `admin/categories` + `admin/services` + public `/services`.
 - Appointments → existing `appointment` table + `AppointmentsClient` / `AppointmentFormModal` (currently unwired).
 - Gallery → `gallery_images` + `admin/gallery` + public `/gallery`.
 - FAQ → `faqs` + `admin/faq` + public contact FAQ section.

@@ -22,7 +22,7 @@ export async function GET() {
   );
 
   const { data: categories } = await supabase
-    .from("categories1")
+    .from("categories")
     .select("*")
     .order("sort_order");
 

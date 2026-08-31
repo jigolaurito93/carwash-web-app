@@ -50,7 +50,7 @@ export type Layout4Data = {
 
 export type CardLayout = "layout1" | "layout2" | "layout3" | "layout4";
 
-// Domain shape for services1 + categories1(name) join.
+// Domain shape for services + categories(name) join.
 // Nullable fields match lib/database.types.ts (generated).
 export type ServiceRow = {
   id: number;
@@ -62,7 +62,7 @@ export type ServiceRow = {
   notes?: string | null;
   is_active: boolean | null;
   created_at?: string | null;
-  categories1: {
+  categories: {
     name: string;
   } | null;
   layout1_data:

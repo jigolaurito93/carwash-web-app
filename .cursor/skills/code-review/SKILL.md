@@ -22,7 +22,7 @@ Review the user's **selection**, `@` paths, or **unstaged/branch diff**. If the 
 
 **Bugs**
 
-- Wrong table (`categories` / `all_services` / `services_packages` instead of `categories1` / `services1`)
+- Wrong table (`categories_legacy` / `all_services` / `services_packages` instead of `categories` / `services`)
 - Mutations that skip `revalidatePath` on admin **and** public pages (`/`, `/services`, `/contact`)
 - Auth gaps: new `/admin/*` routes that bypass `proxy.ts`; login moved into `(admin-protected)`
 - Contact/API: missing Zod parse, leaking internals in JSON
@@ -48,7 +48,7 @@ Review the user's **selection**, `@` paths, or **unstaged/branch diff**. If the 
 - New `middleware.ts` (must stay `proxy.ts`)
 - Prisma/Drizzle, npm/yarn, Tailwind v3 config
 - Secrets in source
-- Extending frozen legacy folders (`all-services*`, `servicespage`, `admin/services`)
+- Extending unfinished stubs (`dashboard`, `appointment`, `profile`) instead of wiring existing components
 
 ## Output
 

@@ -11,9 +11,9 @@ alwaysApply: true
 - Auth gate is `proxy.ts` (not `middleware.ts`)
 - Alias `@/*` → repo root
 
-**Live tables:** `categories1`, `services1`, `shop_info`, `shop_hours`, `site_announcements`, `gallery_images`, `faqs`
+**Live tables:** `categories`, `services`, `shop_info`, `shop_hours`, `site_announcements`, `gallery_images`, `faqs`
 
-**Live admin:** `/admin/shop-info`, `/admin/categories1`, `/admin/services`, `/admin/gallery`, `/admin/faq`
+**Live admin:** `/admin/shop-info`, `/admin/categories`, `/admin/services`, `/admin/gallery`, `/admin/faq`
 
 **Public:** `/`, `/about`, `/services`, `/gallery`, `/contact`. Login: `/admin/login`
 

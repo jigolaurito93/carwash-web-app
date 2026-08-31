@@ -12,5 +12,5 @@ alwaysApply: true
 - Types: `Database` from `@/lib/database.types`, domain from `@/lib/app.types`. Do not hand-edit generated types — `pnpm gen:types`.
 - Server Actions in colocated `actions.ts`. After writes, `revalidatePath` admin + public pages.
 - Classes via `cn()`. Brand: black + `yellow-400`, `font-lexend` / `font-questrial`. Reuse `btnSaveYlw`, `btnCancel`, `adminHeader`.
-- Components `PascalCase.tsx`. Actions `camelCase` verbs. DB columns stay `snake_case`. Keep table names `categories1` / `services1`.
+- Components `PascalCase.tsx`. Actions `camelCase` verbs. DB columns stay `snake_case`. Keep table names `categories` / `services`.
 - Auth only in `proxy.ts`. Do not re-check in `admin/layout.tsx`.

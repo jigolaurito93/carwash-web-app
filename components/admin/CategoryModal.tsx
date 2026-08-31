@@ -36,7 +36,7 @@ export default function CategoryModal({
   useEffect(() => {
     const fetchOrderValues = async () => {
       const { data } = await supabase
-        .from("categories1")
+        .from("categories")
         .select("sort_order")
         .neq("id", category?.id ?? -1);
 
@@ -73,12 +73,12 @@ export default function CategoryModal({
 
     let error;
     if (mode === "create") {
-      const { error: err } = await supabase.from("categories1").insert(payload);
+      const { error: err } = await supabase.from("categories").insert(payload);
       error = err;
     } else {
       const id = category!.id;
       const { error: err } = await supabase
-        .from("categories1")
+        .from("categories")
         .update(payload)
         .eq("id", id);
       error = err;

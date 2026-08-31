@@ -26,15 +26,15 @@ export default async function ServicesPageTest() {
 
   // fetch all categories
   const { data: categories } = await supabase
-    .from("categories1")
+    .from("categories")
     .select("*")
     .order("sort_order")
     .order("id");
 
   // fetch all active services and include their category
   const { data: servicesData } = await supabase
-    .from("services1")
-    .select(`*, categories1(name)`)
+    .from("services")
+    .select(`*, categories(name)`)
     .eq("is_active", true)
     .order("sort_order");
   const services = (servicesData ?? []) as ServiceRow[];

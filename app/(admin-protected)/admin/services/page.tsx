@@ -29,10 +29,10 @@ export default async function AdminServicesPage() {
     { data: categoriesData, error: categoriesError },
     { data: servicesData, error: servicesError },
   ] = await Promise.all([
-    supabase.from("categories1").select("*").order("sort_order").order("id"),
+    supabase.from("categories").select("*").order("sort_order").order("id"),
     supabase
-      .from("services1")
-      .select("*, categories1(name)")
+      .from("services")
+      .select("*, categories(name)")
       .order("category_id")
       .order("sort_order"),
   ]);
@@ -40,9 +40,9 @@ export default async function AdminServicesPage() {
   if (categoriesError || servicesError) {
     return (
       <div className="p-8 font-questrial text-red-600">
-        Failed to load services. Make sure the <code>categories1</code> and{" "}
-        <code>services1</code> tables exist, then run{" "}
-        <code>pnpm gen:types</code>.
+        Failed to load services. Make sure the <code>categories</code> and{" "}
+        <code>services</code> tables exist, then run <code>pnpm gen:types</code>
+        .
       </div>
     );
   }

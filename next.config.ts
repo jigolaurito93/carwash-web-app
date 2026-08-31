@@ -17,6 +17,11 @@ const nextConfig: NextConfig = {
         destination: "/admin/services",
         permanent: true,
       },
+      {
+        source: "/admin/categories1",
+        destination: "/admin/categories",
+        permanent: true,
+      },
     ];
   },
   images: {

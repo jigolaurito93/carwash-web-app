@@ -83,8 +83,7 @@ Then open `http://localhost:3000` in your browser.
   - `services/page.tsx` – Services & pricing page
 - `components/`
   - `navbar/` – `Navbar`, `MobileNavLinks`
-  - `ServicesSection`, `ServicesCard`, `ServicesCard2`
-  - `HoursOpenSection`
+  - `ServicesSection`
   - `ShopInfoSection`
   - `Welcome`
   - `Footer`

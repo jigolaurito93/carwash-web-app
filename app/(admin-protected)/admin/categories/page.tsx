@@ -1,4 +1,4 @@
-// app/admin/categories1/page.tsx
+// app/(admin-protected)/admin/categories/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";

@@ -96,30 +96,6 @@ export type Database = {
       };
       categories: {
         Row: {
-          created_at: string;
-          id: number;
-          name: string | null;
-          order_by: number | null;
-          updated_at: string | null;
-        };
-        Insert: {
-          created_at?: string;
-          id?: number;
-          name?: string | null;
-          order_by?: number | null;
-          updated_at?: string | null;
-        };
-        Update: {
-          created_at?: string;
-          id?: number;
-          name?: string | null;
-          order_by?: number | null;
-          updated_at?: string | null;
-        };
-        Relationships: [];
-      };
-      categories1: {
-        Row: {
           created_at: string | null;
           id: number;
           name: string;
@@ -139,6 +115,30 @@ export type Database = {
           name?: string;
           slug?: string;
           sort_order?: number | null;
+        };
+        Relationships: [];
+      };
+      categories_legacy: {
+        Row: {
+          created_at: string;
+          id: number;
+          name: string | null;
+          order_by: number | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          id?: number;
+          name?: string | null;
+          order_by?: number | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          id?: number;
+          name?: string | null;
+          order_by?: number | null;
+          updated_at?: string | null;
         };
         Relationships: [];
       };
@@ -280,6 +280,62 @@ export type Database = {
         };
         Relationships: [];
       };
+      services: {
+        Row: {
+          card_layout: string | null;
+          category_id: number | null;
+          created_at: string | null;
+          description: string | null;
+          id: number;
+          is_active: boolean | null;
+          layout1_data: Json | null;
+          layout2_data: Json | null;
+          layout3_data: string | null;
+          layout4_data: Json | null;
+          name: string;
+          notes: string | null;
+          sort_order: number;
+        };
+        Insert: {
+          card_layout?: string | null;
+          category_id?: number | null;
+          created_at?: string | null;
+          description?: string | null;
+          id?: number;
+          is_active?: boolean | null;
+          layout1_data?: Json | null;
+          layout2_data?: Json | null;
+          layout3_data?: string | null;
+          layout4_data?: Json | null;
+          name: string;
+          notes?: string | null;
+          sort_order?: number;
+        };
+        Update: {
+          card_layout?: string | null;
+          category_id?: number | null;
+          created_at?: string | null;
+          description?: string | null;
+          id?: number;
+          is_active?: boolean | null;
+          layout1_data?: Json | null;
+          layout2_data?: Json | null;
+          layout3_data?: string | null;
+          layout4_data?: Json | null;
+          name?: string;
+          notes?: string | null;
+          sort_order?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "services_category_id_fkey";
+            columns: ["category_id"];
+            isOneToOne: false;
+            referencedRelation: "categories";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       services_all: {
         Row: {
           category: string | null;
@@ -358,63 +414,7 @@ export type Database = {
             foreignKeyName: "services_packages_category_id_fkey";
             columns: ["category_id"];
             isOneToOne: false;
-            referencedRelation: "categories";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      services1: {
-        Row: {
-          card_layout: string | null;
-          category_id: number | null;
-          created_at: string | null;
-          description: string | null;
-          id: number;
-          is_active: boolean | null;
-          layout1_data: Json | null;
-          layout2_data: Json | null;
-          layout3_data: string | null;
-          layout4_data: Json | null;
-          name: string;
-          notes: string | null;
-          sort_order: number;
-        };
-        Insert: {
-          card_layout?: string | null;
-          category_id?: number | null;
-          created_at?: string | null;
-          description?: string | null;
-          id?: number;
-          is_active?: boolean | null;
-          layout1_data?: Json | null;
-          layout2_data?: Json | null;
-          layout3_data?: string | null;
-          layout4_data?: Json | null;
-          name: string;
-          notes?: string | null;
-          sort_order?: number;
-        };
-        Update: {
-          card_layout?: string | null;
-          category_id?: number | null;
-          created_at?: string | null;
-          description?: string | null;
-          id?: number;
-          is_active?: boolean | null;
-          layout1_data?: Json | null;
-          layout2_data?: Json | null;
-          layout3_data?: string | null;
-          layout4_data?: Json | null;
-          name?: string;
-          notes?: string | null;
-          sort_order?: number;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "services1_category_id_fkey";
-            columns: ["category_id"];
-            isOneToOne: false;
-            referencedRelation: "categories1";
+            referencedRelation: "categories_legacy";
             referencedColumns: ["id"];
           },
         ];

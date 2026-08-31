@@ -24,7 +24,7 @@ export default function DeleteCategoryModal({
 }: Props) {
   const handleDelete = async () => {
     const { error } = await supabase
-      .from("categories1")
+      .from("categories")
       .delete()
       .eq("id", category.id);
 
