@@ -1,4 +1,4 @@
-// app/services1/page.tsx
+// app/(public)/services/page.tsx
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { ServiceRow } from "@/lib/app.types";

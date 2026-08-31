@@ -1,116 +1,255 @@
-// components/admin/ServiceModal.tsx
 "use client";
 
-import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+import { useMemo, useState } from "react";
 import { FiX } from "react-icons/fi";
 import { toast } from "sonner";
-import type { Category, ServiceRow } from "@/lib/app.types";
+import type { CardLayout, Category, ServiceRow } from "@/lib/app.types";
+import type { ServiceFormValues } from "@/lib/validations/service-schema";
+import {
+  createService,
+  updateService,
+} from "@/app/(admin-protected)/admin/services/actions";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  onSaved: () => void;
   mode: "create" | "edit";
   service?: ServiceRow;
   categories: Category[];
+  services: ServiceRow[];
 };
 
-function parseLayout2Items(raw: string = ""): Record<string, number | string> {
-  return raw
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .reduce<Record<string, number | string>>((acc, line) => {
-      const [name, valueStr] = line.split("=");
-      const key = name?.trim();
-      const value = valueStr?.trim();
+type ServiceFormState = {
+  name: string;
+  description: string;
+  notes: string;
+  category_id: string;
+  layout: CardLayout;
+  sort_order: string;
+  is_active: boolean;
+  layout3_info: string;
+  layout4_info: string;
+  layout4_small: number;
+  layout4_medium: number;
+  layout4_large: number;
+  layout1_includes: string;
+  layout1_small: number;
+  layout1_medium: number;
+  layout1_large: number;
+  layout2_items: string;
+};
 
-      if (!key || !value) return acc;
+const LAYOUT_OPTIONS: { value: CardLayout; label: string }[] = [
+  { value: "layout1", label: "Layout 1 (Package)" },
+  { value: "layout2", label: "Layout 2 (Add‑ons)" },
+  { value: "layout3", label: "Layout 3 (Custom Info)" },
+  { value: "layout4", label: "Layout 4 (Info + Prices)" },
+];
 
-      const num = Number(value);
-      acc[key] = Number.isFinite(num) && value !== "" ? num : value;
-      return acc;
-    }, {});
+function isCardLayout(value: string | null | undefined): value is CardLayout {
+  return (
+    value === "layout1" ||
+    value === "layout2" ||
+    value === "layout3" ||
+    value === "layout4"
+  );
 }
 
-export default function ServiceModal({
-  isOpen,
-  onClose,
-  mode,
-  service,
-  categories,
-}: Props) {
-  const [formData, setFormData] = useState({
-    name: mode === "create" ? "" : service?.name || "",
-    description: mode === "create" ? "" : service?.description || "",
-    notes: mode === "create" ? "" : service?.notes || "",
-    category_id:
-      mode === "create" ? "" : service?.category_id?.toString() || "",
-    layout: mode === "create" ? "layout1" : service?.card_layout || "layout1",
-    sort_order: mode === "create" ? "" : service?.sort_order?.toString() || "",
+function initialForm(
+  mode: "create" | "edit",
+  service?: ServiceRow,
+): ServiceFormState {
+  const isCreate = mode === "create";
+  const items = service?.layout2_data?.items || {};
+  const layout: CardLayout =
+    !isCreate && service && isCardLayout(service.card_layout)
+      ? service.card_layout
+      : "layout1";
+
+  return {
+    name: isCreate ? "" : service?.name || "",
+    description: isCreate ? "" : service?.description || "",
+    notes: isCreate ? "" : service?.notes || "",
+    category_id: isCreate ? "" : service?.category_id?.toString() || "",
+    layout,
+    sort_order: isCreate ? "" : service?.sort_order?.toString() || "",
+    is_active: isCreate ? true : (service?.is_active ?? true),
     layout3_info: service?.layout3_data || "",
     layout4_info: service?.layout4_data?.info || "",
     layout4_small: service?.layout4_data?.small_car_price ?? 0,
     layout4_medium: service?.layout4_data?.medium_car_price ?? 0,
     layout4_large: service?.layout4_data?.large_car_price ?? 0,
-    // layout1
     layout1_includes: service?.layout1_data?.includes
-      ? service.layout1_data.includes.filter((i) => i.trim()).join("\n")
+      ? service.layout1_data.includes.filter((item) => item.trim()).join("\n")
       : "",
     layout1_small: service?.layout1_data?.small_car_price ?? 0,
     layout1_medium: service?.layout1_data?.medium_car_price ?? 0,
     layout1_large: service?.layout1_data?.large_car_price ?? 0,
-    // layout2
-    layout2_items: (() => {
-      const items = service?.layout2_data?.items || {};
-      return Object.entries(items)
-        .map(([name, price]) => `${name}=${String(price)}`)
-        .join("\n");
-    })(),
-  });
+    layout2_items: Object.entries(items)
+      .map(([name, price]) => `${name}=${String(price)}`)
+      .join("\n"),
+  };
+}
 
-  const [takenValues, setTakenValues] = useState<number[]>([]);
-  const [nextAvailable, setNextAvailable] = useState<number>(1);
+function parseLayout2Items(
+  raw: string,
+): { items: Record<string, number> } | { error: string } {
+  const items: Record<string, number> = {};
+  const lines = raw
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
 
-  useEffect(() => {
-    const fetchSortOrderValues = async () => {
-      if (!formData.category_id) return;
-
-      const { data } = await supabase
-        .from("services1")
-        .select("sort_order")
-        .eq("category_id", Number(formData.category_id))
-        .neq("id", service?.id ?? -1);
-
-      const taken = (data || [])
-        .map((d) => d.sort_order)
-        .filter((s) => s !== null)
-        .sort((a, b) => a - b);
-      setTakenValues(taken);
-
-      // Find next available (max + 10)
-      const maxValue = taken.length > 0 ? Math.max(...taken) : 0;
-      setNextAvailable(maxValue + 10);
-    };
-
-    if (isOpen && formData.category_id) {
-      fetchSortOrderValues();
+  for (const line of lines) {
+    const eq = line.indexOf("=");
+    if (eq <= 0) {
+      return {
+        error: `Invalid add-on line: "${line}". Use Name=Value.`,
+      };
     }
-  }, [isOpen, formData.category_id, mode, service?.id]);
+    const key = line.slice(0, eq).trim();
+    const value = line.slice(eq + 1).trim();
+    const num = Number(value);
+    if (!key || !Number.isFinite(num)) {
+      return {
+        error: `Invalid add-on line: "${line}". Price must be a number.`,
+      };
+    }
+    items[key] = num;
+  }
+
+  return { items };
+}
+
+function buildPayload(
+  form: ServiceFormState,
+  nextAvailable: number,
+): ServiceFormValues | { error: string } {
+  const sortOrderValue = form.sort_order
+    ? Number(form.sort_order)
+    : nextAvailable;
+
+  if (!Number.isFinite(sortOrderValue) || !Number.isInteger(sortOrderValue)) {
+    return { error: "Sort order must be a whole number." };
+  }
+
+  const base = {
+    name: form.name,
+    description: form.description.trim() || null,
+    notes: form.notes.trim() || null,
+    category_id: Number(form.category_id),
+    sort_order: sortOrderValue,
+    is_active: form.is_active,
+  };
+
+  switch (form.layout) {
+    case "layout1":
+      return {
+        ...base,
+        card_layout: "layout1",
+        layout1_data: {
+          includes: form.layout1_includes
+            .split("\n")
+            .map((item) => item.trim())
+            .filter(Boolean),
+          small_car_price: Number(form.layout1_small),
+          medium_car_price: Number(form.layout1_medium),
+          large_car_price: Number(form.layout1_large),
+        },
+        layout2_data: null,
+        layout3_data: null,
+        layout4_data: null,
+      };
+    case "layout2": {
+      const parsed = parseLayout2Items(form.layout2_items);
+      if ("error" in parsed) return parsed;
+      return {
+        ...base,
+        card_layout: "layout2",
+        layout1_data: null,
+        layout2_data: { items: parsed.items },
+        layout3_data: null,
+        layout4_data: null,
+      };
+    }
+    case "layout3":
+      return {
+        ...base,
+        card_layout: "layout3",
+        layout1_data: null,
+        layout2_data: null,
+        layout3_data: form.layout3_info.trim() || null,
+        layout4_data: null,
+      };
+    case "layout4":
+      return {
+        ...base,
+        card_layout: "layout4",
+        layout1_data: null,
+        layout2_data: null,
+        layout3_data: null,
+        layout4_data: {
+          info: form.layout4_info,
+          small_car_price: Number(form.layout4_small),
+          medium_car_price: Number(form.layout4_medium),
+          large_car_price: Number(form.layout4_large),
+        },
+      };
+  }
+}
+
+export default function ServiceModal({
+  isOpen,
+  onClose,
+  onSaved,
+  mode,
+  service,
+  categories,
+  services,
+}: Props) {
+  const [formData, setFormData] = useState<ServiceFormState>(() =>
+    initialForm(mode, service),
+  );
+  const [saving, setSaving] = useState(false);
+
+  const { takenValues, nextAvailable } = useMemo(() => {
+    const categoryId = Number(formData.category_id);
+    if (!Number.isFinite(categoryId) || categoryId <= 0) {
+      return { takenValues: [] as number[], nextAvailable: 10 };
+    }
+
+    const taken = services
+      .filter(
+        (row) =>
+          row.category_id === categoryId &&
+          row.id !== service?.id &&
+          row.sort_order != null,
+      )
+      .map((row) => row.sort_order as number)
+      .sort((a, b) => a - b);
+
+    const maxValue = taken.length > 0 ? Math.max(...taken) : 0;
+    return { takenValues: taken, nextAvailable: maxValue + 10 };
+  }, [formData.category_id, services, service?.id]);
 
   const isLayout1 = formData.layout === "layout1";
   const isLayout2 = formData.layout === "layout2";
   const isLayout3 = formData.layout === "layout3";
   const isLayout4 = formData.layout === "layout4";
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const closeIfIdle = () => {
+    if (saving) return;
+    onClose();
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
 
     const sortOrderValue = formData.sort_order
       ? Number(formData.sort_order)
       : nextAvailable;
 
-    // Validate sort_order is not taken for this category (unless it's the same service being edited)
     if (takenValues.includes(sortOrderValue)) {
       toast.error(
         `Sort order ${sortOrderValue} is already taken for this category.`,
@@ -118,93 +257,34 @@ export default function ServiceModal({
       return;
     }
 
-    const basePayload = {
-      name: formData.name,
-      description: formData.description || null,
-      notes: formData.notes || null,
-      category_id: Number(formData.category_id),
-      card_layout: formData.layout as
-        | "layout1"
-        | "layout2"
-        | "layout3"
-        | "layout4"
-        | null,
-      sort_order: sortOrderValue,
-      is_active: true,
-    };
-
-    const payload = isLayout1
-      ? {
-          ...basePayload,
-          layout1_data: {
-            includes: formData.layout1_includes
-              .split("\n")
-              .filter((i) => i.trim()),
-            small_car_price: Number(formData.layout1_small),
-            medium_car_price: Number(formData.layout1_medium),
-            large_car_price: Number(formData.layout1_large),
-          },
-          layout2_data: null,
-        }
-      : isLayout2
-        ? {
-            ...basePayload,
-            layout1_data: null,
-            layout2_data: {
-              items: parseLayout2Items(formData.layout2_items),
-            },
-            layout3_data: null,
-          }
-        : isLayout3
-          ? {
-              ...basePayload,
-              layout1_data: null,
-              layout2_data: null,
-              layout3_data: formData.layout3_info || null,
-              layout4_data: null,
-            }
-          : isLayout4
-            ? {
-                ...basePayload,
-                layout1_data: null,
-                layout2_data: null,
-                layout3_data: null,
-                layout4_data: {
-                  info: formData.layout4_info,
-                  small_car_price: Number(formData.layout4_small),
-                  medium_car_price: Number(formData.layout4_medium),
-                  large_car_price: Number(formData.layout4_large),
-                },
-              }
-            : {
-                ...basePayload,
-                layout1_data: null,
-                layout2_data: null,
-                layout3_data: null,
-                layout4_data: null,
-              };
-
-    let error;
-    if (mode === "create") {
-      const { error: err } = await supabase.from("services1").insert(payload);
-      error = err;
-    } else {
-      const id = service!.id;
-      const { error: err } = await supabase
-        .from("services1")
-        .update(payload)
-        .eq("id", id);
-      error = err;
+    const payload = buildPayload(formData, nextAvailable);
+    if ("error" in payload) {
+      toast.error(payload.error);
+      return;
     }
 
-    if (!error) {
-      toast.success(
-        mode === "create" ? "Service created!" : "Service updated!",
-      );
-      onClose();
-      window.location.reload();
-    } else {
+    setSaving(true);
+    try {
+      const result =
+        mode === "create"
+          ? await createService(payload)
+          : await updateService(service!.id, payload);
+
+      if (result.success) {
+        toast.success(
+          mode === "create" ? "Service created!" : "Service updated!",
+        );
+        onSaved();
+      } else {
+        toast.error(
+          result.error ||
+            (mode === "create" ? "Create failed." : "Update failed."),
+        );
+      }
+    } catch {
       toast.error(mode === "create" ? "Create failed." : "Update failed.");
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -212,19 +292,21 @@ export default function ServiceModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+      onClick={closeIfIdle}
     >
       <div
         className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-gray-200 bg-white p-8 shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
+        onClick={(event) => event.stopPropagation()}
       >
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-gray-900">
+          <h2 className="font-lexend text-2xl font-bold text-gray-900">
             {mode === "create" ? "Create Service" : "Edit Service"}
           </h2>
           <button
-            onClick={onClose}
+            type="button"
+            onClick={closeIfIdle}
+            disabled={saving}
             className="rounded-lg p-2 transition-colors hover:bg-gray-100"
           >
             <FiX className="h-5 w-5" />
@@ -232,7 +314,6 @@ export default function ServiceModal({
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Name */}
           <div>
             <label className="mb-2 block text-sm font-semibold text-gray-700">
               Name *
@@ -240,47 +321,47 @@ export default function ServiceModal({
             <input
               required
               value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
+              onChange={(event) =>
+                setFormData({ ...formData, name: event.target.value })
               }
               className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
               placeholder="Regular Wash"
+              disabled={saving}
             />
           </div>
 
-          {/* Description */}
           <div>
             <label className="mb-2 block text-sm font-semibold text-gray-700">
               Description
             </label>
             <textarea
               value={formData.description}
-              onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
+              onChange={(event) =>
+                setFormData({ ...formData, description: event.target.value })
               }
               className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
               rows={2}
               placeholder="Quick description..."
+              disabled={saving}
             />
           </div>
 
-          {/* Notes */}
           <div>
             <label className="mb-2 block text-sm font-semibold text-gray-700">
               Notes
             </label>
             <textarea
               value={formData.notes}
-              onChange={(e) =>
-                setFormData({ ...formData, notes: e.target.value })
+              onChange={(event) =>
+                setFormData({ ...formData, notes: event.target.value })
               }
               className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
               rows={3}
               placeholder="Optional internal notes..."
+              disabled={saving}
             />
           </div>
 
-          {/* Category */}
           <div>
             <label className="mb-2 block text-sm font-semibold text-gray-700">
               Category *
@@ -288,10 +369,11 @@ export default function ServiceModal({
             <select
               required
               value={formData.category_id}
-              onChange={(e) =>
-                setFormData({ ...formData, category_id: e.target.value })
+              onChange={(event) =>
+                setFormData({ ...formData, category_id: event.target.value })
               }
               className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
+              disabled={saving}
             >
               <option value="">-- Choose category --</option>
               {categories.map((cat) => (
@@ -302,7 +384,6 @@ export default function ServiceModal({
             </select>
           </div>
 
-          {/* Sort Order */}
           <div>
             <label className="mb-2 block text-sm font-semibold text-gray-700">
               Sort Order
@@ -310,11 +391,12 @@ export default function ServiceModal({
             <input
               type="number"
               value={formData.sort_order}
-              onChange={(e) =>
-                setFormData({ ...formData, sort_order: e.target.value })
+              onChange={(event) =>
+                setFormData({ ...formData, sort_order: event.target.value })
               }
               className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
               placeholder={`Suggested: ${nextAvailable}`}
+              disabled={saving}
             />
             {takenValues.length > 0 && (
               <p className="mt-1 text-xs text-gray-500">
@@ -329,92 +411,42 @@ export default function ServiceModal({
               )}
           </div>
 
-          {/* Layout (now user choice per service) */}
+          <label className="flex items-center gap-2 font-questrial text-sm text-gray-700">
+            <input
+              type="checkbox"
+              checked={formData.is_active}
+              onChange={(event) =>
+                setFormData({ ...formData, is_active: event.target.checked })
+              }
+              className="h-4 w-4 accent-yellow-400"
+              disabled={saving}
+            />
+            Active (visible on the services page)
+          </label>
+
           <div>
             <label className="mb-2 block text-sm font-semibold text-gray-700">
               Card Layout *
             </label>
-            <div className="flex gap-4">
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="layout"
-                  value="layout1"
-                  checked={formData.layout === "layout1"}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      layout: e.target.value as
-                        | "layout1"
-                        | "layout2"
-                        | "layout3"
-                        | "layout4",
-                    })
-                  }
-                />
-                Layout 1 (Package)
-              </label>
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="layout"
-                  value="layout2"
-                  checked={formData.layout === "layout2"}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      layout: e.target.value as
-                        | "layout1"
-                        | "layout2"
-                        | "layout3"
-                        | "layout4",
-                    })
-                  }
-                />
-                Layout 2 (Add‑ons)
-              </label>
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="layout"
-                  value="layout3"
-                  checked={formData.layout === "layout3"}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      layout: e.target.value as
-                        | "layout1"
-                        | "layout2"
-                        | "layout3"
-                        | "layout4",
-                    })
-                  }
-                />
-                Layout 3 (Custom Info)
-              </label>
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="layout"
-                  value="layout4"
-                  checked={formData.layout === "layout4"}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      layout: e.target.value as
-                        | "layout1"
-                        | "layout2"
-                        | "layout3"
-                        | "layout4",
-                    })
-                  }
-                />
-                Layout 4 (Info + Prices)
-              </label>
+            <div className="flex flex-wrap gap-4">
+              {LAYOUT_OPTIONS.map((option) => (
+                <label key={option.value} className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="layout"
+                    value={option.value}
+                    checked={formData.layout === option.value}
+                    onChange={() =>
+                      setFormData({ ...formData, layout: option.value })
+                    }
+                    disabled={saving}
+                  />
+                  {option.label}
+                </label>
+              ))}
             </div>
           </div>
 
-          {/* Layout 1 fields */}
           {isLayout1 && (
             <div className="border-t pt-6">
               <h3 className="mb-4 text-lg font-semibold text-gray-800">
@@ -427,10 +459,10 @@ export default function ServiceModal({
                 </label>
                 <textarea
                   value={formData.layout1_includes}
-                  onChange={(e) =>
+                  onChange={(event) =>
                     setFormData({
                       ...formData,
-                      layout1_includes: e.target.value,
+                      layout1_includes: event.target.value,
                     })
                   }
                   className="w-full rounded-xl border border-gray-200 p-3"
@@ -439,6 +471,7 @@ export default function ServiceModal({
 Basic Interior Vacuum (Floors & Seats)
 Window Cleaning (Inside & Out)
 Dusting of Dashboard"
+                  disabled={saving}
                 />
               </div>
 
@@ -451,14 +484,15 @@ Dusting of Dashboard"
                     type="number"
                     step="0.01"
                     value={formData.layout1_small}
-                    onChange={(e) =>
+                    onChange={(event) =>
                       setFormData({
                         ...formData,
-                        layout1_small: Number(e.target.value),
+                        layout1_small: Number(event.target.value),
                       })
                     }
                     className="w-full rounded-xl border border-gray-200 p-3"
                     placeholder="14.99"
+                    disabled={saving}
                   />
                 </div>
                 <div>
@@ -469,14 +503,15 @@ Dusting of Dashboard"
                     type="number"
                     step="0.01"
                     value={formData.layout1_medium}
-                    onChange={(e) =>
+                    onChange={(event) =>
                       setFormData({
                         ...formData,
-                        layout1_medium: Number(e.target.value),
+                        layout1_medium: Number(event.target.value),
                       })
                     }
                     className="w-full rounded-xl border border-gray-200 p-3"
                     placeholder="19.99"
+                    disabled={saving}
                   />
                 </div>
                 <div>
@@ -487,21 +522,21 @@ Dusting of Dashboard"
                     type="number"
                     step="0.01"
                     value={formData.layout1_large}
-                    onChange={(e) =>
+                    onChange={(event) =>
                       setFormData({
                         ...formData,
-                        layout1_large: Number(e.target.value),
+                        layout1_large: Number(event.target.value),
                       })
                     }
                     className="w-full rounded-xl border border-gray-200 p-3"
                     placeholder="24.99"
+                    disabled={saving}
                   />
                 </div>
               </div>
             </div>
           )}
 
-          {/* Layout 2 fields */}
           {isLayout2 && (
             <div className="border-t pt-6">
               <h3 className="mb-4 text-lg font-semibold text-gray-800">
@@ -514,8 +549,11 @@ Dusting of Dashboard"
               </p>
               <textarea
                 value={formData.layout2_items}
-                onChange={(e) =>
-                  setFormData({ ...formData, layout2_items: e.target.value })
+                onChange={(event) =>
+                  setFormData({
+                    ...formData,
+                    layout2_items: event.target.value,
+                  })
                 }
                 className="w-full rounded-xl border border-gray-200 p-3"
                 rows={6}
@@ -524,6 +562,7 @@ Window Cleaning=5.00
 Paint Protection & Sealant (Cars)=120.00
 Paint Protection & Sealant (Mid Size)=150.00
 Paint Protection & Sealant (Full Size)=180.00"
+                disabled={saving}
               />
             </div>
           )}
@@ -539,15 +578,20 @@ Paint Protection & Sealant (Full Size)=180.00"
               </p>
               <textarea
                 value={formData.layout3_info}
-                onChange={(e) =>
-                  setFormData({ ...formData, layout3_info: e.target.value })
+                onChange={(event) =>
+                  setFormData({
+                    ...formData,
+                    layout3_info: event.target.value,
+                  })
                 }
                 className="w-full rounded-xl border border-gray-200 p-3"
                 rows={6}
                 placeholder="Enter custom details, notes, or instructions here..."
+                disabled={saving}
               />
             </div>
           )}
+
           {isLayout4 && (
             <div className="border-t pt-6">
               <h3 className="mb-4 text-lg font-semibold text-gray-800">
@@ -560,12 +604,16 @@ Paint Protection & Sealant (Full Size)=180.00"
                 </label>
                 <textarea
                   value={formData.layout4_info}
-                  onChange={(e) =>
-                    setFormData({ ...formData, layout4_info: e.target.value })
+                  onChange={(event) =>
+                    setFormData({
+                      ...formData,
+                      layout4_info: event.target.value,
+                    })
                   }
                   className="w-full rounded-xl border border-gray-200 p-3"
                   rows={4}
                   placeholder="Enter custom details, notes, or instructions here..."
+                  disabled={saving}
                 />
               </div>
 
@@ -578,14 +626,15 @@ Paint Protection & Sealant (Full Size)=180.00"
                     type="number"
                     step="0.01"
                     value={formData.layout4_small}
-                    onChange={(e) =>
+                    onChange={(event) =>
                       setFormData({
                         ...formData,
-                        layout4_small: Number(e.target.value),
+                        layout4_small: Number(event.target.value),
                       })
                     }
                     className="w-full rounded-xl border border-gray-200 p-3"
                     placeholder="14.99"
+                    disabled={saving}
                   />
                 </div>
                 <div>
@@ -596,14 +645,15 @@ Paint Protection & Sealant (Full Size)=180.00"
                     type="number"
                     step="0.01"
                     value={formData.layout4_medium}
-                    onChange={(e) =>
+                    onChange={(event) =>
                       setFormData({
                         ...formData,
-                        layout4_medium: Number(e.target.value),
+                        layout4_medium: Number(event.target.value),
                       })
                     }
                     className="w-full rounded-xl border border-gray-200 p-3"
                     placeholder="19.99"
+                    disabled={saving}
                   />
                 </div>
                 <div>
@@ -614,32 +664,40 @@ Paint Protection & Sealant (Full Size)=180.00"
                     type="number"
                     step="0.01"
                     value={formData.layout4_large}
-                    onChange={(e) =>
+                    onChange={(event) =>
                       setFormData({
                         ...formData,
-                        layout4_large: Number(e.target.value),
+                        layout4_large: Number(event.target.value),
                       })
                     }
                     className="w-full rounded-xl border border-gray-200 p-3"
                     placeholder="24.99"
+                    disabled={saving}
                   />
                 </div>
               </div>
             </div>
           )}
+
           <div className="flex justify-end gap-4 pt-6">
             <button
               type="button"
-              onClick={onClose}
-              className="rounded-xl border border-gray-300 px-6 py-3 text-gray-700 hover:bg-gray-50"
+              onClick={closeIfIdle}
+              disabled={saving}
+              className="btnCancel"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="rounded-xl bg-linear-to-r from-black to-gray-900 px-6 py-3 font-semibold text-white hover:shadow-lg"
+              disabled={saving}
+              className="btnSaveYlw disabled:opacity-60"
             >
-              {mode === "create" ? "Create Service" : "Update Service"}
+              {saving
+                ? "Saving..."
+                : mode === "create"
+                  ? "Create Service"
+                  : "Update Service"}
             </button>
           </div>
         </form>

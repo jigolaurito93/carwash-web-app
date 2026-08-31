@@ -18,8 +18,8 @@ Explain the user's **highlighted selection**, `@`-mentioned path, or focused fil
 1. Read the target. If it is a folder, list files, then read the entry points (usually `page.tsx`, `layout.tsx`, `actions.ts`, `route.ts`, or `index`).
 2. Classify the surface:
    - **Public** — `app/page.tsx`, `about`, `services`, `gallery`, `contact`, `components/` (not `admin/`)
-   - **Admin live** — `shop-info`, `categories1`, `services1`, `gallery`, `faq`
-   - **Admin stub / legacy** — `dashboard`, `appointment`, `profile`, `admin/services`, `all-services*`, `servicespage`, `services1test`
+   - **Admin live** — `shop-info`, `categories1`, `services`, `gallery`, `faq`
+   - **Admin stub / legacy** — `dashboard`, `appointment`, `profile`, `admin/services-legacy`, `all-services*`, `servicespage`, `services1test`
    - **Shared** — `lib/`, `proxy.ts`, `app/layout.tsx`, `app/api/`
 3. Map data: which Supabase table, Server Action, or API route it uses. Live tables only: `categories1`, `services1`, `shop_info`, `shop_hours`, `site_announcements`, `gallery_images`, `faqs`. Call out leftover tables by name if present.
 4. Note Server vs Client (`"use client"`), and which Supabase helper (`createServerClient` vs `lib/supabase.ts`).

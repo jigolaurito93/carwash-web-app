@@ -10,6 +10,15 @@ function supabaseStorageHostname() {
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  async redirects() {
+    return [
+      {
+        source: "/admin/services1",
+        destination: "/admin/services",
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {

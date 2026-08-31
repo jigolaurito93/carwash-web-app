@@ -13,7 +13,7 @@ alwaysApply: true
 
 **Live tables:** `categories1`, `services1`, `shop_info`, `shop_hours`, `site_announcements`, `gallery_images`, `faqs`
 
-**Live admin:** `/admin/shop-info`, `/admin/categories1`, `/admin/services1`, `/admin/gallery`, `/admin/faq`
+**Live admin:** `/admin/shop-info`, `/admin/categories1`, `/admin/services`, `/admin/gallery`, `/admin/faq`
 
 **Public:** `/`, `/about`, `/services`, `/gallery`, `/contact`. Login: `/admin/login`
 

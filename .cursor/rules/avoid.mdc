@@ -7,7 +7,7 @@ alwaysApply: true
 
 Do not extend these unless the user asks to migrate or delete them:
 
-- Routes: `all-services`, `all-services-test`, `servicespage`, `services1test`, `admin/services/` (legacy UI)
+- Routes: `all-services`, `all-services-test`, `servicespage`, `services1test`, `admin/services-legacy/` (legacy UI)
 - Stubs: dashboard, appointment, profile — wire existing components, do not fork new pages
 - Tables: `categories`, `all_services`, `services_packages`, `other_services`, `tiered_services`, `detailingServices`, `services_all`
 - Do not recreate `data/services.ts`
