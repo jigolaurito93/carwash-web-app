@@ -118,3 +118,17 @@ export type AboutContent = {
   why_choose_us: WhyChooseUsItem[];
   updated_at: string;
 };
+
+export type WelcomeContent = {
+  id: number;
+  headline: string;
+  tagline: string;
+  intro: string;
+  subheading: string;
+  body_paragraphs: string[];
+  cta_label: string;
+  cta_href: string;
+  image_path: string;
+  image_alt: string;
+  updated_at: string;
+};
