@@ -14,6 +14,10 @@ type Props = {
   services: ServiceRow[];
 };
 
+function toTitleCase(value: string) {
+  return value.toLowerCase().replace(/(^|\s)\S/g, (char) => char.toUpperCase());
+}
+
 function layoutBadgeClass(layout: string | null) {
   switch (layout) {
     case "layout1":
@@ -101,6 +105,9 @@ export default function ServicesAdmin({ categories, services }: Props) {
 
   return (
     <div>
+      <h2 className="mb-4 font-lexend text-xl font-semibold text-gray-900">
+        Services
+      </h2>
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <p className="font-questrial text-sm text-gray-500">
           Published services appear on the public services page. Hidden items
@@ -109,7 +116,8 @@ export default function ServicesAdmin({ categories, services }: Props) {
         <button
           type="button"
           onClick={openCreate}
-          className="btnSaveYlw inline-flex items-center gap-2"
+          disabled={!categories.length}
+          className="btnSaveYlw inline-flex items-center gap-2 disabled:opacity-60"
         >
           <FiPlusCircle className="h-4 w-4" />
           Add Service
@@ -119,7 +127,7 @@ export default function ServicesAdmin({ categories, services }: Props) {
       {grouped.map(({ category, services: categoryServices }) => (
         <div key={category.id} className="mb-8">
           <h2 className="mb-4 font-lexend text-xl font-semibold text-gray-900">
-            {category.name}
+            {toTitleCase(category.name)}
           </h2>
           <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-lg">
             <table className="w-full">
@@ -217,7 +225,7 @@ export default function ServicesAdmin({ categories, services }: Props) {
       {!categories.length && (
         <div className="rounded-2xl border border-dashed border-gray-300 bg-white p-8 text-center shadow-lg">
           <p className="font-questrial text-gray-500">
-            No categories found. Please create categories first.
+            Add a category above to start adding services.
           </p>
         </div>
       )}

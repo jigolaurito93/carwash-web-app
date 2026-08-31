@@ -4,7 +4,6 @@ export const adminNavLinks = [
   { href: "/admin/services", label: "Services" },
   { href: "/admin/gallery", label: "Gallery" },
   { href: "/admin/profile", label: "Account Setting" },
-  { href: "/admin/categories", label: "Edit Categories" },
   { href: "/admin/shop-info", label: "Shop Info" },
   { href: "/admin/faq", label: "FAQ" },
   { href: "/admin/about", label: "About" },

@@ -44,7 +44,7 @@ const ShopInfo = async () => {
   }
 
   return (
-    <div className="p-10">
+    <div>
       <div className="mb-12 flex items-center justify-between">
         <h1 className="adminHeader">Account Settings</h1>
         <Link

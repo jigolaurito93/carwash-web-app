@@ -114,7 +114,9 @@ export default function AdminShell({
         </div>
       </aside>
 
-      <main className="flex-1 p-6 pt-20 pb-24 md:p-8 md:pb-24">{children}</main>
+      <main className="flex-1 p-6 pt-24 pb-24 md:px-8 md:pt-12 md:pb-24">
+        {children}
+      </main>
     </>
   );
 }

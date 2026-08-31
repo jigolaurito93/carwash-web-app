@@ -4,6 +4,7 @@ import Link from "next/link";
 import { LiaLongArrowAltLeftSolid } from "react-icons/lia";
 import type { Database } from "@/lib/database.types";
 import type { Category, ServiceRow } from "@/lib/app.types";
+import CategoriesAdmin from "@/components/admin/CategoriesAdmin";
 import ServicesAdmin from "@/components/admin/ServicesAdmin";
 
 export default async function AdminServicesPage() {
@@ -62,6 +63,7 @@ export default async function AdminServicesPage() {
           <span>Back To Dashboard</span>
         </Link>
       </div>
+      <CategoriesAdmin categories={categories} services={services} />
       <ServicesAdmin categories={categories} services={services} />
     </div>
   );

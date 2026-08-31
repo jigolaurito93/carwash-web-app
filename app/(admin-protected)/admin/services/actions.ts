@@ -4,6 +4,7 @@ import { createServerClient } from "@supabase/ssr";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import type { Database, Json } from "@/lib/database.types";
+import { categorySchema } from "@/lib/validations/category-schema";
 import {
   serviceSchema,
   type ServiceFormValues,
@@ -176,6 +177,168 @@ export async function deleteService(id: number) {
 
   if (error) {
     console.error("Failed to delete service:", error);
+    return { success: false, error: error.message };
+  }
+
+  revalidateServices();
+  return { success: true };
+}
+
+async function assertCategorySlugAvailable(
+  supabase: Awaited<ReturnType<typeof getSupabase>>,
+  slug: string,
+  excludeId?: number,
+) {
+  let query = supabase.from("categories").select("id").eq("slug", slug);
+
+  if (excludeId) {
+    query = query.neq("id", excludeId);
+  }
+
+  const { data, error } = await query.maybeSingle();
+  if (error) {
+    return error.message;
+  }
+  if (data) {
+    return `Slug "${slug}" is already taken.`;
+  }
+  return null;
+}
+
+async function assertCategorySortOrderAvailable(
+  supabase: Awaited<ReturnType<typeof getSupabase>>,
+  sortOrder: number,
+  excludeId?: number,
+) {
+  let query = supabase
+    .from("categories")
+    .select("id")
+    .eq("sort_order", sortOrder);
+
+  if (excludeId) {
+    query = query.neq("id", excludeId);
+  }
+
+  const { data, error } = await query.maybeSingle();
+  if (error) {
+    return error.message;
+  }
+  if (data) {
+    return `Sort order ${sortOrder} is already taken.`;
+  }
+  return null;
+}
+
+export async function createCategory(input: unknown) {
+  const parsed = categorySchema.safeParse(input);
+  if (!parsed.success) {
+    return {
+      success: false,
+      error: parsed.error.issues[0]?.message ?? "Invalid category.",
+    };
+  }
+
+  const supabase = await getSupabase();
+  const slugTaken = await assertCategorySlugAvailable(
+    supabase,
+    parsed.data.slug,
+  );
+  if (slugTaken) {
+    return { success: false, error: slugTaken };
+  }
+
+  const orderTaken = await assertCategorySortOrderAvailable(
+    supabase,
+    parsed.data.sort_order,
+  );
+  if (orderTaken) {
+    return { success: false, error: orderTaken };
+  }
+
+  const { error } = await supabase.from("categories").insert(parsed.data);
+
+  if (error) {
+    console.error("Failed to create category:", error);
+    return { success: false, error: error.message };
+  }
+
+  revalidateServices();
+  return { success: true };
+}
+
+export async function updateCategory(id: number, input: unknown) {
+  if (!Number.isFinite(id) || id <= 0) {
+    return { success: false, error: "Invalid category." };
+  }
+
+  const parsed = categorySchema.safeParse(input);
+  if (!parsed.success) {
+    return {
+      success: false,
+      error: parsed.error.issues[0]?.message ?? "Invalid category.",
+    };
+  }
+
+  const supabase = await getSupabase();
+  const slugTaken = await assertCategorySlugAvailable(
+    supabase,
+    parsed.data.slug,
+    id,
+  );
+  if (slugTaken) {
+    return { success: false, error: slugTaken };
+  }
+
+  const orderTaken = await assertCategorySortOrderAvailable(
+    supabase,
+    parsed.data.sort_order,
+    id,
+  );
+  if (orderTaken) {
+    return { success: false, error: orderTaken };
+  }
+
+  const { error } = await supabase
+    .from("categories")
+    .update(parsed.data)
+    .eq("id", id);
+
+  if (error) {
+    console.error("Failed to update category:", error);
+    return { success: false, error: error.message };
+  }
+
+  revalidateServices();
+  return { success: true };
+}
+
+export async function deleteCategory(id: number) {
+  if (!Number.isFinite(id) || id <= 0) {
+    return { success: false, error: "Invalid category." };
+  }
+
+  const supabase = await getSupabase();
+  const { count, error: countError } = await supabase
+    .from("services")
+    .select("id", { count: "exact", head: true })
+    .eq("category_id", id);
+
+  if (countError) {
+    console.error("Failed to check category services:", countError);
+    return { success: false, error: countError.message };
+  }
+
+  if (count && count > 0) {
+    return {
+      success: false,
+      error: "Delete or move this category's services first.",
+    };
+  }
+
+  const { error } = await supabase.from("categories").delete().eq("id", id);
+
+  if (error) {
+    console.error("Failed to delete category:", error);
     return { success: false, error: error.message };
   }
 
