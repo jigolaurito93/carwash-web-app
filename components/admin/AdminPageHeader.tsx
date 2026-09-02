@@ -14,7 +14,7 @@ export default function AdminPageHeader({ title }: Props) {
           className="btnSaveYlw inline-flex items-center gap-2"
         >
           <LiaLongArrowAltLeftSolid className="h-6 w-6 shrink-0" />
-          <span>Back To Dashboard</span>
+          <span>Dashboard</span>
         </Link>
       </div>
       {title ? <h1 className="adminHeader mt-6">{title}</h1> : null}
