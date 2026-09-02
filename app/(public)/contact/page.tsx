@@ -25,7 +25,10 @@ const Contact = async () => {
   return (
     <div>
       {/* Section 1 - Hero */}
-      <ContactHero />
+      <ContactHero
+        phone={shopAddress?.phone ?? null}
+        email={shopAddress?.email ?? null}
+      />
       {/* Section 1 - Hero */}
 
       <div>

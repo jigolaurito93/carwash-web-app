@@ -3,7 +3,12 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-const ContactHero = () => {
+type ContactHeroProps = {
+  phone: string | null;
+  email: string | null;
+};
+
+const ContactHero = ({ phone, email }: ContactHeroProps) => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -34,23 +39,27 @@ const ContactHero = () => {
             help.
           </div>
 
-          {/* Call to action buttons */}
-          <div className="mt-16 flex justify-center gap-10 sm:gap-20 lg:mt-24 lg:gap-30">
-            <a
-              href="tel:+1234567890"
-              className="w-28 cursor-pointer rounded-sm bg-white px-4 py-2 text-center font-questrial text-black shadow-2xl hover:bg-teal-500 hover:text-white lg:w-44 lg:text-xl"
-            >
-              Call Now
-            </a>
+          {(phone || email) && (
+            <div className="mt-16 flex justify-center gap-10 sm:gap-20 lg:mt-24 lg:gap-30">
+              {phone && (
+                <a
+                  href={`tel:${phone}`}
+                  className="w-28 cursor-pointer rounded-sm bg-white px-4 py-2 text-center font-questrial text-black shadow-2xl hover:bg-teal-500 hover:text-white lg:w-44 lg:text-xl"
+                >
+                  Call Now
+                </a>
+              )}
 
-            <a
-              href="mailto:info@onyxwash.com"
-              className="w-28 cursor-pointer rounded-sm bg-white px-4 py-2 text-center font-questrial text-black shadow-2xl hover:bg-teal-500 hover:text-white lg:w-44 lg:text-xl"
-            >
-              Book Now
-            </a>
-          </div>
-          {/* Call to action buttons */}
+              {email && (
+                <a
+                  href={`mailto:${email}`}
+                  className="w-28 cursor-pointer rounded-sm bg-white px-4 py-2 text-center font-questrial text-black shadow-2xl hover:bg-teal-500 hover:text-white lg:w-44 lg:text-xl"
+                >
+                  Book Now
+                </a>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

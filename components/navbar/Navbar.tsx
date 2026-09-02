@@ -39,12 +39,16 @@ const Navbar = () => {
 
   return (
     // Add z-50 and top-0 here
-    <nav className="flex h-20 w-full">
+    <nav className="relative flex h-20 w-full">
       {/* For Nav Mobile */}
-      <RxHamburgerMenu
-        className="absolute top-8 right-7 cursor-pointer text-4xl text-white lg:hidden"
+      <button
+        type="button"
+        aria-label="Open menu"
+        className="absolute top-1/2 right-7 z-10 -translate-y-1/2 cursor-pointer text-white lg:hidden"
         onClick={() => setIsOpen(true)}
-      />
+      >
+        <RxHamburgerMenu className="text-4xl" />
+      </button>
       <MobileNaveLinks isOpen={isOpen} setIsOpen={setIsOpen} />
       {/* For Nav Mobile */}
 
