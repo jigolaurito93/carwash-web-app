@@ -48,7 +48,7 @@ const ServicesSection = async () => {
 
   return (
     <div className="bg-[#121212] py-16">
-      <h2 className="text-center font-lexend text-3xl px-2 font-extrabold tracking-tight text-white drop-shadow-2xl sm:text-4xl">
+      <h2 className="px-2 text-center font-lexend text-3xl font-extrabold tracking-tight text-white drop-shadow-2xl sm:text-4xl">
         Services and Pricing
       </h2>
 

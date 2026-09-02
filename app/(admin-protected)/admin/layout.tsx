@@ -15,7 +15,7 @@ export default async function AdminLayout({
   // the Middleware already verified the user before this code even runs.
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen min-w-0 overflow-x-hidden bg-gray-50">
       <Toaster position="top-center" />
       <AdminShell>{children}</AdminShell>
     </div>

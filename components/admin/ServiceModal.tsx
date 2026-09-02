@@ -296,11 +296,11 @@ export default function ServiceModal({
       onClick={closeIfIdle}
     >
       <div
-        className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-gray-200 bg-white p-8 shadow-2xl"
+        className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-4 shadow-2xl sm:rounded-3xl sm:p-8"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="font-lexend text-2xl font-bold text-gray-900">
+          <h2 className="font-lexend text-xl font-bold text-gray-900 sm:text-2xl">
             {mode === "create" ? "Create Service" : "Edit Service"}
           </h2>
           <button

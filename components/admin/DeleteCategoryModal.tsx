@@ -59,7 +59,7 @@ export default function DeleteCategoryModal({
       onClick={closeIfIdle}
     >
       <div
-        className="w-full max-w-md rounded-3xl border border-gray-200 bg-white p-8 shadow-2xl"
+        className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-4 shadow-2xl sm:rounded-3xl sm:p-8"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="mb-6 flex items-center justify-between">

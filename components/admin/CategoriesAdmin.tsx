@@ -56,56 +56,55 @@ export default function CategoriesAdmin({ categories, services }: Props) {
     router.refresh();
   };
 
+  const emptyMessage = "No categories yet. Click Add Category to create one.";
+
   return (
-    <div className="mb-12">
+    <div className="mb-12 min-w-0">
       <h2 className="mb-4 font-lexend text-xl font-semibold text-gray-900">
         Categories
       </h2>
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
-        <p className="font-questrial text-sm text-gray-500">
+        <p className="min-w-0 font-questrial text-sm text-gray-500">
           Categories group services on the public services page. Each service
           must belong to a category.
         </p>
         <button
           type="button"
           onClick={openCreate}
-          className="btnSaveYlw inline-flex items-center gap-2"
+          className="btnSaveYlw inline-flex shrink-0 items-center gap-2"
         >
           <FiPlusCircle className="h-4 w-4" />
           Add Category
         </button>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-lg">
-        <table className="w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                Name
-              </th>
-              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                Slug
-              </th>
-              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                Sort Order
-              </th>
-              <th className="px-6 py-4 text-right text-sm font-semibold text-gray-700">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
+      {!categories.length ? (
+        <p className="rounded-xl border border-dashed border-gray-300 bg-white px-6 py-12 text-center font-questrial text-gray-500 md:rounded-2xl">
+          {emptyMessage}
+        </p>
+      ) : (
+        <>
+          <div className="space-y-3 md:hidden">
             {categories.map((category) => (
-              <tr key={category.id} className="border-t border-gray-100">
-                <td className="px-6 py-4 text-gray-900">{category.name}</td>
-                <td className="px-6 py-4 font-questrial text-gray-600">
-                  {category.slug}
-                </td>
-                <td className="px-6 py-4 text-gray-600">
-                  {category.sort_order ?? "—"}
-                </td>
-                <td className="px-6 py-4 text-right">
-                  <div className="flex justify-end gap-2">
+              <div
+                key={category.id}
+                className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-lexend text-base font-semibold text-gray-900">
+                      {category.name}
+                    </h3>
+                    <p className="mt-1 truncate font-questrial text-sm text-gray-600">
+                      {category.slug}
+                    </p>
+                    <p className="mt-2 font-questrial text-xs tracking-wider text-gray-400 uppercase">
+                      Sort order {category.sort_order ?? "—"}
+                      {" · "}
+                      {serviceCounts.get(category.id) ?? 0} services
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-1">
                     <button
                       type="button"
                       onClick={() => openEdit(category)}
@@ -123,23 +122,66 @@ export default function CategoriesAdmin({ categories, services }: Props) {
                       <FiTrash2 className="h-4 w-4" />
                     </button>
                   </div>
-                </td>
-              </tr>
+                </div>
+              </div>
             ))}
+          </div>
 
-            {!categories.length && (
-              <tr>
-                <td
-                  colSpan={4}
-                  className="px-6 py-8 text-center font-questrial text-gray-500"
-                >
-                  No categories yet. Click Add Category to create one.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+          <div className="hidden overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-lg md:block">
+            <table className="w-full min-w-[36rem]">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                    Name
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                    Slug
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                    Sort Order
+                  </th>
+                  <th className="px-6 py-4 text-right text-sm font-semibold text-gray-700">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {categories.map((category) => (
+                  <tr key={category.id} className="border-t border-gray-100">
+                    <td className="px-6 py-4 text-gray-900">{category.name}</td>
+                    <td className="px-6 py-4 font-questrial text-gray-600">
+                      {category.slug}
+                    </td>
+                    <td className="px-6 py-4 text-gray-600">
+                      {category.sort_order ?? "—"}
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => openEdit(category)}
+                          className="rounded-lg p-2 text-blue-600 transition-colors hover:bg-blue-50"
+                          title="Edit category"
+                        >
+                          <FiEdit2 className="h-4 w-4" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => openDelete(category)}
+                          className="rounded-lg p-2 text-red-600 transition-colors hover:bg-red-50"
+                          title="Delete category"
+                        >
+                          <FiTrash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
 
       {openModal === "create" && (
         <CategoryModal

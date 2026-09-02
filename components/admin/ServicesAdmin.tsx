@@ -104,12 +104,12 @@ export default function ServicesAdmin({ categories, services }: Props) {
   };
 
   return (
-    <div>
+    <div className="min-w-0">
       <h2 className="mb-4 font-lexend text-xl font-semibold text-gray-900">
         Services
       </h2>
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
-        <p className="font-questrial text-sm text-gray-500">
+        <p className="min-w-0 font-questrial text-sm text-gray-500">
           Published services appear on the public services page. Hidden items
           stay in this list until you publish them.
         </p>
@@ -117,7 +117,7 @@ export default function ServicesAdmin({ categories, services }: Props) {
           type="button"
           onClick={openCreate}
           disabled={!categories.length}
-          className="btnSaveYlw inline-flex items-center gap-2 disabled:opacity-60"
+          className="btnSaveYlw inline-flex shrink-0 items-center gap-2 disabled:opacity-60"
         >
           <FiPlusCircle className="h-4 w-4" />
           Add Service
@@ -125,66 +125,41 @@ export default function ServicesAdmin({ categories, services }: Props) {
       </div>
 
       {grouped.map(({ category, services: categoryServices }) => (
-        <div key={category.id} className="mb-8">
+        <div key={category.id} className="mb-8 min-w-0">
           <h2 className="mb-4 font-lexend text-xl font-semibold text-gray-900">
             {toTitleCase(category.name)}
           </h2>
-          <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-lg">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                    Name
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                    Layout
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                    Sort Order
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                    Active
-                  </th>
-                  <th className="px-6 py-4 text-right text-sm font-semibold text-gray-700">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
+
+          {!categoryServices.length ? (
+            <p className="rounded-xl border border-dashed border-gray-300 bg-white px-6 py-8 text-center font-questrial text-gray-500 md:rounded-2xl">
+              No services in this category yet.
+            </p>
+          ) : (
+            <>
+              <div className="space-y-3 md:hidden">
                 {categoryServices.map((service) => (
-                  <tr key={service.id} className="border-t border-gray-100">
-                    <td className="px-6 py-4 text-gray-900">
-                      {service.name}
-                      {!service.is_active && (
-                        <span className="ml-2 font-questrial text-xs tracking-wider text-gray-400 uppercase">
-                          Hidden
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`rounded-full px-3 py-1 text-xs font-semibold ${layoutBadgeClass(service.card_layout)}`}
-                      >
-                        {service.card_layout || "—"}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-gray-600">
-                      {service.sort_order ?? "—"}
-                    </td>
-                    <td className="px-6 py-4">
-                      <label className="flex cursor-pointer items-center gap-2 font-questrial text-sm text-gray-600">
-                        <input
-                          type="checkbox"
-                          checked={service.is_active ?? false}
-                          disabled={togglingId === service.id}
-                          onChange={() => handleToggle(service)}
-                          className="h-4 w-4 accent-yellow-400"
-                        />
-                        Active
-                      </label>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex justify-end gap-2">
+                  <div
+                    key={service.id}
+                    className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-lexend text-base font-semibold text-gray-900">
+                          {service.name}
+                        </h3>
+                        <div className="mt-2 flex flex-wrap items-center gap-2">
+                          <span
+                            className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${layoutBadgeClass(service.card_layout)}`}
+                          >
+                            {service.card_layout || "—"}
+                          </span>
+                          <span className="font-questrial text-xs tracking-wider text-gray-400 uppercase">
+                            Sort {service.sort_order ?? "—"}
+                            {service.is_active ? "" : " · Hidden"}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex shrink-0 items-center gap-1">
                         <button
                           type="button"
                           onClick={() => openEdit(service)}
@@ -202,23 +177,102 @@ export default function ServicesAdmin({ categories, services }: Props) {
                           <FiTrash2 className="h-4 w-4" />
                         </button>
                       </div>
-                    </td>
-                  </tr>
+                    </div>
+                    <label className="mt-3 flex cursor-pointer items-center gap-2 font-questrial text-sm text-gray-600">
+                      <input
+                        type="checkbox"
+                        checked={service.is_active ?? false}
+                        disabled={togglingId === service.id}
+                        onChange={() => handleToggle(service)}
+                        className="h-4 w-4 accent-yellow-400"
+                      />
+                      Active
+                    </label>
+                  </div>
                 ))}
+              </div>
 
-                {!categoryServices.length && (
-                  <tr>
-                    <td
-                      colSpan={5}
-                      className="px-6 py-8 text-center font-questrial text-gray-500"
-                    >
-                      No services in this category yet.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+              <div className="hidden overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-lg md:block">
+                <table className="w-full min-w-[40rem]">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                        Name
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                        Layout
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                        Sort Order
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                        Active
+                      </th>
+                      <th className="px-6 py-4 text-right text-sm font-semibold text-gray-700">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {categoryServices.map((service) => (
+                      <tr key={service.id} className="border-t border-gray-100">
+                        <td className="px-6 py-4 text-gray-900">
+                          {service.name}
+                          {!service.is_active && (
+                            <span className="ml-2 font-questrial text-xs tracking-wider text-gray-400 uppercase">
+                              Hidden
+                            </span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4">
+                          <span
+                            className={`rounded-full px-3 py-1 text-xs font-semibold ${layoutBadgeClass(service.card_layout)}`}
+                          >
+                            {service.card_layout || "—"}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-gray-600">
+                          {service.sort_order ?? "—"}
+                        </td>
+                        <td className="px-6 py-4">
+                          <label className="flex cursor-pointer items-center gap-2 font-questrial text-sm text-gray-600">
+                            <input
+                              type="checkbox"
+                              checked={service.is_active ?? false}
+                              disabled={togglingId === service.id}
+                              onChange={() => handleToggle(service)}
+                              className="h-4 w-4 accent-yellow-400"
+                            />
+                            Active
+                          </label>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <div className="flex justify-end gap-2">
+                            <button
+                              type="button"
+                              onClick={() => openEdit(service)}
+                              className="rounded-lg p-2 text-blue-600 transition-colors hover:bg-blue-50"
+                              title="Edit service"
+                            >
+                              <FiEdit2 className="h-4 w-4" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => openDelete(service)}
+                              className="rounded-lg p-2 text-red-600 transition-colors hover:bg-red-50"
+                              title="Delete service"
+                            >
+                              <FiTrash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
         </div>
       ))}
 
