@@ -1,8 +1,30 @@
 "use server";
 
-import { supabase } from "@/lib/supabase";
-import { normalizeStateCode, US_STATE_CODES } from "@/lib/us-states";
+import { createServerClient } from "@supabase/ssr";
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
+import type { Database } from "@/lib/database.types";
+import { normalizeStateCode, US_STATE_CODES } from "@/lib/us-states";
+
+async function getSupabase() {
+  const cookieStore = await cookies();
+  return createServerClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            cookieStore.set(name, value, options),
+          );
+        },
+      },
+    },
+  );
+}
 
 export async function handleAction(formData: FormData) {
   const phone = formData.get("phone") as string;
@@ -19,6 +41,7 @@ export async function handleAction(formData: FormData) {
     return { success: false, error: "Please select a valid US state." };
   }
 
+  const supabase = await getSupabase();
   const { error } = await supabase
     .from("shop_info")
     .update({
@@ -53,6 +76,8 @@ export type ShopHourUpdate = {
 };
 
 export async function updateShopHours(hours: ShopHourUpdate[]) {
+  const supabase = await getSupabase();
+
   for (const hour of hours) {
     const { error } = await supabase
       .from("shop_hours")

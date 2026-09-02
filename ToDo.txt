@@ -75,7 +75,7 @@ PHASE 2 — CORE FEATURES
 [ ] 12. ADMIN POLISH
     - Mobile admin nav (sidebar is desktop-only today)
     - Finish /admin/profile page (password change, display name)
-    - Use server Supabase client in server actions (shop-info/actions.ts)
+    - [x] Use server Supabase client in server actions (shop-info/actions.ts)
     - Fix /admin/login: black navbar bg, error message position, cursor-pointer on buttons
 
 
