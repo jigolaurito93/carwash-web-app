@@ -155,6 +155,31 @@ export type WelcomeContent = {
   updated_at: string;
 };
 
+export type Appointment = {
+  id: number;
+  first_name: string;
+  last_name: string | null;
+  customer_name: string | null;
+  email: string | null;
+  phone_number: string | null;
+  service: string;
+  service_id: number | null;
+  appointment_date: string;
+  notes: string | null;
+  status: string;
+  created_at: string | null;
+  updated_at: string | null;
+};
+
+export type AppointmentServiceOption = {
+  id: number;
+  name: string;
+  is_active: boolean | null;
+  categories: {
+    name: string;
+  } | null;
+};
+
 export type LegalSlug = "privacy" | "terms";
 
 export type LegalDocument = {

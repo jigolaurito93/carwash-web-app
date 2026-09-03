@@ -1,320 +1,406 @@
-import React from "react";
+"use client";
 
-const AppointmentFormModal = () => {
-  return <div>AppointmentFormModal</div>;
+import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
+import { format } from "date-fns";
+import { toast } from "sonner";
+import {
+  FiCalendar,
+  FiMail,
+  FiPhone,
+  FiTool,
+  FiUser,
+  FiX,
+} from "react-icons/fi";
+import { DatePickerTime } from "@/components/ui/date-picker-time";
+import type { Appointment, AppointmentServiceOption } from "@/lib/app.types";
+import {
+  isShopDateDisabled,
+  validateAppointmentSlot,
+  type ShopHoursDay,
+} from "@/lib/appointment-hours";
+import {
+  createAppointment,
+  updateAppointment,
+} from "@/app/(admin-protected)/admin/appointment/actions";
+
+type Props = {
+  open: boolean;
+  onClose: () => void;
+  mode: "create" | "edit";
+  appointment: Appointment | null;
+  services: AppointmentServiceOption[];
+  hours: ShopHoursDay[];
 };
 
-export default AppointmentFormModal;
+type FormState = {
+  first_name: string;
+  last_name: string;
+  phone_number: string;
+  email: string;
+  service_id: string;
+};
 
-// "use client";
+const emptyForm: FormState = {
+  first_name: "",
+  last_name: "",
+  phone_number: "",
+  email: "",
+  service_id: "",
+};
 
-// import { useState, useEffect, useRef } from "react";
-// import { DatePickerTime } from "../ui/date-picker-time";
-// import {
-//   createAppointment,
-//   deleteAppointment,
-//   updateAppointment,
-// } from "@/app/(admin-protected)/admin/dashboard/actions"; // Add update/delete actions
-// import { toast } from "sonner";
-// import { useRouter } from "next/navigation";
+function toTitleCase(value: string) {
+  return value
+    .trim()
+    .replace(/\s+/g, " ")
+    .replace(/\w\S*/g, (word) => {
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    });
+}
 
-// type Appointment = {
-//   id: string;
-//   customer_name: string;
-//   phone_number: string | null;
-//   appointment_date: string;
-//   service: string;
-//   notes: string | null;
-//   status: string;
-// };
+function groupedServices(services: AppointmentServiceOption[]) {
+  const groups = new Map<string, AppointmentServiceOption[]>();
+  for (const service of services) {
+    const label = service.categories?.name?.trim() || "Other";
+    const list = groups.get(label) ?? [];
+    list.push(service);
+    groups.set(label, list);
+  }
+  return [...groups.entries()];
+}
 
-// type Props = {
-//   open: boolean;
-//   onClose: () => void;
-//   mode: "create" | "edit";
-//   appointment: Appointment | null;
-//   onDelete?: () => void; // Optional callback for delete confirmation
-// };
+export default function AppointmentFormModal({
+  open,
+  onClose,
+  mode,
+  appointment,
+  services,
+  hours,
+}: Props) {
+  const router = useRouter();
+  const [form, setForm] = useState<FormState>(emptyForm);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+  const [saving, setSaving] = useState(false);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
-// export default function AppointmentFormModal({
-//   open,
-//   onClose,
-//   mode,
-//   appointment,
-//   onDelete,
-// }: Props) {
-//   const [customerName, setCustomerName] = useState("");
-//   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
-//   const [service, setService] = useState("Basic Wash ($20)");
-//   const [notes, setNotes] = useState("");
-//   const [phone, setPhone] = useState("");
-//   const [isSubmitting, setIsSubmitting] = useState(false);
+  const dropdownServices = useMemo(() => {
+    const byId = new Map<number, AppointmentServiceOption>();
+    for (const service of services) {
+      if (service.is_active !== false) {
+        byId.set(service.id, service);
+      }
+    }
+    if (appointment?.service_id) {
+      const current = services.find(
+        (service) => service.id === appointment.service_id,
+      );
+      if (current) {
+        byId.set(current.id, current);
+      }
+    }
+    return [...byId.values()];
+  }, [services, appointment]);
 
-//   const modalRef = useRef<HTMLDivElement>(null);
-//   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-//   const router = useRouter();
+  const serviceGroups = groupedServices(dropdownServices);
 
-//   // Reset and populate form when modal opens or appointment changes
-//   useEffect(() => {
-//     if (!open) {
-//       // Reset form when modal closes
-//       setCustomerName("");
-//       setSelectedDate(undefined);
-//       setService("Basic Wash ($20)");
-//       setNotes("");
-//       setPhone("");
-//       setIsCalendarOpen(false);
-//       setIsSubmitting(false);
-//       return;
-//     }
+  useEffect(() => {
+    if (!open) {
+      setForm(emptyForm);
+      setSelectedDate(undefined);
+      setIsCalendarOpen(false);
+      setSaving(false);
+      return;
+    }
 
-//     if (mode === "edit" && appointment) {
-//       // Populate form for edit mode
-//       setCustomerName(appointment.customer_name);
-//       setPhone(appointment.phone_number || "");
-//       setService(appointment.service);
-//       setNotes(appointment.notes || "");
+    if (mode === "edit" && appointment) {
+      setForm({
+        first_name: appointment.first_name,
+        last_name: appointment.last_name ?? "",
+        phone_number: appointment.phone_number ?? "",
+        email: appointment.email ?? "",
+        service_id: appointment.service_id
+          ? String(appointment.service_id)
+          : "",
+      });
+      const date = new Date(appointment.appointment_date);
+      setSelectedDate(Number.isNaN(date.getTime()) ? undefined : date);
+      return;
+    }
 
-//       // Parse appointment date
-//       const date = new Date(appointment.appointment_date);
-//       if (!isNaN(date.getTime())) {
-//         setSelectedDate(date);
-//       }
-//     } else {
-//       // Reset for create mode
-//       setCustomerName("");
-//       setPhone("");
-//       setService("Basic Wash ($20)");
-//       setNotes("");
-//       setSelectedDate(undefined);
-//     }
-//   }, [open, mode, appointment]);
+    setForm(emptyForm);
+    setSelectedDate(undefined);
+  }, [open, mode, appointment]);
 
-//   // Close on outside click (EXCEPT calendar)
-//   useEffect(() => {
-//     if (!open) return;
+  if (!open) return null;
 
-//     const handleClickOutside = (event: MouseEvent) => {
-//       if (isCalendarOpen) return;
-//       if (
-//         modalRef.current &&
-//         !modalRef.current.contains(event.target as Node)
-//       ) {
-//         onClose();
-//       }
-//     };
-//     document.addEventListener("mousedown", handleClickOutside);
-//     return () => document.removeEventListener("mousedown", handleClickOutside);
-//   }, [onClose, isCalendarOpen, open]);
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!selectedDate) {
+      toast.error("Please select a date and time");
+      return;
+    }
+    if (isShopDateDisabled(hours, selectedDate)) {
+      toast.error("Please choose an open day that is today or in the future.");
+      return;
+    }
 
-//   // Prevent body scroll
-//   useEffect(() => {
-//     if (open) {
-//       document.body.style.overflow = "hidden";
-//     } else {
-//       document.body.style.overflow = "unset";
-//     }
-//     return () => {
-//       document.body.style.overflow = "unset";
-//     };
-//   }, [open]);
+    const localDate = format(selectedDate, "yyyy-MM-dd");
+    const localTime = format(selectedDate, "HH:mm");
+    const slotError = validateAppointmentSlot(
+      hours,
+      localDate,
+      localTime,
+      selectedDate.toISOString(),
+    );
+    if (slotError) {
+      toast.error(slotError);
+      return;
+    }
 
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-//     setIsSubmitting(true);
+    setSaving(true);
+    const formData = new FormData();
+    if (mode === "edit" && appointment) {
+      formData.set("id", String(appointment.id));
+    }
+    formData.set("first_name", form.first_name);
+    formData.set("last_name", form.last_name);
+    formData.set("phone_number", form.phone_number);
+    formData.set("email", form.email);
+    formData.set("service_id", form.service_id);
+    formData.set("appointment_date", selectedDate.toISOString());
+    formData.set("local_date", localDate);
+    formData.set("local_time", localTime);
 
-//     if (!selectedDate) {
-//       toast.error("Please select a date and time");
-//       setIsSubmitting(false);
-//       return;
-//     }
-//     if (!service) {
-//       toast.error("Please select service");
-//       setIsSubmitting(false);
-//       return;
-//     }
+    try {
+      const result =
+        mode === "create"
+          ? await createAppointment(formData)
+          : await updateAppointment(formData);
 
-//     const payload = {
-//       customer_name: customerName || "unknown",
-//       appointment_date: selectedDate.toISOString(),
-//       service,
-//       notes: notes || null,
-//       phone_number: phone || null,
-//     };
+      if (result.success) {
+        toast.success(
+          mode === "create" ? "Appointment created." : "Appointment updated.",
+        );
+        onClose();
+        router.refresh();
+      } else {
+        toast.error(result.error || "Failed to save appointment.");
+      }
+    } catch {
+      toast.error("Failed to save appointment.");
+    } finally {
+      setSaving(false);
+    }
+  };
 
-//     let result;
-//     if (mode === "create") {
-//       result = await createAppointment(payload);
-//     } else {
-//       // You'll need to add updateAppointment action
-//       result = await updateAppointment(appointment!.id, payload);
-//     }
+  const close = () => {
+    if (saving || isCalendarOpen) return;
+    onClose();
+  };
 
-//     setIsSubmitting(false);
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+      onClick={close}
+    >
+      <div
+        className="flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <header className="flex items-start justify-between gap-4 bg-black px-6 py-5 text-white">
+          <div>
+            <p className="font-questrial text-[11px] font-bold tracking-widest text-yellow-400 uppercase">
+              {mode === "create" ? "New booking" : "Edit booking"}
+            </p>
+            <h2 className="mt-1 font-lexend text-2xl font-bold">
+              {mode === "create" ? "Create appointment" : "Edit appointment"}
+            </h2>
+            <p className="mt-1 font-questrial text-sm text-gray-400">
+              First name, phone, optional email, service, and a time during shop
+              hours.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={saving}
+            className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-white/10 hover:text-white disabled:opacity-50"
+            aria-label="Close"
+          >
+            <FiX className="h-5 w-5" />
+          </button>
+        </header>
 
-//     if (result?.success) {
-//       toast.success(
-//         mode === "create"
-//           ? "Appointment created successfully"
-//           : "Appointment updated successfully",
-//       );
-//       router.refresh();
-//       onClose();
-//     } else {
-//       toast.error(result?.error || "Something went wrong");
-//     }
-//   };
+        <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col">
+          <div className="space-y-6 overflow-y-auto px-6 py-6">
+            <section>
+              <p className="mb-3 flex items-center gap-2 font-questrial text-[11px] font-bold tracking-widest text-gray-400 uppercase">
+                <FiUser className="h-3.5 w-3.5" />
+                Customer
+              </p>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <label
+                    className="labelx block text-xs"
+                    htmlFor="apt-first-name"
+                  >
+                    First name
+                  </label>
+                  <input
+                    id="apt-first-name"
+                    required
+                    maxLength={80}
+                    value={form.first_name}
+                    onChange={(event) =>
+                      setForm({ ...form, first_name: event.target.value })
+                    }
+                    className="inputx h-12 text-sm"
+                    placeholder="Jordan"
+                    disabled={saving}
+                  />
+                </div>
+                <div>
+                  <label
+                    className="labelx block text-xs"
+                    htmlFor="apt-last-name"
+                  >
+                    Last name
+                  </label>
+                  <input
+                    id="apt-last-name"
+                    maxLength={80}
+                    value={form.last_name}
+                    onChange={(event) =>
+                      setForm({ ...form, last_name: event.target.value })
+                    }
+                    className="inputx h-12 text-sm"
+                    placeholder="Optional"
+                    disabled={saving}
+                  />
+                </div>
+              </div>
+              <div className="mt-3">
+                <label className="labelx block text-xs" htmlFor="apt-phone">
+                  Contact number
+                </label>
+                <div
+                  className={`flex h-12 items-center overflow-hidden rounded-sm border border-gray-200 shadow-sm focus-within:border-gray-400 ${
+                    saving ? "bg-gray-100 opacity-60" : "bg-white"
+                  }`}
+                >
+                  <span className="flex h-full shrink-0 items-center px-3 text-gray-400">
+                    <FiPhone className="h-4 w-4" aria-hidden="true" />
+                  </span>
+                  <input
+                    id="apt-phone"
+                    type="tel"
+                    required
+                    value={form.phone_number}
+                    onChange={(event) =>
+                      setForm({ ...form, phone_number: event.target.value })
+                    }
+                    className="h-full min-w-0 flex-1 border-0 bg-transparent py-3 pr-3 text-sm outline-none"
+                    placeholder="(123) 456-7890"
+                    disabled={saving}
+                  />
+                </div>
+              </div>
+              <div className="mt-3">
+                <label className="labelx block text-xs" htmlFor="apt-email">
+                  Email
+                </label>
+                <div
+                  className={`flex h-12 items-center overflow-hidden rounded-sm border border-gray-200 shadow-sm focus-within:border-gray-400 ${
+                    saving ? "bg-gray-100 opacity-60" : "bg-white"
+                  }`}
+                >
+                  <span className="flex h-full shrink-0 items-center px-3 text-gray-400">
+                    <FiMail className="h-4 w-4" aria-hidden="true" />
+                  </span>
+                  <input
+                    id="apt-email"
+                    type="email"
+                    value={form.email}
+                    onChange={(event) =>
+                      setForm({ ...form, email: event.target.value })
+                    }
+                    className="h-full min-w-0 flex-1 border-0 bg-transparent py-3 pr-3 text-sm outline-none"
+                    placeholder="Optional"
+                    disabled={saving}
+                  />
+                </div>
+              </div>
+            </section>
 
-//   const handleDelete = async () => {
-//     if (!appointment) return;
+            <section>
+              <p className="mb-3 flex items-center gap-2 font-questrial text-[11px] font-bold tracking-widest text-gray-400 uppercase">
+                <FiCalendar className="h-3.5 w-3.5" />
+                Date & time
+              </p>
+              <DatePickerTime
+                date={selectedDate}
+                onDateChange={setSelectedDate}
+                onCalendarOpenChange={setIsCalendarOpen}
+                hours={hours}
+              />
+            </section>
 
-//     if (confirm("Are you sure you want to delete this appointment?")) {
-//       const result = await deleteAppointment(appointment.id);
-//       if (result?.success) {
-//         toast.success("Appointment deleted successfully");
-//         router.refresh();
-//         onClose();
-//       } else {
-//         toast.error(result?.error || "Failed to delete appointment");
-//       }
-//     }
-//   };
+            <section>
+              <p className="mb-3 flex items-center gap-2 font-questrial text-[11px] font-bold tracking-widest text-gray-400 uppercase">
+                <FiTool className="h-3.5 w-3.5" />
+                Service
+              </p>
+              <label className="sr-only" htmlFor="apt-service">
+                Service
+              </label>
+              <select
+                id="apt-service"
+                required
+                value={form.service_id}
+                onChange={(event) =>
+                  setForm({ ...form, service_id: event.target.value })
+                }
+                className="inputx h-12 text-sm"
+                disabled={saving}
+              >
+                <option value="">Select a service</option>
+                {serviceGroups.map(([category, items]) => (
+                  <optgroup key={category} label={toTitleCase(category)}>
+                    {items.map((service) => (
+                      <option key={service.id} value={service.id}>
+                        {toTitleCase(service.name)}
+                        {service.is_active === false ? " (inactive)" : ""}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
+            </section>
+          </div>
 
-//   if (!open) return null;
-
-//   return (
-//     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-//       <div
-//         ref={modalRef}
-//         className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-2xl border border-gray-100 bg-white shadow-2xl"
-//       >
-//         {/* Header */}
-//         <div className="border-b border-gray-100 p-6">
-//           <div className="flex items-center justify-between">
-//             <h2 className="font-lexend text-2xl font-bold text-gray-900">
-//               {mode === "create" ? "New Appointment" : `Edit Appointment`}
-//             </h2>
-//             <button
-//               onClick={onClose}
-//               className="-m-2 rounded-full p-2 text-xl text-gray-500 hover:bg-gray-100 hover:text-gray-900"
-//               disabled={isSubmitting}
-//             >
-//               ×
-//             </button>
-//           </div>
-//         </div>
-
-//         {/* Form */}
-//         <form onSubmit={handleSubmit} className="space-y-6 p-6">
-//           {/* Customer Name */}
-//           <div>
-//             <label className="mb-2 block text-xs font-medium tracking-wide text-gray-700 uppercase">
-//               Customer Name
-//             </label>
-//             <input
-//               value={customerName}
-//               onChange={(e) => setCustomerName(e.target.value)}
-//               className="inputx"
-//               placeholder="John Doe"
-//               required
-//               disabled={isSubmitting}
-//             />
-//           </div>
-
-//           {/* Phone Number */}
-//           <div>
-//             <label className="mb-2 block text-xs font-medium tracking-wide text-gray-700 uppercase">
-//               Phone Number
-//             </label>
-//             <input
-//               type="tel"
-//               value={phone}
-//               onChange={(e) => setPhone(e.target.value)}
-//               className="inputx"
-//               placeholder="(123) 456-7890"
-//               disabled={isSubmitting}
-//             />
-//           </div>
-
-//           {/* Date Picker */}
-//           <div>
-//             <label className="mb-4 block text-xs font-medium tracking-wide text-gray-700 uppercase">
-//               Appointment Date & Time
-//             </label>
-//             <DatePickerTime
-//               date={selectedDate}
-//               onDateChange={setSelectedDate}
-//               isCalendarOpen={isCalendarOpen}
-//               onCalendarOpenChange={setIsCalendarOpen}
-//             />
-//           </div>
-
-//           {/* Service */}
-//           <div>
-//             <label className="mb-2 block text-xs font-medium tracking-wide text-gray-700 uppercase">
-//               Service
-//             </label>
-//             <select
-//               value={service}
-//               onChange={(e) => setService(e.target.value)}
-//               className="inputx"
-//               required
-//               disabled={isSubmitting}
-//             >
-//               {[
-//                 "Basic Wash ($20)",
-//                 "Premium Wash ($35)",
-//                 "Deluxe Wash ($50)",
-//               ].map((s, i) => (
-//                 <option key={i} value={s}>
-//                   {s}
-//                 </option>
-//               ))}
-//             </select>
-//           </div>
-
-//           {/* Notes */}
-//           <div>
-//             <label className="mb-2 block text-xs font-medium tracking-wide text-gray-700 uppercase">
-//               Notes (Optional)
-//             </label>
-//             <textarea
-//               value={notes}
-//               onChange={(e) => setNotes(e.target.value)}
-//               className="inputx resize-vertical h-24"
-//               placeholder="Customer preferences, special instructions, vehicle details..."
-//               maxLength={500}
-//               disabled={isSubmitting}
-//             />
-//             <p className="mt-1 text-xs text-gray-500">
-//               {notes.length}/500 characters
-//             </p>
-//           </div>
-
-//           {/* Buttons */}
-//           <div className="flex gap-3 pt-2">
-//             <button
-//               type="button"
-//               onClick={onClose}
-//               className="flex-1 rounded-xl border border-gray-300 px-6 py-3 text-lg font-semibold text-gray-700 hover:bg-gray-50"
-//               disabled={isSubmitting}
-//             >
-//               Cancel
-//             </button>
-//             <button
-//               type="submit"
-//               className="btnSaveYlw flex-1 rounded-xl px-6 py-3 text-lg font-semibold"
-//               disabled={isSubmitting}
-//             >
-//               {isSubmitting
-//                 ? "Saving..."
-//                 : mode === "create"
-//                   ? "Create Appointment"
-//                   : "Update Appointment"}
-//             </button>
-//           </div>
-//         </form>
-//       </div>
-//     </div>
-//   );
-// }
+          <div className="flex justify-end gap-3 border-t border-gray-100 bg-gray-50 px-6 py-4">
+            <button
+              type="button"
+              onClick={onClose}
+              disabled={saving}
+              className="btnCancel"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={saving}
+              className="btnSaveYlw disabled:opacity-60"
+            >
+              {saving
+                ? "Saving..."
+                : mode === "create"
+                  ? "Create appointment"
+                  : "Save appointment"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

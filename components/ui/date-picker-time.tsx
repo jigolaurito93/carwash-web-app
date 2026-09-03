@@ -1,79 +1,166 @@
 "use client";
 
 import * as React from "react";
-import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { format } from "date-fns";
-import { ChevronDownIcon } from "lucide-react";
+import { format, startOfDay } from "date-fns";
+import { FiCalendar } from "react-icons/fi";
+import {
+  bookableHours,
+  bookableMinutesForHour,
+  earliestBookableMinutes,
+  formatHourLabel,
+  getDaySlot,
+  isShopDateDisabled,
+  shopHoursCaption,
+  snapToShopTimeSlot,
+  type ShopHoursDay,
+} from "@/lib/appointment-hours";
 
-// components/ui/date-picker-time.tsx
 interface DatePickerTimeProps {
   date: Date | undefined;
   onDateChange: (date: Date | undefined) => void;
   onCalendarOpenChange: (open: boolean) => void;
+  hours: ShopHoursDay[];
 }
 
 export function DatePickerTime({
   date,
   onDateChange,
   onCalendarOpenChange,
+  hours,
 }: DatePickerTimeProps) {
   const [open, setOpen] = React.useState(false);
+  const slot = date ? getDaySlot(hours, date) : null;
+  const timeDisabled = !date || !slot || slot.closed;
+  const minMinutes =
+    date && slot && !slot.closed ? earliestBookableMinutes(slot, date) : null;
+  const hourChoices =
+    slot && !slot.closed && minMinutes !== null
+      ? bookableHours(slot, minMinutes)
+      : [];
+  const selectedHour = date && !timeDisabled ? date.getHours() : null;
+  const minuteChoices =
+    slot && !slot.closed && minMinutes !== null && selectedHour !== null
+      ? bookableMinutesForHour(slot, minMinutes, selectedHour)
+      : [];
 
   return (
-    <FieldGroup className="flex w-full flex-col gap-4 lg:flex-row">
-      {/* Date */}
-      <Field className="flex-1">
-        <FieldLabel>Date</FieldLabel>
-        <Popover
-          open={open}
-          onOpenChange={(open) => {
-            setOpen(open);
-            onCalendarOpenChange(open); // ← Notify modal
-          }}
-        >
-          <PopoverTrigger asChild>
-            <Button variant="outline" className="inputx h-10">
-              {date ? format(date, "PPP") : "Pick a date"}
-              <ChevronDownIcon className="ml-2 h-4 w-4" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0">
-            <Calendar
-              mode="single"
-              selected={date}
-              onSelect={onDateChange}
-              className="border-0"
-            />
-          </PopoverContent>
-        </Popover>
-      </Field>
+    <div className="space-y-3">
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div>
+          <label className="labelx block text-xs">Date</label>
+          <Popover
+            open={open}
+            onOpenChange={(nextOpen) => {
+              setOpen(nextOpen);
+              onCalendarOpenChange(nextOpen);
+            }}
+          >
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                className="inputx flex h-12 w-full items-center justify-between text-left text-sm"
+              >
+                <span className={date ? "text-gray-900" : "text-gray-400"}>
+                  {date ? format(date, "EEE, MMM d") : "Pick a date"}
+                </span>
+                <FiCalendar className="h-4 w-4 shrink-0 text-gray-400" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="z-[70] w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={date}
+                onSelect={(selected) => {
+                  if (!selected) {
+                    onDateChange(undefined);
+                    return;
+                  }
+                  if (isShopDateDisabled(hours, selected)) return;
+                  const next = new Date(selected);
+                  if (date) {
+                    next.setHours(date.getHours(), date.getMinutes(), 0, 0);
+                  } else {
+                    const now = new Date();
+                    next.setHours(now.getHours(), now.getMinutes(), 0, 0);
+                  }
+                  onDateChange(snapToShopTimeSlot(next, hours));
+                }}
+                disabled={[
+                  { before: startOfDay(new Date()) },
+                  (day) => isShopDateDisabled(hours, day),
+                ]}
+                className="border-0"
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
 
-      {/* Time */}
-      <Field className="w-full lg:w-48">
-        <FieldLabel>Time</FieldLabel>
-        <Input
-          type="time"
-          step="1800"
-          value={date ? format(date, "HH:mm") : ""}
-          onChange={(e) => {
-            if (date) {
-              const [h, m] = e.target.value.split(":").map(Number);
-              const newDate = new Date(date);
-              newDate.setHours(h, m);
-              onDateChange(newDate);
-            }
-          }}
-          className="h-12 border-2 border-gray-200 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400"
-        />
-      </Field>
-    </FieldGroup>
+        <div>
+          <label className="labelx block text-xs">Time</label>
+          <div className="grid grid-cols-2 gap-2">
+            <select
+              aria-label="Hour"
+              disabled={timeDisabled}
+              value={selectedHour === null ? "" : String(selectedHour)}
+              onChange={(event) => {
+                if (!date || !event.target.value) return;
+                const hour = Number(event.target.value);
+                const minutes =
+                  slot && !slot.closed && minMinutes !== null
+                    ? bookableMinutesForHour(slot, minMinutes, hour)
+                    : [];
+                const currentMinute = date.getMinutes();
+                const minute = minutes.includes(currentMinute)
+                  ? currentMinute
+                  : (minutes[0] ?? 0);
+                const next = new Date(date);
+                next.setHours(hour, minute, 0, 0);
+                onDateChange(snapToShopTimeSlot(next, hours));
+              }}
+              className="inputx h-12 text-sm disabled:cursor-not-allowed disabled:bg-gray-100 disabled:opacity-60"
+            >
+              <option value="" disabled>
+                Hour
+              </option>
+              {hourChoices.map((hour) => (
+                <option key={hour} value={hour}>
+                  {formatHourLabel(hour)}
+                </option>
+              ))}
+            </select>
+            <select
+              aria-label="Minutes"
+              disabled={timeDisabled || minuteChoices.length === 0}
+              value={date && !timeDisabled ? String(date.getMinutes()) : ""}
+              onChange={(event) => {
+                if (!date || event.target.value === "") return;
+                const next = new Date(date);
+                next.setMinutes(Number(event.target.value), 0, 0);
+                onDateChange(snapToShopTimeSlot(next, hours));
+              }}
+              className="inputx h-12 text-sm disabled:cursor-not-allowed disabled:bg-gray-100 disabled:opacity-60"
+            >
+              <option value="" disabled>
+                Min
+              </option>
+              {minuteChoices.map((minute) => (
+                <option key={minute} value={minute}>
+                  :{String(minute).padStart(2, "0")}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
+      <p className="rounded-lg bg-gray-50 px-3 py-2 font-questrial text-xs text-gray-500">
+        {shopHoursCaption(hours, date)}
+      </p>
+    </div>
   );
 }

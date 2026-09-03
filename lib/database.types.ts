@@ -123,10 +123,14 @@ export type Database = {
           appointment_date: string;
           created_at: string | null;
           customer_name: string | null;
+          email: string | null;
+          first_name: string;
           id: number;
+          last_name: string | null;
           notes: string | null;
           phone_number: string | null;
           service: string;
+          service_id: number | null;
           status: string;
           updated_at: string | null;
         };
@@ -134,10 +138,14 @@ export type Database = {
           appointment_date: string;
           created_at?: string | null;
           customer_name?: string | null;
+          email?: string | null;
+          first_name: string;
           id?: number;
+          last_name?: string | null;
           notes?: string | null;
           phone_number?: string | null;
           service: string;
+          service_id?: number | null;
           status?: string;
           updated_at?: string | null;
         };
@@ -145,14 +153,26 @@ export type Database = {
           appointment_date?: string;
           created_at?: string | null;
           customer_name?: string | null;
+          email?: string | null;
+          first_name?: string;
           id?: number;
+          last_name?: string | null;
           notes?: string | null;
           phone_number?: string | null;
           service?: string;
+          service_id?: number | null;
           status?: string;
           updated_at?: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "appointment_service_id_fkey";
+            columns: ["service_id"];
+            isOneToOne: false;
+            referencedRelation: "services";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       categories: {
         Row: {

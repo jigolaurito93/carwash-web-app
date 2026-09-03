@@ -1,7 +1,10 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import type { Database } from "@/lib/database.types";
+import type { Appointment, AppointmentServiceOption } from "@/lib/app.types";
+import type { ShopHoursDay } from "@/lib/appointment-hours";
 import DashboardClock from "@/components/admin/DashboardClock";
+import DashboardSchedule from "@/components/admin/DashboardSchedule";
 
 export default async function AdminDashboardPage() {
   const cookieStore = await cookies();
@@ -26,22 +29,57 @@ export default async function AdminDashboardPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data: profile } = user
-    ? await supabase
-        .from("admin_profiles")
-        .select("first_name, last_name")
-        .eq("id", user.id)
-        .maybeSingle()
-    : { data: null };
+  const [
+    { data: profile },
+    { data: appointmentData, error: appointmentError },
+    { data: serviceData },
+    { data: hoursData },
+  ] = await Promise.all([
+    user
+      ? supabase
+          .from("admin_profiles")
+          .select("first_name, last_name")
+          .eq("id", user.id)
+          .maybeSingle()
+      : Promise.resolve({ data: null }),
+    supabase
+      .from("appointment")
+      .select(
+        "id, first_name, last_name, customer_name, email, phone_number, service, service_id, appointment_date, notes, status, created_at, updated_at",
+      )
+      .eq("status", "scheduled")
+      .order("appointment_date", { ascending: true }),
+    supabase
+      .from("services")
+      .select("id, name, is_active, categories(name)")
+      .eq("is_active", true)
+      .order("sort_order")
+      .order("id"),
+    supabase
+      .from("shop_hours")
+      .select("day_name, open_time, close_time, is_closed"),
+  ]);
 
   const displayName = [profile?.first_name, profile?.last_name]
     .map((part) => part?.trim())
     .filter((part): part is string => Boolean(part))
     .join(" ");
 
+  const appointments = (appointmentData ?? []) as Appointment[];
+  const services = (serviceData ?? []) as AppointmentServiceOption[];
+  const hours = (hoursData ?? []) as ShopHoursDay[];
+
+  if (appointmentError) {
+    return (
+      <div className="p-8 font-questrial text-red-600">
+        Failed to load appointments. Run <code>supabase/appointments.sql</code>{" "}
+        in the Supabase SQL editor, then <code>pnpm gen:types</code>.
+      </div>
+    );
+  }
+
   return (
     <div className="">
-      {/* Header */}
       <header className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="flex flex-col gap-2">
           <h1 className="mb-1 font-lexend text-4xl font-bold">Dashboard</h1>
@@ -53,71 +91,11 @@ export default async function AdminDashboardPage() {
         <DashboardClock />
       </header>
 
-      {/* Top cards */}
-      <section className="mt-10 grid gap-4 md:grid-cols-3">
-        <div className="rounded-lg bg-black p-4 text-yellow-400">
-          <p className="text-xs tracking-wide text-gray-300 uppercase">
-            Today&apos;s appointments
-          </p>
-          <p className="mt-2 text-3xl font-bold">0</p>
-        </div>
-
-        <div className="rounded-lg bg-black p-4 text-yellow-400">
-          <p className="text-xs tracking-wide text-gray-300 uppercase">
-            Completed washes
-          </p>
-          <p className="mt-2 text-3xl font-bold">0</p>
-        </div>
-
-        <div className="rounded-lg bg-black p-4 text-yellow-400">
-          <p className="text-xs tracking-wide text-gray-300 uppercase">
-            Open slots left
-          </p>
-          <p className="mt-2 text-3xl font-bold">0</p>
-        </div>
-      </section>
-
-      {/* Main content */}
-      <section className="grid gap-6 md:grid-cols-2">
-        <div className="rounded-lg bg-white p-4 shadow-sm">
-          <h2 className="mb-3 text-lg font-semibold">Upcoming appointments</h2>
-          <p className="text-sm text-gray-500">
-            No appointments yet. Once you create bookings, they&apos;ll show up
-            here.
-          </p>
-        </div>
-
-        <div className="rounded-lg bg-white p-4 shadow-sm">
-          <h2 className="mb-3 text-lg font-semibold">Quick actions</h2>
-          <div className="space-y-3">
-            {/* ← MODAL BUTTON */}
-            <button
-              // onClick={() => setShowAppointmentModal(true)}
-              className="block w-full rounded bg-black px-4 py-2 text-center text-sm text-yellow-400 transition-colors hover:bg-gray-900"
-            >
-              Create appointment
-            </button>
-
-            <a
-              href="/admin/services"
-              className="block w-full rounded bg-black px-4 py-2 text-center text-sm text-yellow-400 hover:bg-gray-900"
-            >
-              Manage services
-            </a>
-            <a
-              href="/admin/gallery"
-              className="block w-full rounded bg-black px-4 py-2 text-center text-sm text-yellow-400 hover:bg-gray-900"
-            >
-              Manage gallery
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* ← APPOINTMENT MODAL */}
-      {/* {showAppointmentModal && (
-        <AppointmentFormModal onClose={() => setShowAppointmentModal(false)} />
-      )} */}
+      <DashboardSchedule
+        appointments={appointments}
+        services={services}
+        hours={hours}
+      />
     </div>
   );
 }
