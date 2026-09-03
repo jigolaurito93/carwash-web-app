@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import type { GalleryImage } from "@/lib/app.types";
 import { Button } from "@/components/ui/button";
+import GalleryEmptyState from "@/components/gallery/GalleryEmptyState";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
@@ -31,13 +32,7 @@ export default function GalleryGrid({ images }: Props) {
   };
 
   if (images.length === 0) {
-    return (
-      <section className="px-4 pb-16 sm:px-8 lg:px-20 lg:pb-24">
-        <p className="mx-auto max-w-6xl text-center font-questrial text-white/70">
-          No gallery photos yet. Check back soon.
-        </p>
-      </section>
-    );
+    return <GalleryEmptyState />;
   }
 
   const visibleImages = expanded ? images : images.slice(0, PREVIEW_COUNT);
