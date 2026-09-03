@@ -8,7 +8,7 @@ import {
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { HiChevronDown, HiOutlineGlobeAlt } from "react-icons/hi2";
 import { IoMdCloseCircle } from "react-icons/io";
 import { RxHamburgerMenu } from "react-icons/rx";
@@ -23,14 +23,21 @@ export default function AdminShell({
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const sections = getAdminNavSections(isMaster);
-  const websiteChildActive = sections
-    .find((section) => section.id === "website")
-    ?.links.some((link) => link.href === pathname);
-  const [websiteOpen, setWebsiteOpen] = useState(Boolean(websiteChildActive));
+  const websiteChildActive = Boolean(
+    sections
+      .find((section) => section.id === "website")
+      ?.links.some((link) => link.href === pathname),
+  );
+  const [websiteOpen, setWebsiteOpen] = useState(websiteChildActive);
+  const [wasWebsiteChildActive, setWasWebsiteChildActive] =
+    useState(websiteChildActive);
 
-  useEffect(() => {
-    if (websiteChildActive) setWebsiteOpen(true);
-  }, [websiteChildActive]);
+  if (websiteChildActive !== wasWebsiteChildActive) {
+    setWasWebsiteChildActive(websiteChildActive);
+    if (websiteChildActive) {
+      setWebsiteOpen(true);
+    }
+  }
 
   return (
     <>

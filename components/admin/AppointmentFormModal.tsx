@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import {
   FiCalendar,
   FiMail,
+  FiMessageSquare,
   FiPhone,
   FiTool,
   FiUser,
@@ -39,6 +40,7 @@ type FormState = {
   phone_number: string;
   email: string;
   service_id: string;
+  notes: string;
 };
 
 const emptyForm: FormState = {
@@ -47,6 +49,7 @@ const emptyForm: FormState = {
   phone_number: "",
   email: "",
   service_id: "",
+  notes: "",
 };
 
 function toTitleCase(value: string) {
@@ -121,6 +124,7 @@ export default function AppointmentFormModal({
         service_id: appointment.service_id
           ? String(appointment.service_id)
           : "",
+        notes: appointment.notes ?? "",
       });
       const date = new Date(appointment.appointment_date);
       setSelectedDate(Number.isNaN(date.getTime()) ? undefined : date);
@@ -167,6 +171,7 @@ export default function AppointmentFormModal({
     formData.set("phone_number", form.phone_number);
     formData.set("email", form.email);
     formData.set("service_id", form.service_id);
+    formData.set("notes", form.notes);
     formData.set("appointment_date", selectedDate.toISOString());
     formData.set("local_date", localDate);
     formData.set("local_time", localTime);
@@ -216,8 +221,8 @@ export default function AppointmentFormModal({
               {mode === "create" ? "Create appointment" : "Edit appointment"}
             </h2>
             <p className="mt-1 font-questrial text-sm text-gray-400">
-              First name, phone, optional email, service, and a time during shop
-              hours.
+              First name, phone, optional email and notes, service, and a time
+              during shop hours.
             </p>
           </div>
           <button
@@ -375,6 +380,30 @@ export default function AppointmentFormModal({
                   </optgroup>
                 ))}
               </select>
+            </section>
+
+            <section>
+              <p className="mb-3 flex items-center gap-2 font-questrial text-[11px] font-bold tracking-widest text-gray-400 uppercase">
+                <FiMessageSquare className="h-3.5 w-3.5" />
+                Additional info
+              </p>
+              <label className="sr-only" htmlFor="apt-notes">
+                Additional info
+              </label>
+              <textarea
+                id="apt-notes"
+                value={form.notes}
+                onChange={(event) =>
+                  setForm({ ...form, notes: event.target.value })
+                }
+                className="inputx min-h-24 resize-y text-sm"
+                placeholder="Vehicle details, special requests, or anything else from the call…"
+                maxLength={500}
+                disabled={saving}
+              />
+              <p className="mt-1 font-questrial text-xs text-gray-400">
+                Optional · {form.notes.length}/500
+              </p>
             </section>
           </div>
 

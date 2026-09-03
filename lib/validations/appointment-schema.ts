@@ -40,6 +40,11 @@ export const appointmentSchema = z.object({
       (value) => !Number.isNaN(Date.parse(value)),
       "Please select a valid date and time",
     ),
+  notes: z
+    .string()
+    .trim()
+    .max(500, "Additional info is too long")
+    .transform((value) => (value.length > 0 ? value : null)),
 });
 
 export type AppointmentFormValues = z.infer<typeof appointmentSchema>;

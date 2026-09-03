@@ -40,6 +40,7 @@ function parseAppointmentForm(formData: FormData) {
     email: String(formData.get("email") ?? ""),
     service_id: Number(formData.get("service_id")),
     appointment_date: String(formData.get("appointment_date") ?? ""),
+    notes: String(formData.get("notes") ?? ""),
   });
 }
 
@@ -132,6 +133,7 @@ export async function createAppointment(formData: FormData) {
     service_id: resolved.service.id,
     service: resolved.service.name,
     appointment_date: parsed.data.appointment_date,
+    notes: parsed.data.notes,
     status: "scheduled",
   });
 
@@ -203,6 +205,7 @@ export async function updateAppointment(formData: FormData) {
       service_id: resolved.service.id,
       service: resolved.service.name,
       appointment_date: parsed.data.appointment_date,
+      notes: parsed.data.notes,
       updated_at: new Date().toISOString(),
     })
     .eq("id", id);

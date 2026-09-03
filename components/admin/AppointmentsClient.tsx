@@ -126,6 +126,7 @@ export default function AppointmentsClient({
                 Date & Time
               </th>
               <th className="px-4 py-3 font-semibold text-gray-700">Service</th>
+              <th className="px-4 py-3 font-semibold text-gray-500">Notes</th>
               <th className="px-4 py-3 text-center font-semibold text-gray-700">
                 Status
               </th>
@@ -137,7 +138,7 @@ export default function AppointmentsClient({
           <tbody className="divide-y divide-gray-200 bg-white">
             {visibleAppointments.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
+                <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
                   {appointments.length === 0
                     ? "No appointments found."
                     : rangeEmptyMessage(range)}
@@ -167,6 +168,12 @@ export default function AppointmentsClient({
                     </td>
                     <td className="px-4 py-3 font-medium text-gray-700">
                       {appointment.service}
+                    </td>
+                    <td
+                      className="max-w-xs truncate px-4 py-3 text-gray-500"
+                      title={appointment.notes ?? undefined}
+                    >
+                      {appointment.notes || "—"}
                     </td>
                     <td className="px-4 py-3 text-center">
                       <span

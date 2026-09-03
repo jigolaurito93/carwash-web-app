@@ -74,6 +74,41 @@ function groupUpcoming(upcoming: Appointment[], now: Date) {
   return groups;
 }
 
+const upcomingCols =
+  "md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,1.3fr)_5.5rem]";
+
+function UpcomingAppointmentRow({ appointment }: { appointment: Appointment }) {
+  const date = new Date(appointment.appointment_date);
+  const name = customerLabel(appointment);
+
+  return (
+    <li
+      className={`grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-0.5 rounded-xl border border-gray-100 bg-gray-50 px-3 py-3 ${upcomingCols}`}
+    >
+      <div className="flex min-w-0 items-center gap-3">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-black font-lexend text-xs font-bold text-yellow-400">
+          {initials(name)}
+        </div>
+        <p className="truncate font-lexend text-sm font-semibold text-gray-900">
+          {name}
+        </p>
+      </div>
+      <p className="col-start-2 row-start-1 text-right font-lexend text-sm font-bold text-gray-900 md:col-start-4">
+        {format(date, "h:mm a")}
+      </p>
+      <p className="col-span-2 truncate pl-12 font-questrial text-sm text-gray-500 md:col-span-1 md:col-start-2 md:row-start-1 md:pl-0">
+        {appointment.service}
+      </p>
+      <p
+        className="col-span-2 truncate pl-12 font-questrial text-xs text-gray-400 md:col-span-1 md:col-start-3 md:row-start-1 md:pl-0 md:text-sm md:text-gray-500"
+        title={appointment.notes ?? undefined}
+      >
+        {appointment.notes || "—"}
+      </p>
+    </li>
+  );
+}
+
 export default function DashboardSchedule({
   appointments,
   services,
@@ -206,41 +241,32 @@ export default function DashboardSchedule({
               </button>
             </div>
           ) : (
-            <div className="max-h-[32rem] space-y-6 overflow-y-auto pr-1">
-              {groups.map((group) => (
-                <div key={group.label}>
-                  <p className="mb-2 font-questrial text-[11px] font-bold tracking-widest text-gray-400 uppercase">
-                    {group.label}
-                  </p>
-                  <ul className="space-y-2">
-                    {group.items.map((appointment) => {
-                      const date = new Date(appointment.appointment_date);
-                      const name = customerLabel(appointment);
-                      return (
-                        <li
+            <div className="max-h-[32rem] overflow-y-auto pr-1">
+              <div
+                className={`sticky top-0 z-10 mb-2 hidden gap-x-4 bg-white px-3 py-2 font-questrial text-[11px] font-bold tracking-widest text-gray-400 uppercase md:grid ${upcomingCols}`}
+              >
+                <p>Name</p>
+                <p>Service</p>
+                <p>Additional info</p>
+                <p className="text-right">Time</p>
+              </div>
+              <div className="space-y-6">
+                {groups.map((group) => (
+                  <div key={group.label}>
+                    <p className="mb-2 font-questrial text-[11px] font-bold tracking-widest text-gray-400 uppercase">
+                      {group.label}
+                    </p>
+                    <ul className="space-y-2">
+                      {group.items.map((appointment) => (
+                        <UpcomingAppointmentRow
                           key={appointment.id}
-                          className="flex items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 px-3 py-3"
-                        >
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-black font-lexend text-xs font-bold text-yellow-400">
-                            {initials(name)}
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <p className="truncate font-lexend text-sm font-semibold text-gray-900">
-                              {name}
-                            </p>
-                            <p className="truncate font-questrial text-sm text-gray-500">
-                              {appointment.service}
-                            </p>
-                          </div>
-                          <p className="shrink-0 font-lexend text-sm font-bold text-gray-900">
-                            {format(date, "h:mm a")}
-                          </p>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              ))}
+                          appointment={appointment}
+                        />
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
