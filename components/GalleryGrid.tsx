@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import type { GalleryImage } from "@/lib/app.types";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 const PREVIEW_COUNT = 6;
@@ -46,38 +47,13 @@ export default function GalleryGrid({ images }: Props) {
     <>
       <section className="px-4 pb-16 sm:px-8 lg:px-20 lg:pb-24">
         <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-          {visibleImages.map((image) => {
-            const label = image.caption || "Gallery photo";
-            const alt = image.alt_text || label;
-
-            return (
-              <button
-                key={image.id}
-                type="button"
-                onClick={() => openLightbox(image)}
-                className="group relative aspect-4/3 overflow-hidden rounded-lg border border-white/10 bg-black/40 shadow-lg transition-transform duration-300 hover:-translate-y-1 hover:border-yellow-400/80"
-              >
-                <div className="relative h-full w-full">
-                  <Image
-                    src={image.image_url}
-                    alt={alt}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="object-cover object-center transition-transform duration-500 group-hover:scale-110"
-                  />
-                </div>
-                <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/80 via-black/10 to-transparent opacity-90" />
-                <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col gap-1 p-4 text-left">
-                  <div className="font-lexend text-sm font-semibold tracking-tight sm:text-base">
-                    {label}
-                  </div>
-                  <div className="font-questrial text-xs text-white/80 sm:text-sm">
-                    Tap to view closer
-                  </div>
-                </div>
-              </button>
-            );
-          })}
+          {visibleImages.map((image) => (
+            <GalleryTile
+              key={image.id}
+              image={image}
+              onOpen={() => openLightbox(image)}
+            />
+          ))}
         </div>
         {hasMore ? (
           <div className="mt-10 flex justify-center">
@@ -170,5 +146,58 @@ export default function GalleryGrid({ images }: Props) {
         </div>
       )}
     </>
+  );
+}
+
+function GalleryTile({
+  image,
+  onOpen,
+}: {
+  image: GalleryImage;
+  onOpen: () => void;
+}) {
+  const [loaded, setLoaded] = useState(false);
+  const label = image.caption || "Gallery photo";
+  const alt = image.alt_text || label;
+
+  return (
+    <button
+      type="button"
+      onClick={onOpen}
+      className="group relative aspect-4/3 overflow-hidden rounded-lg border border-white/10 bg-black/40 shadow-lg transition-transform duration-300 hover:-translate-y-1 hover:border-yellow-400/80"
+    >
+      {!loaded ? (
+        <Skeleton
+          className="absolute inset-0 z-10 rounded-none bg-neutral-800"
+          aria-busy="true"
+          aria-label="Loading photo"
+        />
+      ) : null}
+      <Image
+        src={image.image_url}
+        alt={alt}
+        fill
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        onLoad={() => setLoaded(true)}
+        onError={() => setLoaded(true)}
+        className={cn(
+          "object-cover object-center transition-[opacity,transform] duration-500 group-hover:scale-110",
+          loaded ? "opacity-100" : "opacity-0",
+        )}
+      />
+      {loaded ? (
+        <>
+          <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/80 via-black/10 to-transparent opacity-90" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col gap-1 p-4 text-left">
+            <div className="font-lexend text-sm font-semibold tracking-tight sm:text-base">
+              {label}
+            </div>
+            <div className="font-questrial text-xs text-white/80 sm:text-sm">
+              Tap to view closer
+            </div>
+          </div>
+        </>
+      ) : null}
+    </button>
   );
 }
