@@ -88,8 +88,12 @@ export async function proxy(request: NextRequest) {
     }
 
     if (isInvitePath) {
-      const role = await getAdminProfileRole(supabase, user.id);
-      if (!isMasterRole(role)) {
+      try {
+        const role = await getAdminProfileRole(supabase, user.id);
+        if (!isMasterRole(role)) {
+          return redirectTo(request, "/admin/dashboard", supabaseResponse);
+        }
+      } catch {
         return redirectTo(request, "/admin/dashboard", supabaseResponse);
       }
     }

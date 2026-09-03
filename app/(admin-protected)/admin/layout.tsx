@@ -37,7 +37,14 @@ export default async function AdminLayout({
     data: { user },
   } = await supabase.auth.getUser();
 
-  const role = user ? await getAdminProfileRole(supabase, user.id) : null;
+  let role: Awaited<ReturnType<typeof getAdminProfileRole>> = null;
+  if (user) {
+    try {
+      role = await getAdminProfileRole(supabase, user.id);
+    } catch (error) {
+      console.error("Failed to load admin role for nav:", error);
+    }
+  }
 
   return (
     <div className="flex min-h-screen min-w-0 overflow-x-hidden bg-gray-50">

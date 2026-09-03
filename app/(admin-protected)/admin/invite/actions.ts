@@ -35,54 +35,59 @@ function requestOrigin(headerList: Headers) {
   return `${proto}://${host}`;
 }
 
-export async function inviteAdminUser(formData: FormData) {
-  const supabase = await getSupabase();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return { success: false, error: "You must be signed in." };
+function inviteErrorMessage(message: string) {
+  if (/already been registered|already registered/i.test(message)) {
+    return "That email already has an account.";
   }
-
-  const callerRole = await getAdminProfileRole(supabase, user.id);
-  if (!isMasterRole(callerRole)) {
-    return { success: false, error: "Only master admins can invite users." };
+  if (/redirect/i.test(message) && /not (allowed|whitelisted|permitted)/i.test(message)) {
+    return "Invite redirect URL is not allowed. In Supabase, add http://localhost:3000/auth/callback to Authentication → URL Configuration → Redirect URLs.";
   }
-
-  const parsed = inviteSchema.safeParse({
-    email: String(formData.get("email") ?? ""),
-    role: String(formData.get("role") ?? "admin"),
-  });
-
-  if (!parsed.success) {
-    return {
-      success: false,
-      error: parsed.error.issues[0]?.message ?? "Enter a valid email.",
-    };
+  if (/error sending (invite |confirmation )?email|unable to send email|rate limit/i.test(message)) {
+    return "Supabase could not send the invite email. On the free email provider, invites often only work for team-member addresses, or after you add custom SMTP.";
   }
+  return message;
+}
 
-  const { email, role } = parsed.data;
-
-  const headerList = await headers();
-  const origin = requestOrigin(headerList);
-  const redirectTo = `${origin}/auth/callback?next=${encodeURIComponent("/admin/set-password")}`;
-
+export async function inviteAdminUser(input: {
+  email: string;
+  role: "admin" | "master";
+}) {
   try {
+    const supabase = await getSupabase();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return { success: false, error: "You must be signed in." };
+    }
+
+    const callerRole = await getAdminProfileRole(supabase, user.id);
+    if (!isMasterRole(callerRole)) {
+      return { success: false, error: "Only master admins can invite users." };
+    }
+
+    const parsed = inviteSchema.safeParse(input);
+    if (!parsed.success) {
+      return {
+        success: false,
+        error: parsed.error.issues[0]?.message ?? "Enter a valid email.",
+      };
+    }
+
+    const { email, role } = parsed.data;
+    const headerList = await headers();
+    const origin = requestOrigin(headerList);
+    const redirectTo = `${origin}/auth/callback`;
+
     const admin = createServiceRoleClient();
     const { data, error } = await admin.auth.admin.inviteUserByEmail(email, {
       redirectTo,
     });
 
     if (error) {
-      const alreadyRegistered =
-        /already been registered|already registered/i.test(error.message);
-      return {
-        success: false,
-        error: alreadyRegistered
-          ? "That email already has an account."
-          : error.message,
-      };
+      console.error("inviteUserByEmail failed:", error.message);
+      return { success: false, error: inviteErrorMessage(error.message) };
     }
 
     if (!data.user) {
@@ -105,14 +110,15 @@ export async function inviteAdminUser(formData: FormData) {
     );
 
     if (metaError) {
+      console.error("Failed to set invited user metadata:", metaError.message);
       return { success: false, error: metaError.message };
     }
 
     return { success: true, email };
   } catch (err) {
-    return {
-      success: false,
-      error: err instanceof Error ? err.message : "Could not send invite.",
-    };
+    const message =
+      err instanceof Error ? err.message : "Could not send invite.";
+    console.error("inviteAdminUser failed:", message);
+    return { success: false, error: message };
   }
 }

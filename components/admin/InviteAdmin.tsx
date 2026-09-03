@@ -15,12 +15,8 @@ export default function InviteAdmin() {
     e.preventDefault();
     setSaving(true);
 
-    const formData = new FormData();
-    formData.set("email", email);
-    formData.set("role", role);
-
     try {
-      const result = await inviteAdminUser(formData);
+      const result = await inviteAdminUser({ email, role });
       if (result.success) {
         toast.success(
           role === "master"
@@ -32,8 +28,10 @@ export default function InviteAdmin() {
       } else {
         toast.error(result.error || "Failed to send invite.");
       }
-    } catch {
-      toast.error("Failed to send invite.");
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "Failed to send invite.",
+      );
     } finally {
       setSaving(false);
     }

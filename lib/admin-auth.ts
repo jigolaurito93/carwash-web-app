@@ -11,11 +11,20 @@ export async function getAdminProfileRole(
   supabase: SupabaseClient<Database>,
   userId: string,
 ): Promise<AdminRole | null> {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("admin_profiles")
     .select("role")
     .eq("id", userId)
     .maybeSingle();
+
+  if (error) {
+    console.error("Failed to read admin_profiles.role:", error.message);
+    throw new Error(
+      error.message.includes("role")
+        ? "Could not read admin role. Re-run supabase/admin-profiles.sql so the role column exists."
+        : error.message,
+    );
+  }
 
   if (data?.role === "master" || data?.role === "admin") {
     return data.role;
