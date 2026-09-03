@@ -41,6 +41,39 @@ export type Database = {
         };
         Relationships: [];
       };
+      admin_profiles: {
+        Row: {
+          created_at: string;
+          first_name: string;
+          id: string;
+          job_title: string | null;
+          last_name: string;
+          phone: string;
+          role: string;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          first_name: string;
+          id: string;
+          job_title?: string | null;
+          last_name: string;
+          phone: string;
+          role?: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          first_name?: string;
+          id?: string;
+          job_title?: string | null;
+          last_name?: string;
+          phone?: string;
+          role?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       all_services: {
         Row: {
           created_at: string;

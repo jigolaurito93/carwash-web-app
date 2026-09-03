@@ -97,6 +97,17 @@ export type GalleryImage = {
   created_at: string;
 };
 
+export type AdminProfile = {
+  id: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
+  job_title: string | null;
+  role: "admin" | "master";
+  created_at: string;
+  updated_at: string;
+};
+
 export type Faq = {
   id: number;
   question: string;

@@ -1,7 +1,10 @@
 "use client";
 
 import LogoutButton from "@/components/admin/LogoutButton";
-import { adminNavLinks } from "@/components/admin/admin-nav";
+import {
+  adminNavLinks,
+  masterOnlyNavLinks,
+} from "@/components/admin/admin-nav";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -12,11 +15,16 @@ import { RxHamburgerMenu } from "react-icons/rx";
 
 export default function AdminShell({
   children,
+  isMaster = false,
 }: {
   children: React.ReactNode;
+  isMaster?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const navLinks = isMaster
+    ? [...adminNavLinks, ...masterOnlyNavLinks]
+    : [...adminNavLinks];
 
   return (
     <>
@@ -65,7 +73,7 @@ export default function AdminShell({
             <HiOutlineGlobeAlt className="size-6" />
             View website
           </Link>
-          {adminNavLinks.map((link) => (
+          {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -96,7 +104,7 @@ export default function AdminShell({
           View website
         </Link>
         <nav className="mt-8 space-y-4 font-questrial">
-          {adminNavLinks.map((link) => (
+          {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}

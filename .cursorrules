@@ -27,11 +27,11 @@ These rules apply to every change in this repo. Follow existing patterns. Prefer
 **Auth gate:** `proxy.ts` (Next.js 16). Do not add `middleware.ts`.
 
 **Env names only (never hardcode values):**
-`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`, `RESEND_API_KEY`, `OWNER_EMAIL`.
+`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`, `RESEND_API_KEY`, `OWNER_EMAIL`, `SUPABASE_SERVICE_ROLE_KEY`.
 
-**Live data (use these):** `categories`, `services`, `shop_info`, `shop_hours`, `site_announcements`, `gallery_images`, `faqs`.
+**Live data (use these):** `categories`, `services`, `shop_info`, `shop_hours`, `site_announcements`, `gallery_images`, `faqs`, `admin_profiles`.
 
-**Live admin CMS:** `/admin/shop-info`, `/admin/categories`, `/admin/services`, `/admin/gallery`, `/admin/faq`.
+**Live admin CMS:** `/admin/shop-info`, `/admin/categories`, `/admin/services`, `/admin/gallery`, `/admin/faq`, `/admin/invite`.
 
 **Public routes:** `/`, `/about`, `/services`, `/gallery`, `/contact`. Login is `/admin/login` (outside the protected group).
 

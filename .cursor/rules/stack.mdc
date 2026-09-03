@@ -11,10 +11,10 @@ alwaysApply: true
 - Auth gate is `proxy.ts` (not `middleware.ts`)
 - Alias `@/*` → repo root
 
-**Live tables:** `categories`, `services`, `shop_info`, `shop_hours`, `site_announcements`, `gallery_images`, `faqs`
+**Live tables:** `categories`, `services`, `shop_info`, `shop_hours`, `site_announcements`, `gallery_images`, `faqs`, `admin_profiles`
 
-**Live admin:** `/admin/shop-info`, `/admin/categories`, `/admin/services`, `/admin/gallery`, `/admin/faq`
+**Live admin:** `/admin/shop-info`, `/admin/categories`, `/admin/services`, `/admin/gallery`, `/admin/faq`, `/admin/invite`
 
 **Public:** `/`, `/about`, `/services`, `/gallery`, `/contact`. Login: `/admin/login`
 
-Env names only: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`, `RESEND_API_KEY`, `OWNER_EMAIL`
+Env names only: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`, `RESEND_API_KEY`, `OWNER_EMAIL`, `SUPABASE_SERVICE_ROLE_KEY`

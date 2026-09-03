@@ -1,20 +1,12 @@
-import AdminShell from "@/components/admin/AdminShell";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import InviteAdmin from "@/components/admin/InviteAdmin";
 import { getAdminProfileRole, isMasterRole } from "@/lib/admin-auth";
-import type { Database } from "@/lib/database.types";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
-import { ReactNode } from "react";
-import { Toaster } from "sonner";
+import { redirect } from "next/navigation";
+import type { Database } from "@/lib/database.types";
 
-export const metadata = {
-  title: "Onyx | Admin Dashboard",
-};
-
-export default async function AdminLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default async function InviteAdminPage() {
   const cookieStore = await cookies();
   const supabase = createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -37,12 +29,19 @@ export default async function AdminLayout({
     data: { user },
   } = await supabase.auth.getUser();
 
-  const role = user ? await getAdminProfileRole(supabase, user.id) : null;
+  if (!user) {
+    redirect("/admin/login");
+  }
+
+  const role = await getAdminProfileRole(supabase, user.id);
+  if (!isMasterRole(role)) {
+    redirect("/admin/dashboard");
+  }
 
   return (
-    <div className="flex min-h-screen min-w-0 overflow-x-hidden bg-gray-50">
-      <Toaster position="top-center" />
-      <AdminShell isMaster={isMasterRole(role)}>{children}</AdminShell>
+    <div>
+      <AdminPageHeader title="Invite Admin" />
+      <InviteAdmin />
     </div>
   );
 }

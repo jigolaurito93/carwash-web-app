@@ -11,3 +11,7 @@ export const adminNavLinks = [
   { href: "/admin/welcome", label: "Welcome" },
   { href: "/admin/legal", label: "Legal Pages" },
 ] as const;
+
+export const masterOnlyNavLinks = [
+  { href: "/admin/invite", label: "Invite Admin" },
+] as const;
