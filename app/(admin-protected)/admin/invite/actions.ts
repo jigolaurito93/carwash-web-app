@@ -39,10 +39,17 @@ function inviteErrorMessage(message: string) {
   if (/already been registered|already registered/i.test(message)) {
     return "That email already has an account.";
   }
-  if (/redirect/i.test(message) && /not (allowed|whitelisted|permitted)/i.test(message)) {
+  if (
+    /redirect/i.test(message) &&
+    /not (allowed|whitelisted|permitted)/i.test(message)
+  ) {
     return "Invite redirect URL is not allowed. In Supabase, add http://localhost:3000/auth/callback to Authentication → URL Configuration → Redirect URLs.";
   }
-  if (/error sending (invite |confirmation )?email|unable to send email|rate limit/i.test(message)) {
+  if (
+    /error sending (invite |confirmation )?email|unable to send email|rate limit/i.test(
+      message,
+    )
+  ) {
     return "Supabase could not send the invite email. On the free email provider, invites often only work for team-member addresses, or after you add custom SMTP.";
   }
   return message;

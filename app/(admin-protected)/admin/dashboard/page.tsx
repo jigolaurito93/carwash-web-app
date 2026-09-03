@@ -1,19 +1,56 @@
-"use client";
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
+import type { Database } from "@/lib/database.types";
+import DashboardClock from "@/components/admin/DashboardClock";
 
-// import AppointmentFormModal from "@/components/admin/AppointmentFormModal";
-// import { useState } from "react";
+export default async function AdminDashboardPage() {
+  const cookieStore = await cookies();
+  const supabase = createServerClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            cookieStore.set(name, value, options),
+          );
+        },
+      },
+    },
+  );
 
-export default function AdminDashboardPage() {
-  // const [showAppointmentModal, setShowAppointmentModal] = useState(false);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data: profile } = user
+    ? await supabase
+        .from("admin_profiles")
+        .select("first_name, last_name")
+        .eq("id", user.id)
+        .maybeSingle()
+    : { data: null };
+
+  const displayName = [profile?.first_name, profile?.last_name]
+    .map((part) => part?.trim())
+    .filter((part): part is string => Boolean(part))
+    .join(" ");
 
   return (
     <div className="">
       {/* Header */}
-      <header className="flex flex-col gap-2">
-        <h1 className="mb-1 font-lexend text-4xl font-bold">Dashboard</h1>
-        <p className="font-questrial text-2xl font-bold text-gray-500">
-          Welcome back, John Doe! Here&apos;s what&apos;s happening today.
-        </p>
+      <header className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div className="flex flex-col gap-2">
+          <h1 className="mb-1 font-lexend text-4xl font-bold">Dashboard</h1>
+          <p className="font-questrial text-2xl font-bold text-gray-500">
+            Welcome back{displayName ? `, ${displayName}` : ""}! Here&apos;s
+            what&apos;s happening today.
+          </p>
+        </div>
+        <DashboardClock />
       </header>
 
       {/* Top cards */}

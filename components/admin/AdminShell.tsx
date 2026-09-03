@@ -148,7 +148,9 @@ function AdminNavList({
   return (
     <div className={cn(isMobile ? "space-y-8" : "space-y-6")}>
       {sections.map((section) => {
-        const childActive = section.links.some((link) => link.href === pathname);
+        const childActive = section.links.some(
+          (link) => link.href === pathname,
+        );
         const isCollapsible = isMobile && section.collapsible;
         const expanded = !isCollapsible || websiteOpen;
 
@@ -183,7 +185,9 @@ function AdminNavList({
               <div
                 id={`${section.id}-links`}
                 className={cn(
-                  isMobile ? "mt-3 space-y-3 text-xl" : "mt-3 space-y-2 text-sm",
+                  isMobile
+                    ? "mt-3 space-y-3 text-xl"
+                    : "mt-3 space-y-2 text-sm",
                   isCollapsible && "ml-3 border-l border-white/15 pl-4",
                 )}
               >
