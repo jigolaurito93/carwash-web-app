@@ -104,6 +104,15 @@ export type Faq = {
   created_at: string;
 };
 
+export type SiteAnnouncement = {
+  id: number;
+  message: string;
+  link_url: string | null;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+};
+
 export type WhyChooseUsItem = {
   title: string;
   description: string;
