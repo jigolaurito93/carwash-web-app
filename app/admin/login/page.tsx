@@ -70,11 +70,11 @@ export default function AdminLoginPage() {
         Back to website
       </Link>
 
-      <div className="relative z-10 flex w-full flex-col lg:flex-row">
-        <aside className="hidden flex-1 flex-col justify-between px-14 py-12 lg:flex">
+      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col items-center lg:min-h-screen lg:flex-row lg:items-stretch">
+        <aside className="hidden w-full max-w-md flex-col justify-between px-10 py-12 lg:flex xl:px-12">
           <div className="h-8" aria-hidden />
 
-          <div className="max-w-xl">
+          <div>
             <div className="mb-8 flex items-center gap-4">
               <Image
                 alt="Onyx Premium Carwash logo"
@@ -102,27 +102,27 @@ export default function AdminLoginPage() {
             </p>
           </div>
 
-          <p className="font-questrial text-xs text-white/30">
+          <p className="font-questrial text-base text-white/30">
             &ldquo;The Gold Standard of Clean&rdquo;
           </p>
         </aside>
 
-        <main className="flex min-h-screen flex-1 items-center justify-center px-6 py-20 sm:px-10 lg:min-h-0 lg:bg-black/50 lg:px-14 lg:py-12 lg:backdrop-blur-md">
-          <div className="w-full max-w-md">
-            <div className="mb-6 flex flex-col items-center gap-2 lg:hidden">
+        <main className="flex min-h-screen w-full max-w-md flex-1 items-center justify-center px-6 py-20 sm:px-10 lg:min-h-0 lg:px-10 lg:py-12 xl:px-12">
+          <div className="w-full">
+            <div className="mb-6 flex flex-col items-center gap-2.5 lg:hidden">
               <Image
                 alt="Onyx Premium Carwash logo"
                 src="/images/nav-logo-icon.png"
-                width={48}
-                height={48}
-                className="rounded-full bg-black/60 p-1 ring-1 ring-yellow-400/40"
+                width={72}
+                height={72}
+                className="rounded-full bg-black/60 p-1.5 ring-1 ring-yellow-400/40"
                 priority
               />
               <div className="text-center">
-                <div className="font-bungee text-2xl leading-none tracking-wide text-white">
+                <div className="font-bungee text-5xl leading-none tracking-wide text-white">
                   ONYX
                 </div>
-                <div className="mt-0.5 font-lexend text-[9px] tracking-[0.2em] text-yellow-400 uppercase italic">
+                <div className="mt-1 font-lexend text-xs tracking-[0.2em] text-yellow-400 uppercase italic">
                   Premium Carwash
                 </div>
               </div>
@@ -170,7 +170,7 @@ export default function AdminLoginPage() {
                     disabled={loading}
                     placeholder="you@onyxwash.com"
                     aria-invalid={Boolean(error)}
-                    className="w-full rounded-lg border border-white/15 bg-white/5 py-3 pr-4 pl-11 font-questrial text-sm text-white placeholder:text-white/25 outline-none transition-[border-color,box-shadow,background-color] focus:border-yellow-400/60 focus:bg-white/8 focus:ring-2 focus:ring-yellow-400/20 disabled:opacity-60"
+                    className="w-full rounded-lg border border-white/15 bg-white/5 py-3 pr-4 pl-11 font-questrial text-sm text-white transition-[border-color,box-shadow,background-color] outline-none placeholder:text-white/25 focus:border-yellow-400/60 focus:bg-white/8 focus:ring-2 focus:ring-yellow-400/20 disabled:opacity-60"
                   />
                 </div>
               </div>
@@ -195,7 +195,7 @@ export default function AdminLoginPage() {
                     disabled={loading}
                     placeholder="••••••••"
                     aria-invalid={Boolean(error)}
-                    className="w-full rounded-lg border border-white/15 bg-white/5 py-3 pr-12 pl-11 font-questrial text-sm text-white placeholder:text-white/25 outline-none transition-[border-color,box-shadow,background-color] focus:border-yellow-400/60 focus:bg-white/8 focus:ring-2 focus:ring-yellow-400/20 disabled:opacity-60"
+                    className="w-full rounded-lg border border-white/15 bg-white/5 py-3 pr-12 pl-11 font-questrial text-sm text-white transition-[border-color,box-shadow,background-color] outline-none placeholder:text-white/25 focus:border-yellow-400/60 focus:bg-white/8 focus:ring-2 focus:ring-yellow-400/20 disabled:opacity-60"
                   />
                   <button
                     type="button"
