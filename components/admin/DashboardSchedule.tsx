@@ -14,7 +14,13 @@ import {
 } from "react-icons/fi";
 import type { Appointment, AppointmentServiceOption } from "@/lib/app.types";
 import type { ShopHoursDay } from "@/lib/appointment-hours";
+import {
+  appointmentInRange,
+  rangeEmptyMessage,
+  type AppointmentRange,
+} from "@/lib/appointment-range";
 import AppointmentFormModal from "@/components/admin/AppointmentFormModal";
+import AppointmentRangeFilter from "@/components/admin/AppointmentRangeFilter";
 
 function useIsClient() {
   return useSyncExternalStore(
@@ -76,6 +82,7 @@ export default function DashboardSchedule({
   const isClient = useIsClient();
   const now = isClient ? new Date() : null;
   const [modalOpen, setModalOpen] = useState(false);
+  const [range, setRange] = useState<AppointmentRange>("week");
 
   const todayCount = now
     ? appointments.filter((appointment) =>
@@ -84,12 +91,14 @@ export default function DashboardSchedule({
     : 0;
 
   const upcoming = now
-    ? appointments
-        .filter(
-          (appointment) =>
-            new Date(appointment.appointment_date).getTime() >= now.getTime(),
-        )
-        .slice(0, 8)
+    ? appointments.filter((appointment) =>
+        appointmentInRange(
+          new Date(appointment.appointment_date),
+          now,
+          range,
+          true,
+        ),
+      )
     : [];
 
   const groups = now ? groupUpcoming(upcoming, now) : [];
@@ -149,7 +158,7 @@ export default function DashboardSchedule({
 
       <section className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(18rem,1fr)]">
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="mb-5 flex items-center justify-between gap-3">
+          <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <h2 className="font-lexend text-lg font-semibold text-gray-900">
                 Upcoming appointments
@@ -172,13 +181,17 @@ export default function DashboardSchedule({
             </Link>
           </div>
 
+          <div className="mb-5">
+            <AppointmentRangeFilter value={range} onChange={setRange} />
+          </div>
+
           {upcoming.length === 0 ? (
             <div className="flex flex-col items-center rounded-xl border border-dashed border-gray-200 bg-gray-50 px-6 py-12 text-center">
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-yellow-400">
                 <FiCalendar className="h-5 w-5 text-black" />
               </div>
               <p className="font-lexend font-semibold text-gray-900">
-                No upcoming appointments
+                {rangeEmptyMessage(range)}
               </p>
               <p className="mt-1 max-w-xs font-questrial text-sm text-gray-500">
                 Create a booking from a phone call and it will show up here.
@@ -193,7 +206,7 @@ export default function DashboardSchedule({
               </button>
             </div>
           ) : (
-            <div className="space-y-6">
+            <div className="max-h-[32rem] space-y-6 overflow-y-auto pr-1">
               {groups.map((group) => (
                 <div key={group.label}>
                   <p className="mb-2 font-questrial text-[11px] font-bold tracking-widest text-gray-400 uppercase">

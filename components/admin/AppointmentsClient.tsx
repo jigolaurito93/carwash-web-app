@@ -1,14 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { FiPlusCircle, FiX } from "react-icons/fi";
 import type { Appointment, AppointmentServiceOption } from "@/lib/app.types";
 import type { ShopHoursDay } from "@/lib/appointment-hours";
+import {
+  appointmentInRange,
+  rangeEmptyMessage,
+  type AppointmentRange,
+} from "@/lib/appointment-range";
 import AppointmentFormModal from "@/components/admin/AppointmentFormModal";
+import AppointmentRangeFilter from "@/components/admin/AppointmentRangeFilter";
 import { deleteAppointment } from "@/app/(admin-protected)/admin/appointment/actions";
+
+function useIsClient() {
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+}
 
 type Props = {
   appointments: Appointment[];
@@ -37,6 +51,20 @@ export default function AppointmentsClient({
   const [selected, setSelected] = useState<Appointment | null>(null);
   const [deleting, setDeleting] = useState<Appointment | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [range, setRange] = useState<AppointmentRange>("all");
+  const isClient = useIsClient();
+  const now = isClient ? new Date() : null;
+  const visibleAppointments =
+    !now || range === "all"
+      ? appointments
+      : appointments.filter((appointment) =>
+          appointmentInRange(
+            new Date(appointment.appointment_date),
+            now,
+            range,
+            false,
+          ),
+        );
 
   const openCreate = () => {
     setSelected(null);
@@ -74,11 +102,12 @@ export default function AppointmentsClient({
 
   return (
     <div className="font-questrial">
-      <div className="mb-6 flex items-center justify-end">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <AppointmentRangeFilter value={range} onChange={setRange} />
         <button
           type="button"
           onClick={openCreate}
-          className="btnSaveYlw inline-flex items-center gap-2"
+          className="btnSaveYlw inline-flex items-center gap-2 self-end sm:self-auto"
         >
           <FiPlusCircle className="h-4 w-4" />
           Add Appointment
@@ -106,14 +135,16 @@ export default function AppointmentsClient({
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
-            {appointments.length === 0 ? (
+            {visibleAppointments.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
-                  No appointments found.
+                  {appointments.length === 0
+                    ? "No appointments found."
+                    : rangeEmptyMessage(range)}
                 </td>
               </tr>
             ) : (
-              appointments.map((appointment) => {
+              visibleAppointments.map((appointment) => {
                 const date = new Date(appointment.appointment_date);
                 return (
                   <tr
