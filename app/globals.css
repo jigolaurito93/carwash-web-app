@@ -140,6 +140,50 @@ body {
   @apply rounded;
 }
 
+/* ------------ Legal document editor --------------- */
+/* Applied to the ProseMirror surface in RichTextEditor. Unlayered so these win
+   over Tailwind's preflight reset, which otherwise flattens headings and lists
+   while the admin is typing. */
+.legal-editor {
+  @apply min-h-96 px-5 py-4 font-questrial text-[15px] leading-relaxed break-words whitespace-pre-wrap text-gray-800 outline-none;
+}
+
+.legal-editor h2 {
+  @apply mt-8 mb-3 font-lexend text-xl font-bold text-gray-900;
+}
+
+.legal-editor h3 {
+  @apply mt-6 mb-2 font-lexend text-base font-bold text-gray-900;
+}
+
+.legal-editor p {
+  @apply my-3;
+}
+
+.legal-editor ul {
+  @apply my-3 list-disc space-y-1 pl-6;
+}
+
+.legal-editor ol {
+  @apply my-3 list-decimal space-y-1 pl-6;
+}
+
+.legal-editor a {
+  @apply text-yellow-600 underline;
+}
+
+.legal-editor strong {
+  @apply font-bold;
+}
+
+.legal-editor em {
+  @apply italic;
+}
+
+.legal-editor > :first-child {
+  @apply mt-0;
+}
+
 /* Delete */
 /* Edit */
 

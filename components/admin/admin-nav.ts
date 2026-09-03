@@ -9,4 +9,5 @@ export const adminNavLinks = [
   { href: "/admin/faq", label: "FAQ" },
   { href: "/admin/about", label: "About" },
   { href: "/admin/welcome", label: "Welcome" },
+  { href: "/admin/legal", label: "Legal Pages" },
 ] as const;

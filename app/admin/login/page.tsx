@@ -57,7 +57,7 @@ export default function AdminLoginPage() {
           priority
           className="object-cover object-center opacity-40"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-black via-black/85 to-black/70" />
+        <div className="absolute inset-0 bg-linear-to-br from-black via-black/85 to-black/70" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(250,204,21,0.12),transparent_50%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(250,204,21,0.06),transparent_45%)]" />
       </div>

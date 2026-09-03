@@ -1,3 +1,5 @@
+import type { Json as DbJson } from "@/lib/database.types";
+
 export type Json =
   | string
   | number
@@ -140,4 +142,19 @@ export type WelcomeContent = {
   image_path: string;
   image_alt: string;
   updated_at: string;
+};
+
+export type LegalSlug = "privacy" | "terms";
+
+export type LegalDocument = {
+  id: number;
+  slug: LegalSlug;
+  title: string;
+  body: DbJson;
+  version: number;
+  change_summary: string;
+  edited_by: string | null;
+  edited_by_email: string;
+  is_current: boolean;
+  created_at: string;
 };

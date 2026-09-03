@@ -1,0 +1,51 @@
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
+import type { Database } from "@/lib/database.types";
+import type { LegalDocument } from "@/lib/app.types";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import LegalAdmin from "@/components/admin/LegalAdmin";
+
+export default async function AdminLegalPage() {
+  const cookieStore = await cookies();
+  const supabase = createServerClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            cookieStore.set(name, value, options),
+          );
+        },
+      },
+    },
+  );
+
+  const { data, error } = await supabase
+    .from("legal_documents")
+    .select("*")
+    .order("slug")
+    .order("version", { ascending: false });
+
+  if (error) {
+    return (
+      <div className="p-8 font-questrial text-red-600">
+        Failed to load the legal documents. Make sure the{" "}
+        <code>legal_documents</code> table exists by running{" "}
+        <code>supabase/legal.sql</code>, then run <code>pnpm gen:types</code>.
+      </div>
+    );
+  }
+
+  const documents = (data ?? []) as LegalDocument[];
+
+  return (
+    <div>
+      <AdminPageHeader title="Legal Pages" />
+      <LegalAdmin documents={documents} />
+    </div>
+  );
+}

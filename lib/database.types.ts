@@ -271,6 +271,45 @@ export type Database = {
         };
         Relationships: [];
       };
+      legal_documents: {
+        Row: {
+          body: Json;
+          change_summary: string;
+          created_at: string;
+          edited_by: string | null;
+          edited_by_email: string;
+          id: number;
+          is_current: boolean;
+          slug: string;
+          title: string;
+          version: number;
+        };
+        Insert: {
+          body: Json;
+          change_summary: string;
+          created_at?: string;
+          edited_by?: string | null;
+          edited_by_email: string;
+          id?: never;
+          is_current?: boolean;
+          slug: string;
+          title: string;
+          version: number;
+        };
+        Update: {
+          body?: Json;
+          change_summary?: string;
+          created_at?: string;
+          edited_by?: string | null;
+          edited_by_email?: string;
+          id?: never;
+          is_current?: boolean;
+          slug?: string;
+          title?: string;
+          version?: number;
+        };
+        Relationships: [];
+      };
       other_services: {
         Row: {
           category: string | null;
