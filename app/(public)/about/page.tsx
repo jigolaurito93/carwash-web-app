@@ -99,16 +99,15 @@ export default async function About() {
           priority
           className="hidden object-cover object-top lg:block"
         />
-      </div>
-
-      <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-        <div className="flex w-full flex-col items-center gap-4 text-center">
-          <div className="font-lexend text-6xl font-extrabold tracking-tighter text-yellow-400 drop-shadow-2xl sm:text-7xl lg:text-9xl">
-            About Onyx
-          </div>
-          <div className="mt-2 max-w-125 px-6 font-lexend text-xs font-bold text-white italic sm:text-lg lg:max-w-[700] lg:text-xl">
-            Premium hand car washing focused on quality, protection, and
-            attention to detail.
+        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+          <div className="flex w-full flex-col items-center gap-4 text-center">
+            <div className="font-lexend text-6xl font-extrabold tracking-tighter text-yellow-400 drop-shadow-2xl sm:text-7xl lg:text-9xl">
+              About Onyx
+            </div>
+            <div className="mt-2 max-w-125 px-6 font-lexend text-xs font-bold text-white italic sm:text-lg lg:max-w-[700] lg:text-xl">
+              Premium hand car washing focused on quality, protection, and
+              attention to detail.
+            </div>
           </div>
         </div>
       </div>

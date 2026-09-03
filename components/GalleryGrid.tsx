@@ -3,7 +3,10 @@
 import Image from "next/image";
 import { useState } from "react";
 import type { GalleryImage } from "@/lib/app.types";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+
+const PREVIEW_COUNT = 6;
 
 type Props = {
   images: GalleryImage[];
@@ -14,6 +17,7 @@ type Orientation = "landscape" | "portrait";
 export default function GalleryGrid({ images }: Props) {
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
   const [orientation, setOrientation] = useState<Orientation | null>(null);
+  const [expanded, setExpanded] = useState(false);
 
   const closeLightbox = () => {
     setSelectedImage(null);
@@ -35,11 +39,14 @@ export default function GalleryGrid({ images }: Props) {
     );
   }
 
+  const visibleImages = expanded ? images : images.slice(0, PREVIEW_COUNT);
+  const hasMore = images.length > PREVIEW_COUNT;
+
   return (
     <>
       <section className="px-4 pb-16 sm:px-8 lg:px-20 lg:pb-24">
         <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-          {images.map((image) => {
+          {visibleImages.map((image) => {
             const label = image.caption || "Gallery photo";
             const alt = image.alt_text || label;
 
@@ -72,6 +79,20 @@ export default function GalleryGrid({ images }: Props) {
             );
           })}
         </div>
+        {hasMore ? (
+          <div className="mt-10 flex justify-center">
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              aria-expanded={expanded}
+              onClick={() => setExpanded((prev) => !prev)}
+              className="border-yellow-400 bg-transparent font-lexend text-yellow-400 hover:bg-yellow-400 hover:text-black"
+            >
+              {expanded ? "Show less" : "Show more"}
+            </Button>
+          </div>
+        ) : null}
       </section>
 
       {selectedImage && (

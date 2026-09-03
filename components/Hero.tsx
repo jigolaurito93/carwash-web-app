@@ -12,7 +12,7 @@ const Hero = () => {
         className="object-cover object-top"
       />
       {/* Optional Overlay to make text readable */}
-      <div className="absolute flex h-full w-full flex-col items-center justify-center gap-2 bg-black/40 px-12">
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/40 px-12">
         <div className="rounded-sm border px-12 font-bungee text-6xl font-bold text-white shadow-lg transition-colors duration-300 ease-in-out select-none hover:bg-white/40 hover:text-black sm:text-9xl">
           ONYX
         </div>

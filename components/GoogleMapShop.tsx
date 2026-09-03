@@ -1,6 +1,7 @@
 "use client";
 import { formatShopAddress } from "@/lib/format-shop-address";
 import type { ShopMapAddress } from "@/lib/supabase.types";
+import { Skeleton } from "@/components/ui/skeleton";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 
 type ShopMapProps = {
@@ -29,19 +30,33 @@ const ShopMap = ({ shopAddress }: ShopMapProps) => {
   )}`;
 
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-  const { isLoaded } = useJsApiLoader({
+  const { isLoaded, loadError } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: apiKey as string,
   });
 
-  if (!isLoaded) return <div>Loading map...</div>;
-
   return (
     <div className="mx-auto flex h-112.5 w-full max-w-187.5 flex-col space-y-3 sm:h-137.5">
-      <div className="overflow-hidden">
-        <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={15}>
-          <Marker position={center} />
-        </GoogleMap>
+      <div className="h-[500px] w-full overflow-hidden">
+        {loadError ? (
+          <div className="flex h-full items-center justify-center bg-neutral-900 font-questrial text-gray-400">
+            Map unavailable
+          </div>
+        ) : !isLoaded ? (
+          <Skeleton
+            className="h-[500px] w-full rounded-none bg-neutral-800"
+            aria-busy="true"
+            aria-label="Loading map"
+          />
+        ) : (
+          <GoogleMap
+            mapContainerStyle={containerStyle}
+            center={center}
+            zoom={15}
+          >
+            <Marker position={center} />
+          </GoogleMap>
+        )}
       </div>
 
       <div className="font-questrial text-sm text-gray-100">
