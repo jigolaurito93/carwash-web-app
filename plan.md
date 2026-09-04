@@ -25,21 +25,19 @@ Phases 1–2 from the August plan are largely done. The public site and admin CM
 | Content CMS          | Welcome, about, FAQ, announcements, legal                                          |
 | Appointments (admin) | CRUD at `/admin/appointment`; dashboard schedule                                   |
 | Auth                 | Login, invite (master), set-password, onboarding; gate in `proxy.ts`               |
-| Contact form         | Zod + Resend (`POST /api/contact`)                                                 |
+| Contact form         | Zod + Resend (`POST /api/contact`); privacy consent; failed-send error             |
 | README               | Stack, env names, routes, `pnpm gen:types`                                         |
 | Home hero CTA        | “Call to schedule an Appointment” — dials `shop_info.phone` and goes to `/contact` |
 
 ### Still open
 
-| Area            | Gap                                                                               |
-| --------------- | --------------------------------------------------------------------------------- |
-| Public booking  | **Deferred.** Customers call or use the contact form; no public booking UI        |
-| Contact consent | No privacy checkbox on the contact form                                           |
-| Contact errors  | Failed send has no visible error state                                            |
-| Deploy package  | No `.env.example`, no single schema SQL, README has no Vercel / first-admin steps |
-| SEO             | Root metadata only; no `sitemap.xml` or `robots.txt`                              |
-| Analytics       | None                                                                              |
-| Branding        | Name, logo, colors still in code / CSS, not a tenant config                       |
+| Area           | Gap                                                                               |
+| -------------- | --------------------------------------------------------------------------------- |
+| Public booking | **Deferred.** Customers call or use the contact form; no public booking UI        |
+| Deploy package | No `.env.example`, no single schema SQL, README has no Vercel / first-admin steps |
+| SEO            | Root metadata only; no `sitemap.xml` or `robots.txt`                              |
+| Analytics      | None                                                                              |
+| Branding       | Name, logo, colors still in code / CSS, not a tenant config                       |
 
 ---
 
@@ -81,8 +79,8 @@ When resumed:
 
 **Acceptance criteria:**
 
-- [ ] Form cannot submit without consent
-- [ ] Failed send is visible to the user
+- [x] Form cannot submit without consent
+- [x] Failed send is visible to the user
 
 ### A.3 Deployment package
 

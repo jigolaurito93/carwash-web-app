@@ -16,7 +16,7 @@ export async function POST(req: Request) {
   const { name, email, phone, message } = parsed.data;
 
   try {
-    await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: "onboarding@resend.dev",
       to: process.env.OWNER_EMAIL!,
       subject: `New Inquiry from ${name}`,
@@ -29,6 +29,14 @@ export async function POST(req: Request) {
         <p>${message}</p>
       `,
     });
+
+    if (error) {
+      console.error("Error sending email:", error);
+      return NextResponse.json(
+        { error: "Failed to send inquiry" },
+        { status: 500 },
+      );
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
