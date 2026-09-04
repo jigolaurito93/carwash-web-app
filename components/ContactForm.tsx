@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -10,6 +11,7 @@ import {
 
 const ContactForm = () => {
   const [success, setSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const {
     register,
@@ -18,18 +20,42 @@ const ContactForm = () => {
     reset,
   } = useForm<ContactFormValues>({
     resolver: zodResolver(contactSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      message: "",
+      consent: false,
+    },
   });
 
   async function onSubmit(data: ContactFormValues) {
-    const res = await fetch("/api/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
+    setSuccess(false);
+    setSubmitError(null);
 
-    if (res.ok) {
-      setSuccess(true);
-      reset();
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (res.ok) {
+        setSuccess(true);
+        reset();
+        return;
+      }
+
+      const payload = (await res.json().catch(() => null)) as {
+        error?: string;
+      } | null;
+      setSubmitError(
+        payload?.error ?? "Something went wrong. Please try again.",
+      );
+    } catch {
+      setSubmitError(
+        "Could not send your message. Check your connection and try again.",
+      );
     }
   }
 
@@ -37,6 +63,7 @@ const ContactForm = () => {
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="mx-auto w-full max-w-90 space-y-6 md:w-100 lg:w-125 lg:max-w-none"
+      noValidate
     >
       <div>
         <input
@@ -80,6 +107,29 @@ const ContactForm = () => {
         )}
       </div>
 
+      <div>
+        <label className="flex cursor-pointer items-start gap-3 text-sm">
+          <input
+            type="checkbox"
+            {...register("consent")}
+            className="mt-1 h-4 w-4 shrink-0 accent-yellow-400"
+          />
+          <span>
+            I agree to the processing of my information as described in the{" "}
+            <Link
+              href="/privacy"
+              className="font-medium underline underline-offset-2 hover:text-yellow-600"
+            >
+              Privacy Policy
+            </Link>
+            .
+          </span>
+        </label>
+        {errors.consent && (
+          <p className="mt-1 text-sm text-red-500">{errors.consent.message}</p>
+        )}
+      </div>
+
       <button
         type="submit"
         disabled={isSubmitting}
@@ -87,6 +137,15 @@ const ContactForm = () => {
       >
         {isSubmitting ? "Sending..." : "Send Message"}
       </button>
+
+      {submitError && (
+        <p
+          role="alert"
+          className="rounded-sm border border-red-500/40 bg-red-50 px-4 py-3 text-center text-sm text-red-600"
+        >
+          {submitError}
+        </p>
+      )}
 
       {success && (
         <p className="text-center text-green-600">
