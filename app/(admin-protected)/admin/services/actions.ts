@@ -51,7 +51,7 @@ function toServiceRow(parsed: ServiceFormValues) {
   };
 }
 
-async function assertSortOrderAvailable(
+async function makeRoomForServiceSortOrder(
   supabase: Awaited<ReturnType<typeof getSupabase>>,
   categoryId: number,
   sortOrder: number,
@@ -59,21 +59,70 @@ async function assertSortOrderAvailable(
 ) {
   let query = supabase
     .from("services")
-    .select("id")
+    .select("id, sort_order")
     .eq("category_id", categoryId)
-    .eq("sort_order", sortOrder);
+    .gte("sort_order", sortOrder)
+    .order("sort_order", { ascending: false });
 
   if (excludeId) {
     query = query.neq("id", excludeId);
   }
 
-  const { data, error } = await query.maybeSingle();
+  const { data, error } = await query;
   if (error) {
     return error.message;
   }
-  if (data) {
-    return `Sort order ${sortOrder} is already taken for this category.`;
+  if (!data?.some((row) => row.sort_order === sortOrder)) {
+    return null;
   }
+
+  for (const row of data) {
+    const { error: updateError } = await supabase
+      .from("services")
+      .update({ sort_order: row.sort_order + 10 })
+      .eq("id", row.id);
+    if (updateError) {
+      return updateError.message;
+    }
+  }
+
+  return null;
+}
+
+async function makeRoomForCategorySortOrder(
+  supabase: Awaited<ReturnType<typeof getSupabase>>,
+  sortOrder: number,
+  excludeId?: number,
+) {
+  let query = supabase
+    .from("categories")
+    .select("id, sort_order")
+    .not("sort_order", "is", null)
+    .gte("sort_order", sortOrder)
+    .order("sort_order", { ascending: false });
+
+  if (excludeId) {
+    query = query.neq("id", excludeId);
+  }
+
+  const { data, error } = await query;
+  if (error) {
+    return error.message;
+  }
+  if (!data?.some((row) => row.sort_order === sortOrder)) {
+    return null;
+  }
+
+  for (const row of data) {
+    const { error: updateError } = await supabase
+      .from("categories")
+      .update({ sort_order: (row.sort_order ?? 0) + 10 })
+      .eq("id", row.id);
+    if (updateError) {
+      return updateError.message;
+    }
+  }
+
   return null;
 }
 
@@ -87,13 +136,13 @@ export async function createService(input: unknown) {
   }
 
   const supabase = await getSupabase();
-  const taken = await assertSortOrderAvailable(
+  const shifted = await makeRoomForServiceSortOrder(
     supabase,
     parsed.data.category_id,
     parsed.data.sort_order,
   );
-  if (taken) {
-    return { success: false, error: taken };
+  if (shifted) {
+    return { success: false, error: shifted };
   }
 
   const { error } = await supabase
@@ -123,14 +172,14 @@ export async function updateService(id: number, input: unknown) {
   }
 
   const supabase = await getSupabase();
-  const taken = await assertSortOrderAvailable(
+  const shifted = await makeRoomForServiceSortOrder(
     supabase,
     parsed.data.category_id,
     parsed.data.sort_order,
     id,
   );
-  if (taken) {
-    return { success: false, error: taken };
+  if (shifted) {
+    return { success: false, error: shifted };
   }
 
   const { error } = await supabase
@@ -205,30 +254,6 @@ async function assertCategorySlugAvailable(
   return null;
 }
 
-async function assertCategorySortOrderAvailable(
-  supabase: Awaited<ReturnType<typeof getSupabase>>,
-  sortOrder: number,
-  excludeId?: number,
-) {
-  let query = supabase
-    .from("categories")
-    .select("id")
-    .eq("sort_order", sortOrder);
-
-  if (excludeId) {
-    query = query.neq("id", excludeId);
-  }
-
-  const { data, error } = await query.maybeSingle();
-  if (error) {
-    return error.message;
-  }
-  if (data) {
-    return `Sort order ${sortOrder} is already taken.`;
-  }
-  return null;
-}
-
 export async function createCategory(input: unknown) {
   const parsed = categorySchema.safeParse(input);
   if (!parsed.success) {
@@ -247,12 +272,12 @@ export async function createCategory(input: unknown) {
     return { success: false, error: slugTaken };
   }
 
-  const orderTaken = await assertCategorySortOrderAvailable(
+  const shifted = await makeRoomForCategorySortOrder(
     supabase,
     parsed.data.sort_order,
   );
-  if (orderTaken) {
-    return { success: false, error: orderTaken };
+  if (shifted) {
+    return { success: false, error: shifted };
   }
 
   const { error } = await supabase.from("categories").insert(parsed.data);
@@ -289,13 +314,13 @@ export async function updateCategory(id: number, input: unknown) {
     return { success: false, error: slugTaken };
   }
 
-  const orderTaken = await assertCategorySortOrderAvailable(
+  const shifted = await makeRoomForCategorySortOrder(
     supabase,
     parsed.data.sort_order,
     id,
   );
-  if (orderTaken) {
-    return { success: false, error: orderTaken };
+  if (shifted) {
+    return { success: false, error: shifted };
   }
 
   const { error } = await supabase

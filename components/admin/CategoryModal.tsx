@@ -8,6 +8,12 @@ import {
   createCategory,
   updateCategory,
 } from "@/app/(admin-protected)/admin/services/actions";
+import SortPositionField from "@/components/admin/SortPositionField";
+import {
+  placementFromCurrent,
+  resolveSortOrder,
+  type SortPlacement,
+} from "@/lib/sort-order";
 
 type Props = {
   isOpen: boolean;
@@ -41,19 +47,22 @@ export default function CategoryModal({
     mode === "create" ? "" : (category?.slug ?? ""),
   );
   const [slugTouched, setSlugTouched] = useState(mode === "edit");
-  const [sortOrder, setSortOrder] = useState(
-    mode === "create" ? "" : (category?.sort_order?.toString() ?? ""),
+  const [placement, setPlacement] = useState<SortPlacement>(() =>
+    mode === "edit" && category
+      ? placementFromCurrent(categories, category.id)
+      : { kind: "end" },
   );
   const [saving, setSaving] = useState(false);
 
-  const { takenValues, nextAvailable } = useMemo(() => {
-    const taken = categories
-      .filter((row) => row.id !== category?.id && row.sort_order != null)
-      .map((row) => row.sort_order as number)
-      .sort((a, b) => a - b);
-    const maxValue = taken.length > 0 ? Math.max(...taken) : 0;
-    return { takenValues: taken, nextAvailable: maxValue + 10 };
-  }, [categories, category?.id]);
+  const sortableCategories = useMemo(
+    () =>
+      categories.map((row) => ({
+        id: row.id,
+        name: row.name,
+        sort_order: row.sort_order,
+      })),
+    [categories],
+  );
 
   const closeIfIdle = () => {
     if (saving) return;
@@ -70,11 +79,11 @@ export default function CategoryModal({
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    const sortOrderValue = sortOrder ? Number(sortOrder) : nextAvailable;
-    if (takenValues.includes(sortOrderValue)) {
-      toast.error(`Sort order ${sortOrderValue} is already taken.`);
-      return;
-    }
+    const sortOrderValue = resolveSortOrder(
+      placement,
+      sortableCategories,
+      category?.id,
+    );
 
     setSaving(true);
     try {
@@ -163,30 +172,17 @@ export default function CategoryModal({
             />
           </div>
 
-          <div>
-            <label className="mb-2 block text-sm font-semibold text-gray-700">
-              Sort Order *
-            </label>
-            <input
-              type="number"
-              inputMode="numeric"
-              value={sortOrder}
-              onChange={(event) => setSortOrder(event.target.value)}
-              className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
-              placeholder={`Suggested: ${nextAvailable}`}
-              disabled={saving}
-            />
-            {takenValues.length > 0 && (
-              <p className="mt-2 text-xs text-gray-500">
-                Taken values: {takenValues.join(", ")}
-              </p>
-            )}
-            {sortOrder && takenValues.includes(Number(sortOrder)) && (
-              <p className="mt-1 text-xs text-red-500">
-                This order value is already taken
-              </p>
-            )}
-          </div>
+          <SortPositionField
+            items={sortableCategories}
+            placement={placement}
+            onChange={setPlacement}
+            previewName={
+              name || (mode === "create" ? "New category" : "This category")
+            }
+            noun="category"
+            disabled={saving}
+            excludeId={category?.id}
+          />
 
           <div className="flex justify-end gap-4 pt-4">
             <button

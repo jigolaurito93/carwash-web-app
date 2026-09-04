@@ -10,6 +10,12 @@ import {
   updateService,
 } from "@/app/(admin-protected)/admin/services/actions";
 import ServiceCardLayoutPicker from "@/components/admin/ServiceCardLayoutPicker";
+import SortPositionField from "@/components/admin/SortPositionField";
+import {
+  placementFromCurrent,
+  resolveSortOrder,
+  type SortPlacement,
+} from "@/lib/sort-order";
 
 type Props = {
   isOpen: boolean;
@@ -27,7 +33,7 @@ type ServiceFormState = {
   notes: string;
   category_id: string;
   layout: CardLayout;
-  sort_order: string;
+  placement: SortPlacement;
   is_active: boolean;
   layout3_info: string;
   layout4_info: string;
@@ -53,6 +59,7 @@ function isCardLayout(value: string | null | undefined): value is CardLayout {
 function initialForm(
   mode: "create" | "edit",
   service?: ServiceRow,
+  services: ServiceRow[] = [],
 ): ServiceFormState {
   const isCreate = mode === "create";
   const items = service?.layout2_data?.items || {};
@@ -60,6 +67,9 @@ function initialForm(
     !isCreate && service && isCardLayout(service.card_layout)
       ? service.card_layout
       : "layout1";
+  const siblings = services.filter(
+    (row) => row.category_id === service?.category_id,
+  );
 
   return {
     name: isCreate ? "" : service?.name || "",
@@ -67,7 +77,10 @@ function initialForm(
     notes: isCreate ? "" : service?.notes || "",
     category_id: isCreate ? "" : service?.category_id?.toString() || "",
     layout,
-    sort_order: isCreate ? "" : service?.sort_order?.toString() || "",
+    placement:
+      !isCreate && service
+        ? placementFromCurrent(siblings, service.id)
+        : { kind: "end" },
     is_active: isCreate ? true : (service?.is_active ?? true),
     layout3_info: service?.layout3_data || "",
     layout4_info: service?.layout4_data?.info || "",
@@ -118,12 +131,8 @@ function parseLayout2Items(
 
 function buildPayload(
   form: ServiceFormState,
-  nextAvailable: number,
+  sortOrderValue: number,
 ): ServiceFormValues | { error: string } {
-  const sortOrderValue = form.sort_order
-    ? Number(form.sort_order)
-    : nextAvailable;
-
   if (!Number.isFinite(sortOrderValue) || !Number.isInteger(sortOrderValue)) {
     return { error: "Sort order must be a whole number." };
   }
@@ -203,29 +212,21 @@ export default function ServiceModal({
   services,
 }: Props) {
   const [formData, setFormData] = useState<ServiceFormState>(() =>
-    initialForm(mode, service),
+    initialForm(mode, service, services),
   );
   const [saving, setSaving] = useState(false);
 
-  const { takenValues, nextAvailable } = useMemo(() => {
+  const siblingServices = useMemo(() => {
     const categoryId = Number(formData.category_id);
-    if (!Number.isFinite(categoryId) || categoryId <= 0) {
-      return { takenValues: [] as number[], nextAvailable: 10 };
-    }
-
-    const taken = services
-      .filter(
-        (row) =>
-          row.category_id === categoryId &&
-          row.id !== service?.id &&
-          row.sort_order != null,
-      )
-      .map((row) => row.sort_order as number)
-      .sort((a, b) => a - b);
-
-    const maxValue = taken.length > 0 ? Math.max(...taken) : 0;
-    return { takenValues: taken, nextAvailable: maxValue + 10 };
-  }, [formData.category_id, services, service?.id]);
+    if (!Number.isFinite(categoryId) || categoryId <= 0) return [];
+    return services
+      .filter((row) => row.category_id === categoryId)
+      .map((row) => ({
+        id: row.id,
+        name: row.name,
+        sort_order: row.sort_order,
+      }));
+  }, [formData.category_id, services]);
 
   const isLayout1 = formData.layout === "layout1";
   const isLayout2 = formData.layout === "layout2";
@@ -240,18 +241,13 @@ export default function ServiceModal({
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    const sortOrderValue = formData.sort_order
-      ? Number(formData.sort_order)
-      : nextAvailable;
+    const sortOrderValue = resolveSortOrder(
+      formData.placement,
+      siblingServices,
+      service?.id,
+    );
 
-    if (takenValues.includes(sortOrderValue)) {
-      toast.error(
-        `Sort order ${sortOrderValue} is already taken for this category.`,
-      );
-      return;
-    }
-
-    const payload = buildPayload(formData, nextAvailable);
+    const payload = buildPayload(formData, sortOrderValue);
     if ("error" in payload) {
       toast.error(payload.error);
       return;
@@ -364,7 +360,11 @@ export default function ServiceModal({
               required
               value={formData.category_id}
               onChange={(event) =>
-                setFormData({ ...formData, category_id: event.target.value })
+                setFormData({
+                  ...formData,
+                  category_id: event.target.value,
+                  placement: { kind: "end" },
+                })
               }
               className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
               disabled={saving}
@@ -378,32 +378,23 @@ export default function ServiceModal({
             </select>
           </div>
 
-          <div>
-            <label className="mb-2 block text-sm font-semibold text-gray-700">
-              Sort Order
-            </label>
-            <input
-              type="number"
-              value={formData.sort_order}
-              onChange={(event) =>
-                setFormData({ ...formData, sort_order: event.target.value })
-              }
-              className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
-              placeholder={`Suggested: ${nextAvailable}`}
-              disabled={saving}
-            />
-            {takenValues.length > 0 && (
-              <p className="mt-1 text-xs text-gray-500">
-                Taken values: {takenValues.join(", ")}
-              </p>
-            )}
-            {formData.sort_order &&
-              takenValues.includes(Number(formData.sort_order)) && (
-                <p className="mt-1 text-xs text-red-500">
-                  This sort order is already taken for this category.
-                </p>
-              )}
-          </div>
+          <SortPositionField
+            items={siblingServices}
+            placement={formData.placement}
+            onChange={(placement) => setFormData({ ...formData, placement })}
+            previewName={
+              formData.name ||
+              (mode === "create" ? "New service" : "This service")
+            }
+            noun="service"
+            disabled={saving || !formData.category_id}
+            disabledReason={
+              formData.category_id
+                ? undefined
+                : "Choose a category first to set the display position."
+            }
+            excludeId={service?.id}
+          />
 
           <label className="flex items-center gap-2 font-questrial text-sm text-gray-700">
             <input
