@@ -2,7 +2,7 @@
 
 **Last updated:** September 3, 2026  
 **Previous plan:** [`docs/plans/2026-08-sellable-v1.md`](docs/plans/2026-08-sellable-v1.md)  
-**Goal:** Finish public booking, packaging, and productization so the site can be handed to a client or sold as a template.
+**Goal:** Finish packaging and productization so the site can be handed to a client or sold as a template. Public self-serve booking is deferred.
 
 ---
 
@@ -16,23 +16,24 @@ Phases 1–2 from the August plan are largely done. The public site and admin CM
 
 ### Shipped
 
-| Area                 | Status                                                                   |
-| -------------------- | ------------------------------------------------------------------------ |
-| Public pages         | `/`, `/about`, `/services`, `/gallery`, `/contact`, `/privacy`, `/terms` |
-| Catalog CMS          | `categories` + `services` at `/admin/services` (4 card layouts)          |
-| Shop info + hours    | Editable in `/admin/shop-info`; public pages read from DB                |
-| Gallery              | Admin upload + public page from `gallery_images` / Storage               |
-| Content CMS          | Welcome, about, FAQ, announcements, legal                                |
-| Appointments (admin) | CRUD at `/admin/appointment`; dashboard schedule                         |
-| Auth                 | Login, invite (master), set-password, onboarding; gate in `proxy.ts`     |
-| Contact form         | Zod + Resend (`POST /api/contact`)                                       |
-| README               | Stack, env names, routes, `pnpm gen:types`                               |
+| Area                 | Status                                                                             |
+| -------------------- | ---------------------------------------------------------------------------------- |
+| Public pages         | `/`, `/about`, `/services`, `/gallery`, `/contact`, `/privacy`, `/terms`           |
+| Catalog CMS          | `categories` + `services` at `/admin/services` (4 card layouts)                    |
+| Shop info + hours    | Editable in `/admin/shop-info`; public pages read from DB                          |
+| Gallery              | Admin upload + public page from `gallery_images` / Storage                         |
+| Content CMS          | Welcome, about, FAQ, announcements, legal                                          |
+| Appointments (admin) | CRUD at `/admin/appointment`; dashboard schedule                                   |
+| Auth                 | Login, invite (master), set-password, onboarding; gate in `proxy.ts`               |
+| Contact form         | Zod + Resend (`POST /api/contact`)                                                 |
+| README               | Stack, env names, routes, `pnpm gen:types`                                         |
+| Home hero CTA        | “Call to schedule an Appointment” — dials `shop_info.phone` and goes to `/contact` |
 
 ### Still open
 
 | Area            | Gap                                                                               |
 | --------------- | --------------------------------------------------------------------------------- |
-| Public booking  | Hero CTA still goes to `/contact`; no customer booking flow                       |
+| Public booking  | **Deferred.** Customers call or use the contact form; no public booking UI        |
 | Contact consent | No privacy checkbox on the contact form                                           |
 | Contact errors  | Failed send has no visible error state                                            |
 | Deploy package  | No `.env.example`, no single schema SQL, README has no Vercel / first-admin steps |
@@ -44,26 +45,29 @@ Phases 1–2 from the August plan are largely done. The public site and admin CM
 
 ## Phase A — Close the sellable v1 gaps
 
-> **Target:** A new developer can set up the project, and a visitor can book without calling.  
+> **Target:** A new developer can set up the project; visitors schedule by calling or contacting the shop.  
 > **Depends on:** nothing in the archived plan
 
-### A.1 Public booking
+### A.1 Public booking — deferred
 
-**Priority:** High  
+**Priority:** Later (not in this milestone)  
 **Depends on:** admin appointments (done)
 
-| Task                         | Details                                                                                |
-| ---------------------------- | -------------------------------------------------------------------------------------- |
-| Public booking page or modal | Name, phone, service, date/time (respect `shop_hours`)                                 |
-| Server action or route       | Insert into `appointment`; default status `scheduled`                                  |
-| Email                        | Resend confirmation to owner + customer                                                |
-| Hero CTA                     | `components/Hero.tsx` — “Schedule an Appointment” should go to booking, not `/contact` |
+Customers schedule by calling `shop_info.phone` (home hero CTA) or using `/contact`. Do not build a public booking page until this is pulled forward again.
 
-**Acceptance criteria:**
+When resumed:
+
+| Task                         | Details                                                   |
+| ---------------------------- | --------------------------------------------------------- |
+| Public booking page or modal | Name, phone, service, date/time (respect `shop_hours`)    |
+| Server action or route       | Insert into `appointment`; default status `scheduled`     |
+| Email                        | Resend confirmation to owner + customer                   |
+| Hero CTA                     | Revisit if booking should replace the call + contact flow |
+
+**Acceptance criteria (when resumed):**
 
 - [ ] Customer can request an appointment from the public site
 - [ ] Owner gets an email; row appears in `/admin/appointment`
-- [ ] Hero button no longer dumps users on the contact form
 
 ### A.2 Contact form polish
 
@@ -139,6 +143,7 @@ Do not rebuild these unless something is broken:
 - Privacy and Terms pages
 - Mobile admin nav, profile, invite/onboarding
 - Catalog tables named `categories` + `services` (not `categories1` / `services1`)
+- Home hero CTA: call `shop_info.phone` and navigate to `/contact`
 
 ---
 
@@ -147,10 +152,10 @@ Do not rebuild these unless something is broken:
 ```
 1. A.2 Contact form polish          (small)
 2. A.3 Deployment package           (unblocks handoff)
-3. A.1 Public booking               (largest remaining feature)
-4. B.2 SEO                          (cheap, high value)
-5. B.3 Analytics                    (env snippet)
-6. B.1 / B.4 / B.5                  (when selling to a second shop)
+3. B.2 SEO                          (cheap, high value)
+4. B.3 Analytics                    (env snippet)
+5. B.1 / B.4 / B.5                  (when selling to a second shop)
+6. A.1 Public booking               (deferred — pull forward when needed)
 ```
 
 ---
@@ -158,7 +163,7 @@ Do not rebuild these unless something is broken:
 ## How to use this plan
 
 1. Pick a section (start with **A.2** or **A.3**).
-2. In Agent mode: _“Implement section A.1 from plan.md”_
-3. Use Plan mode first for booking (A.1) or branding (B.1).
+2. In Agent mode: _“Implement section A.2 from plan.md”_
+3. Use Plan mode first for branding (B.1) or if public booking (A.1) is pulled forward.
 4. Check off items here as they land. Do not append finished work back onto this file — archive again when this milestone is done.
 5. Historical context: [`docs/plans/2026-08-sellable-v1.md`](docs/plans/2026-08-sellable-v1.md)
