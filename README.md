@@ -6,17 +6,17 @@ Marketing site and admin CMS for **Onyx Premium Carwash**. The public site is a 
 
 ## Tech stack
 
-| Layer | Choice |
-| --- | --- |
-| Framework | Next.js 16 (App Router) with React Compiler |
-| UI | React 19, TypeScript (strict) |
-| Styling | Tailwind CSS v4, shadcn/ui |
-| Package manager | pnpm |
+| Layer           | Choice                                         |
+| --------------- | ---------------------------------------------- |
+| Framework       | Next.js 16 (App Router) with React Compiler    |
+| UI              | React 19, TypeScript (strict)                  |
+| Styling         | Tailwind CSS v4, shadcn/ui                     |
+| Package manager | pnpm                                           |
 | Database / Auth | Supabase (Postgres + Auth) via `@supabase/ssr` |
-| Forms | react-hook-form, Zod |
-| Email | Resend (`POST /api/contact`) |
-| Maps | `@react-google-maps/api` |
-| Toasts | sonner |
+| Forms           | react-hook-form, Zod                           |
+| Email           | Resend (`POST /api/contact`)                   |
+| Maps            | `@react-google-maps/api`                       |
+| Toasts          | sonner                                         |
 
 Auth for `/admin/*` is gated in `proxy.ts` (Next.js 16). There is no `middleware.ts`.
 
@@ -99,13 +99,13 @@ Open [http://localhost:3000](http://localhost:3000). Admin login is [http://loca
 
 ## Scripts
 
-| Script | What it does |
-| --- | --- |
-| `pnpm dev` | Development server |
-| `pnpm build` | Production build |
-| `pnpm start` | Serve the production build |
-| `pnpm lint` | ESLint |
-| `pnpm prettier` | Format with Prettier |
+| Script           | What it does                                                       |
+| ---------------- | ------------------------------------------------------------------ |
+| `pnpm dev`       | Development server                                                 |
+| `pnpm build`     | Production build                                                   |
+| `pnpm start`     | Serve the production build                                         |
+| `pnpm lint`      | ESLint                                                             |
+| `pnpm prettier`  | Format with Prettier                                               |
 | `pnpm gen:types` | Regenerate `lib/database.types.ts` from the linked Supabase schema |
 
 ---
@@ -114,35 +114,35 @@ Open [http://localhost:3000](http://localhost:3000). Admin login is [http://loca
 
 **Public**
 
-| Path | Page |
-| --- | --- |
-| `/` | Home |
-| `/about` | About |
-| `/services` | Services and pricing |
-| `/gallery` | Gallery |
-| `/contact` | Contact, hours, map, FAQ |
-| `/privacy` | Privacy policy |
-| `/terms` | Terms of use |
+| Path        | Page                     |
+| ----------- | ------------------------ |
+| `/`         | Home                     |
+| `/about`    | About                    |
+| `/services` | Services and pricing     |
+| `/gallery`  | Gallery                  |
+| `/contact`  | Contact, hours, map, FAQ |
+| `/privacy`  | Privacy policy           |
+| `/terms`    | Terms of use             |
 
 **Admin** (protected except login)
 
-| Path | Page |
-| --- | --- |
-| `/admin/login` | Sign in |
-| `/admin/set-password` | First-time password (invited users) |
-| `/admin/onboarding` | Profile onboarding |
-| `/admin/dashboard` | Overview / schedule |
-| `/admin/appointment` | Appointments |
-| `/admin/services` | Categories and services |
-| `/admin/shop-info` | Shop name, address, hours |
-| `/admin/welcome` | Home welcome copy |
-| `/admin/about` | About page copy |
-| `/admin/gallery` | Gallery images |
-| `/admin/announcements` | Site banner announcements |
-| `/admin/faq` | FAQs |
-| `/admin/legal` | Privacy and terms |
-| `/admin/profile` | Account settings |
-| `/admin/invite` | Invite an admin (master only) |
+| Path                   | Page                                |
+| ---------------------- | ----------------------------------- |
+| `/admin/login`         | Sign in                             |
+| `/admin/set-password`  | First-time password (invited users) |
+| `/admin/onboarding`    | Profile onboarding                  |
+| `/admin/dashboard`     | Overview / schedule                 |
+| `/admin/appointment`   | Appointments                        |
+| `/admin/services`      | Categories and services             |
+| `/admin/shop-info`     | Shop name, address, hours           |
+| `/admin/welcome`       | Home welcome copy                   |
+| `/admin/about`         | About page copy                     |
+| `/admin/gallery`       | Gallery images                      |
+| `/admin/announcements` | Site banner announcements           |
+| `/admin/faq`           | FAQs                                |
+| `/admin/legal`         | Privacy and terms                   |
+| `/admin/profile`       | Account settings                    |
+| `/admin/invite`        | Invite an admin (master only)       |
 
 ---
 
