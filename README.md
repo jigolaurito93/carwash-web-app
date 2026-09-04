@@ -72,14 +72,14 @@ cp .env.example .env.local
 
 On Windows PowerShell: `Copy-Item .env.example .env.local`
 
-| Variable                         | Where to get it                                      | Notes                                      |
-| -------------------------------- | ---------------------------------------------------- | ------------------------------------------ |
-| `NEXT_PUBLIC_SUPABASE_URL`       | Supabase → Project Settings → API                    | Project URL                                |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY`  | Same page → `anon` `public`                          | Safe for the browser; RLS still applies    |
-| `SUPABASE_SERVICE_ROLE_KEY`      | Same page → `service_role`                           | **Server-only.** Invites + onboarding      |
-| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Google Cloud → Credentials                           | Enable Maps JavaScript API                 |
-| `RESEND_API_KEY`                 | Resend → API Keys                                    | Server-only                                |
-| `OWNER_EMAIL`                    | The inbox that should receive contact-form messages  | Server-only                                |
+| Variable                          | Where to get it                                     | Notes                                   |
+| --------------------------------- | --------------------------------------------------- | --------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`        | Supabase → Project Settings → API                   | Project URL                             |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY`   | Same page → `anon` `public`                         | Safe for the browser; RLS still applies |
+| `SUPABASE_SERVICE_ROLE_KEY`       | Same page → `service_role`                          | **Server-only.** Invites + onboarding   |
+| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Google Cloud → Credentials                          | Enable Maps JavaScript API              |
+| `RESEND_API_KEY`                  | Resend → API Keys                                   | Server-only                             |
+| `OWNER_EMAIL`                     | The inbox that should receive contact-form messages | Server-only                             |
 
 Never commit `.env.local`. Never expose `SUPABASE_SERVICE_ROLE_KEY` to the client.
 
@@ -256,17 +256,17 @@ Use this when packaging the site for a shop owner. Demo / Pexels photos are fine
 
 **Replace stock images** (files under `public/images/`)
 
-| File              | Used on                          |
-| ----------------- | -------------------------------- |
-| `carwash-1.jpg`   | Home hero                        |
-| `carwash-2.jpg`   | Welcome section (CMS default)    |
-| `carwash-3.jpg`   | Login, contact hero (desktop)    |
-| `carwash-4.jpg`   | Contact hero (mobile)            |
-| `carwash-6.jpg`   | About                            |
-| `carwash-7.jpg`   | About                            |
-| `carwash-8.jpg`   | Services hero (desktop)          |
-| `carwash-9.jpg`   | Services hero (mobile)           |
-| `nav-logo-icon.png` | Navbar and admin auth screens  |
+| File                | Used on                       |
+| ------------------- | ----------------------------- |
+| `carwash-1.jpg`     | Home hero                     |
+| `carwash-2.jpg`     | Welcome section (CMS default) |
+| `carwash-3.jpg`     | Login, contact hero (desktop) |
+| `carwash-4.jpg`     | Contact hero (mobile)         |
+| `carwash-6.jpg`     | About                         |
+| `carwash-7.jpg`     | About                         |
+| `carwash-8.jpg`     | Services hero (desktop)       |
+| `carwash-9.jpg`     | Services hero (mobile)        |
+| `nav-logo-icon.png` | Navbar and admin auth screens |
 
 Gallery photos belong in **Admin → Gallery** (Supabase Storage), not `public/images/`.
 

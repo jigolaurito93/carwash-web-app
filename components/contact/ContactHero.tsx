@@ -5,10 +5,9 @@ import { useEffect, useState } from "react";
 
 type ContactHeroProps = {
   phone: string | null;
-  email: string | null;
 };
 
-const ContactHero = ({ phone, email }: ContactHeroProps) => {
+const ContactHero = ({ phone }: ContactHeroProps) => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -39,25 +38,14 @@ const ContactHero = ({ phone, email }: ContactHeroProps) => {
             help.
           </div>
 
-          {(phone || email) && (
-            <div className="mt-16 flex justify-center gap-10 sm:gap-20 lg:mt-24 lg:gap-30">
-              {phone && (
-                <a
-                  href={`tel:${phone}`}
-                  className="w-28 cursor-pointer rounded-sm bg-white px-4 py-2 text-center font-questrial text-black shadow-2xl hover:bg-teal-500 hover:text-white lg:w-44 lg:text-xl"
-                >
-                  Call Now
-                </a>
-              )}
-
-              {email && (
-                <a
-                  href={`mailto:${email}`}
-                  className="w-28 cursor-pointer rounded-sm bg-white px-4 py-2 text-center font-questrial text-black shadow-2xl hover:bg-teal-500 hover:text-white lg:w-44 lg:text-xl"
-                >
-                  Book Now
-                </a>
-              )}
+          {phone && (
+            <div className="mt-16 flex justify-center lg:mt-24">
+              <a
+                href={`tel:${phone}`}
+                className="cursor-pointer rounded-sm bg-white px-6 py-3 text-center font-questrial text-black shadow-2xl hover:bg-teal-500 hover:text-white sm:px-8 lg:text-xl"
+              >
+                Call to schedule an Appointment
+              </a>
             </div>
           )}
         </div>
