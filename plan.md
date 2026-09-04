@@ -26,15 +26,15 @@ Phases 1–2 from the August plan are largely done. The public site and admin CM
 | Appointments (admin) | CRUD at `/admin/appointment`; dashboard schedule                                   |
 | Auth                 | Login, invite (master), set-password, onboarding; gate in `proxy.ts`               |
 | Contact form         | Zod + Resend (`POST /api/contact`); privacy consent; failed-send error             |
-| README               | Stack, env names, routes, `pnpm gen:types`                                         |
+| README               | Stack, env, first admin, Vercel, `pnpm gen:types`, handoff checklist |
 | Home hero CTA        | “Call to schedule an Appointment” — dials `shop_info.phone` and goes to `/contact` |
+| Deploy package       | `.env.example`, `supabase/schema.sql`, README first-admin / Vercel / handoff |
 
 ### Still open
 
 | Area           | Gap                                                                               |
 | -------------- | --------------------------------------------------------------------------------- |
 | Public booking | **Deferred.** Customers call or use the contact form; no public booking UI        |
-| Deploy package | No `.env.example`, no single schema SQL, README has no Vercel / first-admin steps |
 | SEO            | Root metadata only; no `sitemap.xml` or `robots.txt`                              |
 | Analytics      | None                                                                              |
 | Branding       | Name, logo, colors still in code / CSS, not a tenant config                       |
@@ -95,8 +95,8 @@ When resumed:
 
 **Acceptance criteria:**
 
-- [ ] Clone → env → `pnpm install` → `pnpm dev` works from the README
-- [ ] Schema can be recreated without clicking through the Supabase dashboard blindly
+- [x] Clone → env → `pnpm install` → `pnpm dev` works from the README
+- [x] Schema can be recreated without clicking through the Supabase dashboard blindly
 
 ---
 
@@ -148,8 +148,8 @@ Do not rebuild these unless something is broken:
 ## Suggested order
 
 ```
-1. A.2 Contact form polish          (small)
-2. A.3 Deployment package           (unblocks handoff)
+1. A.2 Contact form polish          (done)
+2. A.3 Deployment package           (done)
 3. B.2 SEO                          (cheap, high value)
 4. B.3 Analytics                    (env snippet)
 5. B.1 / B.4 / B.5                  (when selling to a second shop)
