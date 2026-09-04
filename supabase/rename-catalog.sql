@@ -1,3 +1,5 @@
+-- Feature patch for the original project only. Do not run on a new database.
+-- Do not run on a new project. New projects: run schema.sql instead.
 -- Rename live catalog tables to standard names.
 -- The leftover `categories` table (used by services_packages) is moved aside first.
 -- Run against the linked project: pnpm exec supabase db query --linked -f supabase/rename-catalog.sql

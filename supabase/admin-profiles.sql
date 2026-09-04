@@ -1,3 +1,5 @@
+-- Feature patch for an existing database. New projects should run schema.sql instead.
+-- Feature patch for an existing database. New projects: run schema.sql instead.
 -- Admin staff profiles: table + RLS
 -- Run once in the Supabase SQL editor (or re-run; policies are replaced).
 
