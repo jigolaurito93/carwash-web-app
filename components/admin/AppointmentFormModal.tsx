@@ -11,9 +11,9 @@ import {
   FiPhone,
   FiTool,
   FiUser,
-  FiX,
 } from "react-icons/fi";
 import { DatePickerTime } from "@/components/ui/date-picker-time";
+import AdminModal from "@/components/admin/AdminModal";
 import type { Appointment, AppointmentServiceOption } from "@/lib/app.types";
 import {
   isShopDateDisabled,
@@ -199,237 +199,208 @@ export default function AppointmentFormModal({
   };
 
   const close = () => {
-    if (saving || isCalendarOpen) return;
+    if (saving) return;
     onClose();
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
-      onClick={close}
-    >
-      <div
-        className="flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <header className="flex items-start justify-between gap-4 bg-black px-6 py-5 text-white">
-          <div>
-            <p className="font-questrial text-[11px] font-bold tracking-widest text-yellow-400 uppercase">
-              {mode === "create" ? "New booking" : "Edit booking"}
-            </p>
-            <h2 className="mt-1 font-lexend text-2xl font-bold">
-              {mode === "create" ? "Create appointment" : "Edit appointment"}
-            </h2>
-            <p className="mt-1 font-questrial text-sm text-gray-400">
-              First name, phone, optional email and notes, service, and a time
-              during shop hours.
-            </p>
-          </div>
+    <AdminModal
+      open={open}
+      onClose={close}
+      title={mode === "create" ? "Create appointment" : "Edit appointment"}
+      description="First name, phone, optional email and notes, service, and a time during shop hours."
+      maxWidth="lg"
+      closeDisabled={saving}
+      preventOverlayClose={isCalendarOpen}
+      asForm
+      onSubmit={handleSubmit}
+      footer={
+        <>
           <button
             type="button"
-            onClick={onClose}
+            onClick={close}
             disabled={saving}
-            className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-white/10 hover:text-white disabled:opacity-50"
-            aria-label="Close"
+            className="btnCancel"
           >
-            <FiX className="h-5 w-5" />
+            Cancel
           </button>
-        </header>
-
-        <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col">
-          <div className="space-y-6 overflow-y-auto px-6 py-6">
-            <section>
-              <p className="mb-3 flex items-center gap-2 font-questrial text-[11px] font-bold tracking-widest text-gray-400 uppercase">
-                <FiUser className="h-3.5 w-3.5" />
-                Customer
-              </p>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div>
-                  <label
-                    className="labelx block text-xs"
-                    htmlFor="apt-first-name"
-                  >
-                    First name
-                  </label>
-                  <input
-                    id="apt-first-name"
-                    required
-                    maxLength={80}
-                    value={form.first_name}
-                    onChange={(event) =>
-                      setForm({ ...form, first_name: event.target.value })
-                    }
-                    className="inputx h-12 text-sm"
-                    placeholder="Jordan"
-                    disabled={saving}
-                  />
-                </div>
-                <div>
-                  <label
-                    className="labelx block text-xs"
-                    htmlFor="apt-last-name"
-                  >
-                    Last name
-                  </label>
-                  <input
-                    id="apt-last-name"
-                    maxLength={80}
-                    value={form.last_name}
-                    onChange={(event) =>
-                      setForm({ ...form, last_name: event.target.value })
-                    }
-                    className="inputx h-12 text-sm"
-                    placeholder="Optional"
-                    disabled={saving}
-                  />
-                </div>
-              </div>
-              <div className="mt-3">
-                <label className="labelx block text-xs" htmlFor="apt-phone">
-                  Contact number
-                </label>
-                <div
-                  className={`flex h-12 items-center overflow-hidden rounded-sm border border-gray-200 shadow-sm focus-within:border-gray-400 ${
-                    saving ? "bg-gray-100 opacity-60" : "bg-white"
-                  }`}
-                >
-                  <span className="flex h-full shrink-0 items-center px-3 text-gray-400">
-                    <FiPhone className="h-4 w-4" aria-hidden="true" />
-                  </span>
-                  <input
-                    id="apt-phone"
-                    type="tel"
-                    required
-                    value={form.phone_number}
-                    onChange={(event) =>
-                      setForm({ ...form, phone_number: event.target.value })
-                    }
-                    className="h-full min-w-0 flex-1 border-0 bg-transparent py-3 pr-3 text-sm outline-none"
-                    placeholder="(123) 456-7890"
-                    disabled={saving}
-                  />
-                </div>
-              </div>
-              <div className="mt-3">
-                <label className="labelx block text-xs" htmlFor="apt-email">
-                  Email
-                </label>
-                <div
-                  className={`flex h-12 items-center overflow-hidden rounded-sm border border-gray-200 shadow-sm focus-within:border-gray-400 ${
-                    saving ? "bg-gray-100 opacity-60" : "bg-white"
-                  }`}
-                >
-                  <span className="flex h-full shrink-0 items-center px-3 text-gray-400">
-                    <FiMail className="h-4 w-4" aria-hidden="true" />
-                  </span>
-                  <input
-                    id="apt-email"
-                    type="email"
-                    value={form.email}
-                    onChange={(event) =>
-                      setForm({ ...form, email: event.target.value })
-                    }
-                    className="h-full min-w-0 flex-1 border-0 bg-transparent py-3 pr-3 text-sm outline-none"
-                    placeholder="Optional"
-                    disabled={saving}
-                  />
-                </div>
-              </div>
-            </section>
-
-            <section>
-              <p className="mb-3 flex items-center gap-2 font-questrial text-[11px] font-bold tracking-widest text-gray-400 uppercase">
-                <FiCalendar className="h-3.5 w-3.5" />
-                Date & time
-              </p>
-              <DatePickerTime
-                date={selectedDate}
-                onDateChange={setSelectedDate}
-                onCalendarOpenChange={setIsCalendarOpen}
-                hours={hours}
-              />
-            </section>
-
-            <section>
-              <p className="mb-3 flex items-center gap-2 font-questrial text-[11px] font-bold tracking-widest text-gray-400 uppercase">
-                <FiTool className="h-3.5 w-3.5" />
-                Service
-              </p>
-              <label className="sr-only" htmlFor="apt-service">
-                Service
+          <button
+            type="submit"
+            disabled={saving}
+            className="btnSaveYlw disabled:opacity-60"
+          >
+            {saving
+              ? "Saving..."
+              : mode === "create"
+                ? "Create appointment"
+                : "Save appointment"}
+          </button>
+        </>
+      }
+    >
+      <div className="space-y-6">
+        <section>
+          <p className="mb-3 flex items-center gap-2 font-questrial text-[11px] font-bold tracking-widest text-gray-400 uppercase">
+            <FiUser className="h-3.5 w-3.5" />
+            Customer
+          </p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div>
+              <label className="labelx block text-xs" htmlFor="apt-first-name">
+                First name
               </label>
-              <select
-                id="apt-service"
+              <input
+                id="apt-first-name"
                 required
-                value={form.service_id}
+                maxLength={80}
+                value={form.first_name}
                 onChange={(event) =>
-                  setForm({ ...form, service_id: event.target.value })
+                  setForm({ ...form, first_name: event.target.value })
                 }
                 className="inputx h-12 text-sm"
-                disabled={saving}
-              >
-                <option value="">Select a service</option>
-                {serviceGroups.map(([category, items]) => (
-                  <optgroup key={category} label={toTitleCase(category)}>
-                    {items.map((service) => (
-                      <option key={service.id} value={service.id}>
-                        {toTitleCase(service.name)}
-                        {service.is_active === false ? " (inactive)" : ""}
-                      </option>
-                    ))}
-                  </optgroup>
-                ))}
-              </select>
-            </section>
-
-            <section>
-              <p className="mb-3 flex items-center gap-2 font-questrial text-[11px] font-bold tracking-widest text-gray-400 uppercase">
-                <FiMessageSquare className="h-3.5 w-3.5" />
-                Additional info
-              </p>
-              <label className="sr-only" htmlFor="apt-notes">
-                Additional info
-              </label>
-              <textarea
-                id="apt-notes"
-                value={form.notes}
-                onChange={(event) =>
-                  setForm({ ...form, notes: event.target.value })
-                }
-                className="inputx min-h-24 resize-y text-sm"
-                placeholder="Vehicle details, special requests, or anything else from the call…"
-                maxLength={500}
+                placeholder="Jordan"
                 disabled={saving}
               />
-              <p className="mt-1 font-questrial text-xs text-gray-400">
-                Optional · {form.notes.length}/500
-              </p>
-            </section>
+            </div>
+            <div>
+              <label className="labelx block text-xs" htmlFor="apt-last-name">
+                Last name
+              </label>
+              <input
+                id="apt-last-name"
+                maxLength={80}
+                value={form.last_name}
+                onChange={(event) =>
+                  setForm({ ...form, last_name: event.target.value })
+                }
+                className="inputx h-12 text-sm"
+                placeholder="Optional"
+                disabled={saving}
+              />
+            </div>
           </div>
+          <div className="mt-3">
+            <label className="labelx block text-xs" htmlFor="apt-phone">
+              Contact number
+            </label>
+            <div
+              className={`flex h-12 items-center overflow-hidden rounded-sm border border-gray-200 shadow-sm focus-within:border-gray-400 ${
+                saving ? "bg-gray-100 opacity-60" : "bg-white"
+              }`}
+            >
+              <span className="flex h-full shrink-0 items-center px-3 text-gray-400">
+                <FiPhone className="h-4 w-4" aria-hidden="true" />
+              </span>
+              <input
+                id="apt-phone"
+                type="tel"
+                required
+                value={form.phone_number}
+                onChange={(event) =>
+                  setForm({ ...form, phone_number: event.target.value })
+                }
+                className="h-full min-w-0 flex-1 border-0 bg-transparent py-3 pr-3 text-sm outline-none"
+                placeholder="(123) 456-7890"
+                disabled={saving}
+              />
+            </div>
+          </div>
+          <div className="mt-3">
+            <label className="labelx block text-xs" htmlFor="apt-email">
+              Email
+            </label>
+            <div
+              className={`flex h-12 items-center overflow-hidden rounded-sm border border-gray-200 shadow-sm focus-within:border-gray-400 ${
+                saving ? "bg-gray-100 opacity-60" : "bg-white"
+              }`}
+            >
+              <span className="flex h-full shrink-0 items-center px-3 text-gray-400">
+                <FiMail className="h-4 w-4" aria-hidden="true" />
+              </span>
+              <input
+                id="apt-email"
+                type="email"
+                value={form.email}
+                onChange={(event) =>
+                  setForm({ ...form, email: event.target.value })
+                }
+                className="h-full min-w-0 flex-1 border-0 bg-transparent py-3 pr-3 text-sm outline-none"
+                placeholder="Optional"
+                disabled={saving}
+              />
+            </div>
+          </div>
+        </section>
 
-          <div className="flex justify-end gap-3 border-t border-gray-100 bg-gray-50 px-6 py-4">
-            <button
-              type="button"
-              onClick={onClose}
-              disabled={saving}
-              className="btnCancel"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={saving}
-              className="btnSaveYlw disabled:opacity-60"
-            >
-              {saving
-                ? "Saving..."
-                : mode === "create"
-                  ? "Create appointment"
-                  : "Save appointment"}
-            </button>
-          </div>
-        </form>
+        <section>
+          <p className="mb-3 flex items-center gap-2 font-questrial text-[11px] font-bold tracking-widest text-gray-400 uppercase">
+            <FiCalendar className="h-3.5 w-3.5" />
+            Date & time
+          </p>
+          <DatePickerTime
+            date={selectedDate}
+            onDateChange={setSelectedDate}
+            onCalendarOpenChange={setIsCalendarOpen}
+            hours={hours}
+          />
+        </section>
+
+        <section>
+          <p className="mb-3 flex items-center gap-2 font-questrial text-[11px] font-bold tracking-widest text-gray-400 uppercase">
+            <FiTool className="h-3.5 w-3.5" />
+            Service
+          </p>
+          <label className="sr-only" htmlFor="apt-service">
+            Service
+          </label>
+          <select
+            id="apt-service"
+            required
+            value={form.service_id}
+            onChange={(event) =>
+              setForm({ ...form, service_id: event.target.value })
+            }
+            className="inputx h-12 text-sm"
+            disabled={saving}
+          >
+            <option value="">Select a service</option>
+            {serviceGroups.map(([category, items]) => (
+              <optgroup key={category} label={toTitleCase(category)}>
+                {items.map((service) => (
+                  <option key={service.id} value={service.id}>
+                    {toTitleCase(service.name)}
+                    {service.is_active === false ? " (inactive)" : ""}
+                  </option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
+        </section>
+
+        <section>
+          <p className="mb-3 flex items-center gap-2 font-questrial text-[11px] font-bold tracking-widest text-gray-400 uppercase">
+            <FiMessageSquare className="h-3.5 w-3.5" />
+            Additional info
+          </p>
+          <label className="sr-only" htmlFor="apt-notes">
+            Additional info
+          </label>
+          <textarea
+            id="apt-notes"
+            value={form.notes}
+            onChange={(event) =>
+              setForm({ ...form, notes: event.target.value })
+            }
+            className="inputx min-h-24 resize-y text-sm"
+            placeholder="Vehicle details, special requests, or anything else from the call…"
+            maxLength={500}
+            disabled={saving}
+          />
+          <p className="mt-1 font-questrial text-xs text-gray-400">
+            Optional · {form.notes.length}/500
+          </p>
+        </section>
       </div>
-    </div>
+    </AdminModal>
   );
 }

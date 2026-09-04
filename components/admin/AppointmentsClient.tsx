@@ -4,7 +4,7 @@ import { useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { toast } from "sonner";
-import { FiPlusCircle, FiX } from "react-icons/fi";
+import { FiPlusCircle } from "react-icons/fi";
 import type { Appointment, AppointmentServiceOption } from "@/lib/app.types";
 import type { ShopHoursDay } from "@/lib/appointment-hours";
 import {
@@ -12,6 +12,7 @@ import {
   rangeEmptyMessage,
   type AppointmentRange,
 } from "@/lib/appointment-range";
+import AdminModal from "@/components/admin/AdminModal";
 import AppointmentFormModal from "@/components/admin/AppointmentFormModal";
 import AppointmentRangeFilter from "@/components/admin/AppointmentRangeFilter";
 import { deleteAppointment } from "@/app/(admin-protected)/admin/appointment/actions";
@@ -224,33 +225,14 @@ export default function AppointmentsClient({
       />
 
       {deleting && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-          onClick={() => !isDeleting && setDeleting(null)}
-        >
-          <div
-            className="w-full max-w-md rounded-3xl border border-gray-200 bg-white p-8 shadow-2xl"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-red-700">
-                Delete Appointment
-              </h2>
-              <button
-                type="button"
-                onClick={() => setDeleting(null)}
-                disabled={isDeleting}
-                className="rounded-lg p-2 transition-colors hover:bg-gray-100"
-              >
-                <FiX className="h-5 w-5" />
-              </button>
-            </div>
-            <p className="mb-6 text-gray-700">
-              Delete{" "}
-              <strong>{customerLabel(deleting)}&apos;s appointment</strong>?
-              This cannot be undone.
-            </p>
-            <div className="flex justify-end gap-4">
+        <AdminModal
+          open
+          onClose={() => setDeleting(null)}
+          title="Delete Appointment"
+          titleTone="danger"
+          closeDisabled={isDeleting}
+          footer={
+            <>
               <button
                 type="button"
                 onClick={() => setDeleting(null)}
@@ -267,9 +249,14 @@ export default function AppointmentsClient({
               >
                 {isDeleting ? "Deleting..." : "Delete"}
               </button>
-            </div>
-          </div>
-        </div>
+            </>
+          }
+        >
+          <p className="font-questrial text-gray-700">
+            Delete <strong>{customerLabel(deleting)}&apos;s appointment</strong>
+            ? This cannot be undone.
+          </p>
+        </AdminModal>
       )}
     </div>
   );

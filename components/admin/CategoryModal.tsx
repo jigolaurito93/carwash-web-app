@@ -1,13 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { FiX } from "react-icons/fi";
 import { toast } from "sonner";
 import type { Category } from "@/lib/app.types";
 import {
   createCategory,
   updateCategory,
 } from "@/app/(admin-protected)/admin/services/actions";
+import AdminModal from "@/components/admin/AdminModal";
 import SortPositionField from "@/components/admin/SortPositionField";
 import {
   placementFromCurrent,
@@ -115,98 +115,82 @@ export default function CategoryModal({
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
-      onClick={closeIfIdle}
-    >
-      <div
-        className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-4 shadow-2xl sm:rounded-3xl sm:p-8"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="font-lexend text-2xl font-bold text-gray-900">
-            {mode === "create" ? "Create Category" : "Edit Category"}
-          </h2>
+    <AdminModal
+      open={isOpen}
+      onClose={closeIfIdle}
+      title={mode === "create" ? "Create Category" : "Edit Category"}
+      closeDisabled={saving}
+      asForm
+      onSubmit={handleSubmit}
+      footer={
+        <>
           <button
             type="button"
             onClick={closeIfIdle}
             disabled={saving}
-            className="rounded-lg p-2 transition-colors hover:bg-gray-100"
+            className="btnCancel"
           >
-            <FiX className="h-5 w-5" />
+            Cancel
           </button>
+          <button
+            type="submit"
+            disabled={saving}
+            className="btnSaveYlw disabled:opacity-60"
+          >
+            {saving
+              ? "Saving..."
+              : mode === "create"
+                ? "Create Category"
+                : "Update Category"}
+          </button>
+        </>
+      }
+    >
+      <div className="space-y-6">
+        <div>
+          <label className="mb-2 block text-sm font-semibold text-gray-700">
+            Name *
+          </label>
+          <input
+            required
+            value={name}
+            onChange={(event) => handleNameChange(event.target.value)}
+            className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
+            placeholder="Main Wash"
+            disabled={saving}
+          />
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="mb-2 block text-sm font-semibold text-gray-700">
-              Name *
-            </label>
-            <input
-              required
-              value={name}
-              onChange={(event) => handleNameChange(event.target.value)}
-              className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
-              placeholder="Main Wash"
-              disabled={saving}
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-semibold text-gray-700">
-              Slug *
-            </label>
-            <input
-              required
-              value={slug}
-              onChange={(event) => {
-                setSlugTouched(true);
-                setSlug(event.target.value);
-              }}
-              className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
-              placeholder="main-wash"
-              disabled={saving}
-            />
-          </div>
-
-          <SortPositionField
-            items={sortableCategories}
-            placement={placement}
-            onChange={setPlacement}
-            previewName={
-              name || (mode === "create" ? "New category" : "This category")
-            }
-            noun="category"
+        <div>
+          <label className="mb-2 block text-sm font-semibold text-gray-700">
+            Slug *
+          </label>
+          <input
+            required
+            value={slug}
+            onChange={(event) => {
+              setSlugTouched(true);
+              setSlug(event.target.value);
+            }}
+            className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
+            placeholder="main-wash"
             disabled={saving}
-            excludeId={category?.id}
           />
+        </div>
 
-          <div className="flex justify-end gap-4 pt-4">
-            <button
-              type="button"
-              onClick={closeIfIdle}
-              disabled={saving}
-              className="btnCancel"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={saving}
-              className="btnSaveYlw disabled:opacity-60"
-            >
-              {saving
-                ? "Saving..."
-                : mode === "create"
-                  ? "Create Category"
-                  : "Update Category"}
-            </button>
-          </div>
-        </form>
+        <SortPositionField
+          items={sortableCategories}
+          placement={placement}
+          onChange={setPlacement}
+          previewName={
+            name || (mode === "create" ? "New category" : "This category")
+          }
+          noun="category"
+          disabled={saving}
+          excludeId={category?.id}
+        />
       </div>
-    </div>
+    </AdminModal>
   );
 }

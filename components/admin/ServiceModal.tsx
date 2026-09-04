@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { FiX } from "react-icons/fi";
 import { toast } from "sonner";
 import type { CardLayout, Category, ServiceRow } from "@/lib/app.types";
 import type { ServiceFormValues } from "@/lib/validations/service-schema";
@@ -9,6 +8,7 @@ import {
   createService,
   updateService,
 } from "@/app/(admin-protected)/admin/services/actions";
+import AdminModal from "@/components/admin/AdminModal";
 import ServiceCardLayoutPicker from "@/components/admin/ServiceCardLayoutPicker";
 import SortPositionField from "@/components/admin/SortPositionField";
 import {
@@ -278,398 +278,383 @@ export default function ServiceModal({
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
-      onClick={closeIfIdle}
-    >
-      <div
-        className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-4 shadow-2xl sm:rounded-3xl sm:p-8"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="font-lexend text-xl font-bold text-gray-900 sm:text-2xl">
-            {mode === "create" ? "Create Service" : "Edit Service"}
-          </h2>
+    <AdminModal
+      open={isOpen}
+      onClose={closeIfIdle}
+      title={mode === "create" ? "Create Service" : "Edit Service"}
+      maxWidth="4xl"
+      closeDisabled={saving}
+      asForm
+      onSubmit={handleSubmit}
+      footer={
+        <>
           <button
             type="button"
             onClick={closeIfIdle}
             disabled={saving}
-            className="rounded-lg p-2 transition-colors hover:bg-gray-100"
+            className="btnCancel"
           >
-            <FiX className="h-5 w-5" />
+            Cancel
           </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="mb-2 block text-sm font-semibold text-gray-700">
-              Name *
-            </label>
-            <input
-              required
-              value={formData.name}
-              onChange={(event) =>
-                setFormData({ ...formData, name: event.target.value })
-              }
-              className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
-              placeholder="Regular Wash"
-              disabled={saving}
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-semibold text-gray-700">
-              Description
-            </label>
-            <textarea
-              value={formData.description}
-              onChange={(event) =>
-                setFormData({ ...formData, description: event.target.value })
-              }
-              className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
-              rows={2}
-              placeholder="Quick description..."
-              disabled={saving}
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-semibold text-gray-700">
-              Notes
-            </label>
-            <textarea
-              value={formData.notes}
-              onChange={(event) =>
-                setFormData({ ...formData, notes: event.target.value })
-              }
-              className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
-              rows={3}
-              placeholder="Optional internal notes..."
-              disabled={saving}
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-semibold text-gray-700">
-              Category *
-            </label>
-            <select
-              required
-              value={formData.category_id}
-              onChange={(event) =>
-                setFormData({
-                  ...formData,
-                  category_id: event.target.value,
-                  placement: { kind: "end" },
-                })
-              }
-              className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
-              disabled={saving}
-            >
-              <option value="">-- Choose category --</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <SortPositionField
-            items={siblingServices}
-            placement={formData.placement}
-            onChange={(placement) => setFormData({ ...formData, placement })}
-            previewName={
-              formData.name ||
-              (mode === "create" ? "New service" : "This service")
-            }
-            noun="service"
-            disabled={saving || !formData.category_id}
-            disabledReason={
-              formData.category_id
-                ? undefined
-                : "Choose a category first to set the display position."
-            }
-            excludeId={service?.id}
-          />
-
-          <label className="flex items-center gap-2 font-questrial text-sm text-gray-700">
-            <input
-              type="checkbox"
-              checked={formData.is_active}
-              onChange={(event) =>
-                setFormData({ ...formData, is_active: event.target.checked })
-              }
-              className="h-4 w-4 accent-yellow-400"
-              disabled={saving}
-            />
-            Active (visible on the services page)
+          <button
+            type="submit"
+            disabled={saving}
+            className="btnSaveYlw disabled:opacity-60"
+          >
+            {saving
+              ? "Saving..."
+              : mode === "create"
+                ? "Create Service"
+                : "Update Service"}
+          </button>
+        </>
+      }
+    >
+      <div className="space-y-6">
+        <div>
+          <label className="mb-2 block text-sm font-semibold text-gray-700">
+            Name *
           </label>
-
-          <ServiceCardLayoutPicker
-            value={formData.layout}
-            onChange={(layout) => setFormData({ ...formData, layout })}
+          <input
+            required
+            value={formData.name}
+            onChange={(event) =>
+              setFormData({ ...formData, name: event.target.value })
+            }
+            className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
+            placeholder="Regular Wash"
             disabled={saving}
           />
+        </div>
 
-          {isLayout1 && (
-            <div className="border-t pt-6">
-              <h3 className="mb-4 text-lg font-semibold text-gray-800">
-                Layout 1 Data (Package)
-              </h3>
+        <div>
+          <label className="mb-2 block text-sm font-semibold text-gray-700">
+            Description
+          </label>
+          <textarea
+            value={formData.description}
+            onChange={(event) =>
+              setFormData({ ...formData, description: event.target.value })
+            }
+            className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
+            rows={2}
+            placeholder="Quick description..."
+            disabled={saving}
+          />
+        </div>
 
-              <div>
-                <label className="mb-2 block text-sm font-semibold text-gray-700">
-                  What&apos;s included (one per line)
-                </label>
-                <textarea
-                  value={formData.layout1_includes}
-                  onChange={(event) =>
-                    setFormData({
-                      ...formData,
-                      layout1_includes: event.target.value,
-                    })
-                  }
-                  className="w-full rounded-xl border border-gray-200 p-3"
-                  rows={4}
-                  placeholder="Hand Exterior Wash & Dry
-Basic Interior Vacuum (Floors & Seats)
-Window Cleaning (Inside & Out)
-Dusting of Dashboard"
-                  disabled={saving}
-                />
-              </div>
+        <div>
+          <label className="mb-2 block text-sm font-semibold text-gray-700">
+            Notes
+          </label>
+          <textarea
+            value={formData.notes}
+            onChange={(event) =>
+              setFormData({ ...formData, notes: event.target.value })
+            }
+            className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
+            rows={3}
+            placeholder="Optional internal notes..."
+            disabled={saving}
+          />
+        </div>
 
-              <div className="mt-4 grid grid-cols-3 gap-4">
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Small Car
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={formData.layout1_small}
-                    onChange={(event) =>
-                      setFormData({
-                        ...formData,
-                        layout1_small: Number(event.target.value),
-                      })
-                    }
-                    className="w-full rounded-xl border border-gray-200 p-3"
-                    placeholder="14.99"
-                    disabled={saving}
-                  />
-                </div>
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Medium Car
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={formData.layout1_medium}
-                    onChange={(event) =>
-                      setFormData({
-                        ...formData,
-                        layout1_medium: Number(event.target.value),
-                      })
-                    }
-                    className="w-full rounded-xl border border-gray-200 p-3"
-                    placeholder="19.99"
-                    disabled={saving}
-                  />
-                </div>
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Large Car
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={formData.layout1_large}
-                    onChange={(event) =>
-                      setFormData({
-                        ...formData,
-                        layout1_large: Number(event.target.value),
-                      })
-                    }
-                    className="w-full rounded-xl border border-gray-200 p-3"
-                    placeholder="24.99"
-                    disabled={saving}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
+        <div>
+          <label className="mb-2 block text-sm font-semibold text-gray-700">
+            Category *
+          </label>
+          <select
+            required
+            value={formData.category_id}
+            onChange={(event) =>
+              setFormData({
+                ...formData,
+                category_id: event.target.value,
+                placement: { kind: "end" },
+              })
+            }
+            className="w-full rounded-xl border border-gray-200 p-3 focus:ring-2 focus:ring-blue-500"
+            disabled={saving}
+          >
+            <option value="">-- Choose category --</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-          {isLayout2 && (
-            <div className="border-t pt-6">
-              <h3 className="mb-4 text-lg font-semibold text-gray-800">
-                Layout 2 Data (Add‑ons)
-              </h3>
+        <SortPositionField
+          items={siblingServices}
+          placement={formData.placement}
+          onChange={(placement) => setFormData({ ...formData, placement })}
+          previewName={
+            formData.name ||
+            (mode === "create" ? "New service" : "This service")
+          }
+          noun="service"
+          disabled={saving || !formData.category_id}
+          disabledReason={
+            formData.category_id
+              ? undefined
+              : "Choose a category first to set the display position."
+          }
+          excludeId={service?.id}
+        />
 
-              <p className="mb-2 text-sm text-gray-600">
-                Format: <code className="text-xs">Name=Value</code> (one per
-                line, e.g. <code>Wax=5.00</code>)
-              </p>
+        <label className="flex items-center gap-2 font-questrial text-sm text-gray-700">
+          <input
+            type="checkbox"
+            checked={formData.is_active}
+            onChange={(event) =>
+              setFormData({ ...formData, is_active: event.target.checked })
+            }
+            className="h-4 w-4 accent-yellow-400"
+            disabled={saving}
+          />
+          Active (visible on the services page)
+        </label>
+
+        <ServiceCardLayoutPicker
+          value={formData.layout}
+          onChange={(layout) => setFormData({ ...formData, layout })}
+          disabled={saving}
+        />
+
+        {isLayout1 && (
+          <div className="border-t pt-6">
+            <h3 className="mb-4 text-lg font-semibold text-gray-800">
+              Layout 1 Data (Package)
+            </h3>
+
+            <div>
+              <label className="mb-2 block text-sm font-semibold text-gray-700">
+                What&apos;s included (one per line)
+              </label>
               <textarea
-                value={formData.layout2_items}
+                value={formData.layout1_includes}
                 onChange={(event) =>
                   setFormData({
                     ...formData,
-                    layout2_items: event.target.value,
+                    layout1_includes: event.target.value,
                   })
                 }
                 className="w-full rounded-xl border border-gray-200 p-3"
-                rows={6}
-                placeholder="Tire Dressing=5.00
+                rows={4}
+                placeholder="Hand Exterior Wash & Dry
+Basic Interior Vacuum (Floors & Seats)
+Window Cleaning (Inside & Out)
+Dusting of Dashboard"
+                disabled={saving}
+              />
+            </div>
+
+            <div className="mt-4 grid grid-cols-3 gap-4">
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-700">
+                  Small Car
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={formData.layout1_small}
+                  onChange={(event) =>
+                    setFormData({
+                      ...formData,
+                      layout1_small: Number(event.target.value),
+                    })
+                  }
+                  className="w-full rounded-xl border border-gray-200 p-3"
+                  placeholder="14.99"
+                  disabled={saving}
+                />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-700">
+                  Medium Car
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={formData.layout1_medium}
+                  onChange={(event) =>
+                    setFormData({
+                      ...formData,
+                      layout1_medium: Number(event.target.value),
+                    })
+                  }
+                  className="w-full rounded-xl border border-gray-200 p-3"
+                  placeholder="19.99"
+                  disabled={saving}
+                />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-700">
+                  Large Car
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={formData.layout1_large}
+                  onChange={(event) =>
+                    setFormData({
+                      ...formData,
+                      layout1_large: Number(event.target.value),
+                    })
+                  }
+                  className="w-full rounded-xl border border-gray-200 p-3"
+                  placeholder="24.99"
+                  disabled={saving}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {isLayout2 && (
+          <div className="border-t pt-6">
+            <h3 className="mb-4 text-lg font-semibold text-gray-800">
+              Layout 2 Data (Add‑ons)
+            </h3>
+
+            <p className="mb-2 text-sm text-gray-600">
+              Format: <code className="text-xs">Name=Value</code> (one per line,
+              e.g. <code>Wax=5.00</code>)
+            </p>
+            <textarea
+              value={formData.layout2_items}
+              onChange={(event) =>
+                setFormData({
+                  ...formData,
+                  layout2_items: event.target.value,
+                })
+              }
+              className="w-full rounded-xl border border-gray-200 p-3"
+              rows={6}
+              placeholder="Tire Dressing=5.00
 Window Cleaning=5.00
 Paint Protection & Sealant (Cars)=120.00
 Paint Protection & Sealant (Mid Size)=150.00
 Paint Protection & Sealant (Full Size)=180.00"
-                disabled={saving}
-              />
-            </div>
-          )}
+              disabled={saving}
+            />
+          </div>
+        )}
 
-          {isLayout3 && (
-            <div className="border-t pt-6">
-              <h3 className="mb-4 text-lg font-semibold text-gray-800">
-                Layout 3 Data (Custom Info)
-              </h3>
-              <p className="mb-2 text-sm text-gray-600">
-                Enter any additional information for this service. Line breaks
-                are preserved.
-              </p>
+        {isLayout3 && (
+          <div className="border-t pt-6">
+            <h3 className="mb-4 text-lg font-semibold text-gray-800">
+              Layout 3 Data (Custom Info)
+            </h3>
+            <p className="mb-2 text-sm text-gray-600">
+              Enter any additional information for this service. Line breaks are
+              preserved.
+            </p>
+            <textarea
+              value={formData.layout3_info}
+              onChange={(event) =>
+                setFormData({
+                  ...formData,
+                  layout3_info: event.target.value,
+                })
+              }
+              className="w-full rounded-xl border border-gray-200 p-3"
+              rows={6}
+              placeholder="Enter custom details, notes, or instructions here..."
+              disabled={saving}
+            />
+          </div>
+        )}
+
+        {isLayout4 && (
+          <div className="border-t pt-6">
+            <h3 className="mb-4 text-lg font-semibold text-gray-800">
+              Layout 4 Data (Info + Prices)
+            </h3>
+
+            <div>
+              <label className="mb-2 block text-sm font-semibold text-gray-700">
+                Info
+              </label>
               <textarea
-                value={formData.layout3_info}
+                value={formData.layout4_info}
                 onChange={(event) =>
                   setFormData({
                     ...formData,
-                    layout3_info: event.target.value,
+                    layout4_info: event.target.value,
                   })
                 }
                 className="w-full rounded-xl border border-gray-200 p-3"
-                rows={6}
+                rows={4}
                 placeholder="Enter custom details, notes, or instructions here..."
                 disabled={saving}
               />
             </div>
-          )}
 
-          {isLayout4 && (
-            <div className="border-t pt-6">
-              <h3 className="mb-4 text-lg font-semibold text-gray-800">
-                Layout 4 Data (Info + Prices)
-              </h3>
-
+            <div className="mt-4 grid grid-cols-3 gap-4">
               <div>
                 <label className="mb-2 block text-sm font-semibold text-gray-700">
-                  Info
+                  Small Car
                 </label>
-                <textarea
-                  value={formData.layout4_info}
+                <input
+                  type="number"
+                  step="0.01"
+                  value={formData.layout4_small}
                   onChange={(event) =>
                     setFormData({
                       ...formData,
-                      layout4_info: event.target.value,
+                      layout4_small: Number(event.target.value),
                     })
                   }
                   className="w-full rounded-xl border border-gray-200 p-3"
-                  rows={4}
-                  placeholder="Enter custom details, notes, or instructions here..."
+                  placeholder="14.99"
                   disabled={saving}
                 />
               </div>
-
-              <div className="mt-4 grid grid-cols-3 gap-4">
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Small Car
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={formData.layout4_small}
-                    onChange={(event) =>
-                      setFormData({
-                        ...formData,
-                        layout4_small: Number(event.target.value),
-                      })
-                    }
-                    className="w-full rounded-xl border border-gray-200 p-3"
-                    placeholder="14.99"
-                    disabled={saving}
-                  />
-                </div>
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Medium Car
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={formData.layout4_medium}
-                    onChange={(event) =>
-                      setFormData({
-                        ...formData,
-                        layout4_medium: Number(event.target.value),
-                      })
-                    }
-                    className="w-full rounded-xl border border-gray-200 p-3"
-                    placeholder="19.99"
-                    disabled={saving}
-                  />
-                </div>
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Large Car
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={formData.layout4_large}
-                    onChange={(event) =>
-                      setFormData({
-                        ...formData,
-                        layout4_large: Number(event.target.value),
-                      })
-                    }
-                    className="w-full rounded-xl border border-gray-200 p-3"
-                    placeholder="24.99"
-                    disabled={saving}
-                  />
-                </div>
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-700">
+                  Medium Car
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={formData.layout4_medium}
+                  onChange={(event) =>
+                    setFormData({
+                      ...formData,
+                      layout4_medium: Number(event.target.value),
+                    })
+                  }
+                  className="w-full rounded-xl border border-gray-200 p-3"
+                  placeholder="19.99"
+                  disabled={saving}
+                />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-700">
+                  Large Car
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={formData.layout4_large}
+                  onChange={(event) =>
+                    setFormData({
+                      ...formData,
+                      layout4_large: Number(event.target.value),
+                    })
+                  }
+                  className="w-full rounded-xl border border-gray-200 p-3"
+                  placeholder="24.99"
+                  disabled={saving}
+                />
               </div>
             </div>
-          )}
-
-          <div className="flex justify-end gap-4 pt-6">
-            <button
-              type="button"
-              onClick={closeIfIdle}
-              disabled={saving}
-              className="btnCancel"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={saving}
-              className="btnSaveYlw disabled:opacity-60"
-            >
-              {saving
-                ? "Saving..."
-                : mode === "create"
-                  ? "Create Service"
-                  : "Update Service"}
-            </button>
           </div>
-        </form>
+        )}
       </div>
-    </div>
+    </AdminModal>
   );
 }

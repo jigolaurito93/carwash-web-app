@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { FiEdit2, FiPlusCircle, FiTrash2, FiX } from "react-icons/fi";
+import { FiEdit2, FiPlusCircle, FiTrash2 } from "react-icons/fi";
 import type { Faq } from "@/lib/app.types";
 import {
   createFaq,
@@ -11,6 +11,7 @@ import {
   toggleFaqActive,
   updateFaq,
 } from "@/app/(admin-protected)/admin/faq/actions";
+import AdminModal from "@/components/admin/AdminModal";
 
 type Props = {
   faqs: Faq[];
@@ -210,146 +211,118 @@ export default function FaqAdmin({ faqs }: Props) {
       )}
 
       {modal && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
-          onClick={closeModal}
-        >
-          <div
-            className="w-full max-w-lg rounded-3xl border border-gray-200 bg-white p-8 shadow-2xl"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="mb-6 flex items-center justify-between">
-              <h2 className="font-lexend text-2xl font-bold text-gray-900">
-                {modal === "create" ? "Add FAQ" : "Edit FAQ"}
-              </h2>
+        <AdminModal
+          open
+          onClose={closeModal}
+          title={modal === "create" ? "Add FAQ" : "Edit FAQ"}
+          maxWidth="lg"
+          closeDisabled={saving}
+          asForm
+          onSubmit={handleSubmit}
+          footer={
+            <>
               <button
                 type="button"
                 onClick={closeModal}
                 disabled={saving}
-                className="rounded-lg p-2 transition-colors hover:bg-gray-100"
+                className="btnCancel"
               >
-                <FiX className="h-5 w-5" />
+                Cancel
               </button>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="labelx block text-xs" htmlFor="faq-question">
-                  Question
-                </label>
-                <input
-                  id="faq-question"
-                  required
-                  maxLength={300}
-                  value={form.question}
-                  onChange={(event) =>
-                    setForm({ ...form, question: event.target.value })
-                  }
-                  className="inputx text-sm"
-                  disabled={saving}
-                />
-              </div>
-              <div>
-                <label className="labelx block text-xs" htmlFor="faq-answer">
-                  Answer
-                </label>
-                <textarea
-                  id="faq-answer"
-                  required
-                  maxLength={2000}
-                  rows={5}
-                  value={form.answer}
-                  onChange={(event) =>
-                    setForm({ ...form, answer: event.target.value })
-                  }
-                  className="inputx min-h-32 text-sm"
-                  disabled={saving}
-                />
-              </div>
-              <div>
-                <label className="labelx block text-xs" htmlFor="faq-sort">
-                  Sort order
-                </label>
-                <input
-                  id="faq-sort"
-                  type="number"
-                  min={0}
-                  step={1}
-                  required
-                  value={form.sort_order}
-                  onChange={(event) =>
-                    setForm({
-                      ...form,
-                      sort_order: Number(event.target.value),
-                    })
-                  }
-                  className="inputx text-sm"
-                  disabled={saving}
-                />
-              </div>
-              <label className="flex items-center gap-2 font-questrial text-sm text-gray-700">
-                <input
-                  type="checkbox"
-                  checked={form.is_active}
-                  onChange={(event) =>
-                    setForm({ ...form, is_active: event.target.checked })
-                  }
-                  className="h-4 w-4 accent-yellow-400"
-                  disabled={saving}
-                />
-                Active (visible on the contact page)
+              <button
+                type="submit"
+                disabled={saving}
+                className="btnSaveYlw disabled:opacity-60"
+              >
+                {saving
+                  ? "Saving..."
+                  : modal === "create"
+                    ? "Create FAQ"
+                    : "Save FAQ"}
+              </button>
+            </>
+          }
+        >
+          <div className="space-y-4">
+            <div>
+              <label className="labelx block text-xs" htmlFor="faq-question">
+                Question
               </label>
-              <div className="flex justify-end gap-4 pt-2">
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  disabled={saving}
-                  className="btnCancel"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="btnSaveYlw disabled:opacity-60"
-                >
-                  {saving
-                    ? "Saving..."
-                    : modal === "create"
-                      ? "Create FAQ"
-                      : "Save FAQ"}
-                </button>
-              </div>
-            </form>
+              <input
+                id="faq-question"
+                required
+                maxLength={300}
+                value={form.question}
+                onChange={(event) =>
+                  setForm({ ...form, question: event.target.value })
+                }
+                className="inputx text-sm"
+                disabled={saving}
+              />
+            </div>
+            <div>
+              <label className="labelx block text-xs" htmlFor="faq-answer">
+                Answer
+              </label>
+              <textarea
+                id="faq-answer"
+                required
+                maxLength={2000}
+                rows={5}
+                value={form.answer}
+                onChange={(event) =>
+                  setForm({ ...form, answer: event.target.value })
+                }
+                className="inputx min-h-32 text-sm"
+                disabled={saving}
+              />
+            </div>
+            <div>
+              <label className="labelx block text-xs" htmlFor="faq-sort">
+                Sort order
+              </label>
+              <input
+                id="faq-sort"
+                type="number"
+                min={0}
+                step={1}
+                required
+                value={form.sort_order}
+                onChange={(event) =>
+                  setForm({
+                    ...form,
+                    sort_order: Number(event.target.value),
+                  })
+                }
+                className="inputx text-sm"
+                disabled={saving}
+              />
+            </div>
+            <label className="flex items-center gap-2 font-questrial text-sm text-gray-700">
+              <input
+                type="checkbox"
+                checked={form.is_active}
+                onChange={(event) =>
+                  setForm({ ...form, is_active: event.target.checked })
+                }
+                className="h-4 w-4 accent-yellow-400"
+                disabled={saving}
+              />
+              Active (visible on the contact page)
+            </label>
           </div>
-        </div>
+        </AdminModal>
       )}
 
       {deleting && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-          onClick={() => !isDeleting && setDeleting(null)}
-        >
-          <div
-            className="w-full max-w-md rounded-3xl border border-gray-200 bg-white p-8 shadow-2xl"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-red-700">Delete FAQ</h2>
-              <button
-                type="button"
-                onClick={() => setDeleting(null)}
-                disabled={isDeleting}
-                className="rounded-lg p-2 transition-colors hover:bg-gray-100"
-              >
-                <FiX className="h-5 w-5" />
-              </button>
-            </div>
-            <p className="mb-6 text-gray-700">
-              Delete <strong>{deleting.question}</strong>? This cannot be
-              undone.
-            </p>
-            <div className="flex justify-end gap-4">
+        <AdminModal
+          open
+          onClose={() => setDeleting(null)}
+          title="Delete FAQ"
+          titleTone="danger"
+          closeDisabled={isDeleting}
+          footer={
+            <>
               <button
                 type="button"
                 onClick={() => setDeleting(null)}
@@ -366,9 +339,13 @@ export default function FaqAdmin({ faqs }: Props) {
               >
                 {isDeleting ? "Deleting..." : "Delete"}
               </button>
-            </div>
-          </div>
-        </div>
+            </>
+          }
+        >
+          <p className="font-questrial text-gray-700">
+            Delete <strong>{deleting.question}</strong>? This cannot be undone.
+          </p>
+        </AdminModal>
       )}
     </div>
   );

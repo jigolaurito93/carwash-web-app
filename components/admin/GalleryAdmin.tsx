@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { FiTrash2, FiUpload, FiX } from "react-icons/fi";
+import { FiTrash2, FiUpload } from "react-icons/fi";
 import { supabase } from "@/lib/supabase";
 import type { GalleryImage } from "@/lib/app.types";
 import {
@@ -12,6 +12,7 @@ import {
   revalidateGalleryPages,
   updateGalleryImage,
 } from "@/app/(admin-protected)/admin/gallery/actions";
+import AdminModal from "@/components/admin/AdminModal";
 
 const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 const MAX_SIZE_BYTES = 5 * 1024 * 1024;
@@ -274,31 +275,14 @@ export default function GalleryAdmin({ images }: Props) {
       )}
 
       {deleting && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-          onClick={() => !isDeleting && setDeleting(null)}
-        >
-          <div
-            className="w-full max-w-md rounded-3xl border border-gray-200 bg-white p-8 shadow-2xl"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-red-700">Delete image</h2>
-              <button
-                type="button"
-                onClick={() => setDeleting(null)}
-                disabled={isDeleting}
-                className="rounded-lg p-2 transition-colors hover:bg-gray-100"
-              >
-                <FiX className="h-5 w-5" />
-              </button>
-            </div>
-            <p className="mb-6 text-gray-700">
-              Delete{" "}
-              <strong>{deleting.caption || deleting.storage_path}</strong>? This
-              removes the file from storage and cannot be undone.
-            </p>
-            <div className="flex justify-end gap-4">
+        <AdminModal
+          open
+          onClose={() => setDeleting(null)}
+          title="Delete image"
+          titleTone="danger"
+          closeDisabled={isDeleting}
+          footer={
+            <>
               <button
                 type="button"
                 onClick={() => setDeleting(null)}
@@ -315,9 +299,14 @@ export default function GalleryAdmin({ images }: Props) {
               >
                 {isDeleting ? "Deleting..." : "Delete"}
               </button>
-            </div>
-          </div>
-        </div>
+            </>
+          }
+        >
+          <p className="font-questrial text-gray-700">
+            Delete <strong>{deleting.caption || deleting.storage_path}</strong>?
+            This removes the file from storage and cannot be undone.
+          </p>
+        </AdminModal>
       )}
     </div>
   );

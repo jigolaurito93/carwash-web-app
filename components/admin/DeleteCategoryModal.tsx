@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { FiX } from "react-icons/fi";
 import { toast } from "sonner";
 import { deleteCategory } from "@/app/(admin-protected)/admin/services/actions";
+import AdminModal from "@/components/admin/AdminModal";
 
 type Category = {
   id: number;
@@ -51,43 +51,15 @@ export default function DeleteCategoryModal({
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-      onClick={closeIfIdle}
-    >
-      <div
-        className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-4 shadow-2xl sm:rounded-3xl sm:p-8"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-red-700">Delete Category</h2>
-          <button
-            type="button"
-            onClick={closeIfIdle}
-            disabled={isDeleting}
-            className="rounded-lg p-2 transition-colors hover:bg-gray-100"
-          >
-            <FiX className="h-5 w-5" />
-          </button>
-        </div>
-
-        {hasServices ? (
-          <p className="mb-6 text-gray-700">
-            <strong>{category.name}</strong> still has {serviceCount}{" "}
-            {serviceCount === 1 ? "service" : "services"}. Delete or move those
-            first, then you can remove the category.
-          </p>
-        ) : (
-          <p className="mb-6 text-gray-700">
-            Are you sure you want to delete <strong>{category.name}</strong>?
-            This action cannot be undone.
-          </p>
-        )}
-
-        <div className="flex justify-end gap-4">
+    <AdminModal
+      open={isOpen}
+      onClose={closeIfIdle}
+      title="Delete Category"
+      titleTone="danger"
+      closeDisabled={isDeleting}
+      footer={
+        <>
           <button
             type="button"
             onClick={closeIfIdle}
@@ -106,8 +78,21 @@ export default function DeleteCategoryModal({
               {isDeleting ? "Deleting..." : "Delete"}
             </button>
           )}
-        </div>
-      </div>
-    </div>
+        </>
+      }
+    >
+      {hasServices ? (
+        <p className="font-questrial text-gray-700">
+          <strong>{category.name}</strong> still has {serviceCount}{" "}
+          {serviceCount === 1 ? "service" : "services"}. Delete or move those
+          first, then you can remove the category.
+        </p>
+      ) : (
+        <p className="font-questrial text-gray-700">
+          Are you sure you want to delete <strong>{category.name}</strong>? This
+          action cannot be undone.
+        </p>
+      )}
+    </AdminModal>
   );
 }

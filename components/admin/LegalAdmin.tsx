@@ -5,11 +5,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { toast } from "sonner";
-import { FiExternalLink, FiRotateCcw, FiX } from "react-icons/fi";
+import { FiExternalLink, FiRotateCcw } from "react-icons/fi";
 import type { JSONContent } from "@tiptap/core";
 import type { LegalDocument, LegalSlug } from "@/lib/app.types";
 import type { Json } from "@/lib/database.types";
 import { cn } from "@/lib/utils";
+import AdminModal from "@/components/admin/AdminModal";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 import {
   publishLegalDocument,
@@ -287,32 +288,13 @@ export default function LegalAdmin({ documents }: Props) {
       </section>
 
       {restoring && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
-          onClick={() => !isRestoring && setRestoring(null)}
-        >
-          <div
-            className="w-full max-w-md rounded-3xl border border-gray-200 bg-white p-8 shadow-2xl"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="mb-6 flex items-center justify-between">
-              <h2 className="font-lexend text-2xl font-bold text-gray-900">
-                Restore version {restoring.version}
-              </h2>
-              <button
-                type="button"
-                onClick={() => setRestoring(null)}
-                disabled={isRestoring}
-                className="rounded-lg p-2 transition-colors hover:bg-gray-100"
-              >
-                <FiX className="h-5 w-5" />
-              </button>
-            </div>
-            <p className="mb-6 font-questrial text-gray-700">
-              This publishes the content of version {restoring.version} as a new
-              version {(current?.version ?? 0) + 1}. It goes live immediately.
-            </p>
-            <div className="flex justify-end gap-4">
+        <AdminModal
+          open
+          onClose={() => setRestoring(null)}
+          title={`Restore version ${restoring.version}`}
+          closeDisabled={isRestoring}
+          footer={
+            <>
               <button
                 type="button"
                 onClick={() => setRestoring(null)}
@@ -329,9 +311,14 @@ export default function LegalAdmin({ documents }: Props) {
               >
                 {isRestoring ? "Restoring..." : "Restore"}
               </button>
-            </div>
-          </div>
-        </div>
+            </>
+          }
+        >
+          <p className="font-questrial text-gray-700">
+            This publishes the content of version {restoring.version} as a new
+            version {(current?.version ?? 0) + 1}. It goes live immediately.
+          </p>
+        </AdminModal>
       )}
     </div>
   );

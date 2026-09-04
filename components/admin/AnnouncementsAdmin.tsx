@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { FiEdit2, FiPlusCircle, FiTrash2, FiX } from "react-icons/fi";
+import { FiEdit2, FiPlusCircle, FiTrash2 } from "react-icons/fi";
 import type { SiteAnnouncement } from "@/lib/app.types";
 import {
   createAnnouncement,
@@ -11,6 +11,7 @@ import {
   toggleAnnouncementActive,
   updateAnnouncement,
 } from "@/app/(admin-protected)/admin/announcements/actions";
+import AdminModal from "@/components/admin/AdminModal";
 
 type Props = {
   announcements: SiteAnnouncement[];
@@ -218,156 +219,127 @@ export default function AnnouncementsAdmin({ announcements }: Props) {
       )}
 
       {modal && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
-          onClick={closeModal}
-        >
-          <div
-            className="w-full max-w-lg rounded-3xl border border-gray-200 bg-white p-8 shadow-2xl"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="mb-6 flex items-center justify-between">
-              <h2 className="font-lexend text-2xl font-bold text-gray-900">
-                {modal === "create" ? "Add announcement" : "Edit announcement"}
-              </h2>
+        <AdminModal
+          open
+          onClose={closeModal}
+          title={modal === "create" ? "Add announcement" : "Edit announcement"}
+          maxWidth="lg"
+          closeDisabled={saving}
+          asForm
+          onSubmit={handleSubmit}
+          footer={
+            <>
               <button
                 type="button"
                 onClick={closeModal}
                 disabled={saving}
-                className="rounded-lg p-2 transition-colors hover:bg-gray-100"
+                className="btnCancel"
               >
-                <FiX className="h-5 w-5" />
+                Cancel
               </button>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label
-                  className="labelx block text-xs"
-                  htmlFor="announcement-message"
-                >
-                  Message
-                </label>
-                <input
-                  id="announcement-message"
-                  required
-                  maxLength={200}
-                  value={form.message}
-                  onChange={(event) =>
-                    setForm({ ...form, message: event.target.value })
-                  }
-                  className="inputx text-sm"
-                  disabled={saving}
-                />
-              </div>
-              <div>
-                <label
-                  className="labelx block text-xs"
-                  htmlFor="announcement-link"
-                >
-                  Optional link
-                </label>
-                <input
-                  id="announcement-link"
-                  type="url"
-                  maxLength={500}
-                  placeholder="https://"
-                  value={form.link_url}
-                  onChange={(event) =>
-                    setForm({ ...form, link_url: event.target.value })
-                  }
-                  className="inputx text-sm"
-                  disabled={saving}
-                />
-              </div>
-              <div>
-                <label
-                  className="labelx block text-xs"
-                  htmlFor="announcement-sort"
-                >
-                  Sort order
-                </label>
-                <input
-                  id="announcement-sort"
-                  type="number"
-                  min={0}
-                  step={1}
-                  required
-                  value={form.sort_order}
-                  onChange={(event) =>
-                    setForm({
-                      ...form,
-                      sort_order: Number(event.target.value),
-                    })
-                  }
-                  className="inputx text-sm"
-                  disabled={saving}
-                />
-              </div>
-              <label className="flex items-center gap-2 font-questrial text-sm text-gray-700">
-                <input
-                  type="checkbox"
-                  checked={form.is_active}
-                  onChange={(event) =>
-                    setForm({ ...form, is_active: event.target.checked })
-                  }
-                  className="h-4 w-4 accent-yellow-400"
-                  disabled={saving}
-                />
-                Active (visible in the top banner)
+              <button
+                type="submit"
+                disabled={saving}
+                className="btnSaveYlw disabled:opacity-60"
+              >
+                {saving
+                  ? "Saving..."
+                  : modal === "create"
+                    ? "Create announcement"
+                    : "Save announcement"}
+              </button>
+            </>
+          }
+        >
+          <div className="space-y-4">
+            <div>
+              <label
+                className="labelx block text-xs"
+                htmlFor="announcement-message"
+              >
+                Message
               </label>
-              <div className="flex justify-end gap-4 pt-2">
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  disabled={saving}
-                  className="btnCancel"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="btnSaveYlw disabled:opacity-60"
-                >
-                  {saving
-                    ? "Saving..."
-                    : modal === "create"
-                      ? "Create announcement"
-                      : "Save announcement"}
-                </button>
-              </div>
-            </form>
+              <input
+                id="announcement-message"
+                required
+                maxLength={200}
+                value={form.message}
+                onChange={(event) =>
+                  setForm({ ...form, message: event.target.value })
+                }
+                className="inputx text-sm"
+                disabled={saving}
+              />
+            </div>
+            <div>
+              <label
+                className="labelx block text-xs"
+                htmlFor="announcement-link"
+              >
+                Optional link
+              </label>
+              <input
+                id="announcement-link"
+                type="url"
+                maxLength={500}
+                placeholder="https://"
+                value={form.link_url}
+                onChange={(event) =>
+                  setForm({ ...form, link_url: event.target.value })
+                }
+                className="inputx text-sm"
+                disabled={saving}
+              />
+            </div>
+            <div>
+              <label
+                className="labelx block text-xs"
+                htmlFor="announcement-sort"
+              >
+                Sort order
+              </label>
+              <input
+                id="announcement-sort"
+                type="number"
+                min={0}
+                step={1}
+                required
+                value={form.sort_order}
+                onChange={(event) =>
+                  setForm({
+                    ...form,
+                    sort_order: Number(event.target.value),
+                  })
+                }
+                className="inputx text-sm"
+                disabled={saving}
+              />
+            </div>
+            <label className="flex items-center gap-2 font-questrial text-sm text-gray-700">
+              <input
+                type="checkbox"
+                checked={form.is_active}
+                onChange={(event) =>
+                  setForm({ ...form, is_active: event.target.checked })
+                }
+                className="h-4 w-4 accent-yellow-400"
+                disabled={saving}
+              />
+              Active (visible in the top banner)
+            </label>
           </div>
-        </div>
+        </AdminModal>
       )}
 
       {deleting && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-          onClick={() => !isDeleting && setDeleting(null)}
-        >
-          <div
-            className="w-full max-w-md rounded-3xl border border-gray-200 bg-white p-8 shadow-2xl"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-red-700">
-                Delete announcement
-              </h2>
-              <button
-                type="button"
-                onClick={() => setDeleting(null)}
-                disabled={isDeleting}
-                className="rounded-lg p-2 transition-colors hover:bg-gray-100"
-              >
-                <FiX className="h-5 w-5" />
-              </button>
-            </div>
-            <p className="mb-6 text-gray-700">
-              Delete <strong>{deleting.message}</strong>? This cannot be undone.
-            </p>
-            <div className="flex justify-end gap-4">
+        <AdminModal
+          open
+          onClose={() => setDeleting(null)}
+          title="Delete announcement"
+          titleTone="danger"
+          closeDisabled={isDeleting}
+          footer={
+            <>
               <button
                 type="button"
                 onClick={() => setDeleting(null)}
@@ -384,9 +356,13 @@ export default function AnnouncementsAdmin({ announcements }: Props) {
               >
                 {isDeleting ? "Deleting..." : "Delete"}
               </button>
-            </div>
-          </div>
-        </div>
+            </>
+          }
+        >
+          <p className="font-questrial text-gray-700">
+            Delete <strong>{deleting.message}</strong>? This cannot be undone.
+          </p>
+        </AdminModal>
       )}
     </div>
   );

@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { FiX } from "react-icons/fi";
 import { toast } from "sonner";
 import { deleteService } from "@/app/(admin-protected)/admin/services/actions";
+import AdminModal from "@/components/admin/AdminModal";
 
 type Service = {
   id: number;
@@ -47,35 +47,15 @@ export default function DeleteServiceModal({
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-      onClick={closeIfIdle}
-    >
-      <div
-        className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-4 shadow-2xl sm:rounded-3xl sm:p-8"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-red-700">Delete Service</h2>
-          <button
-            type="button"
-            onClick={closeIfIdle}
-            disabled={isDeleting}
-            className="rounded-lg p-2 transition-colors hover:bg-gray-100"
-          >
-            <FiX className="h-5 w-5" />
-          </button>
-        </div>
-
-        <p className="mb-6 text-gray-700">
-          Are you sure you want to delete <strong>{service.name}</strong>? This
-          action cannot be undone.
-        </p>
-
-        <div className="flex justify-end gap-4">
+    <AdminModal
+      open={isOpen}
+      onClose={closeIfIdle}
+      title="Delete Service"
+      titleTone="danger"
+      closeDisabled={isDeleting}
+      footer={
+        <>
           <button
             type="button"
             onClick={closeIfIdle}
@@ -92,8 +72,13 @@ export default function DeleteServiceModal({
           >
             {isDeleting ? "Deleting..." : "Delete"}
           </button>
-        </div>
-      </div>
-    </div>
+        </>
+      }
+    >
+      <p className="font-questrial text-gray-700">
+        Are you sure you want to delete <strong>{service.name}</strong>? This
+        action cannot be undone.
+      </p>
+    </AdminModal>
   );
 }
