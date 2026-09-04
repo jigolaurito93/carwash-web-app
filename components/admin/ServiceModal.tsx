@@ -9,6 +9,7 @@ import {
   createService,
   updateService,
 } from "@/app/(admin-protected)/admin/services/actions";
+import ServiceCardLayoutPicker from "@/components/admin/ServiceCardLayoutPicker";
 
 type Props = {
   isOpen: boolean;
@@ -39,13 +40,6 @@ type ServiceFormState = {
   layout1_large: number;
   layout2_items: string;
 };
-
-const LAYOUT_OPTIONS: { value: CardLayout; label: string }[] = [
-  { value: "layout1", label: "Layout 1 (Package)" },
-  { value: "layout2", label: "Layout 2 (Add‑ons)" },
-  { value: "layout3", label: "Layout 3 (Custom Info)" },
-  { value: "layout4", label: "Layout 4 (Info + Prices)" },
-];
 
 function isCardLayout(value: string | null | undefined): value is CardLayout {
   return (
@@ -296,7 +290,7 @@ export default function ServiceModal({
       onClick={closeIfIdle}
     >
       <div
-        className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-4 shadow-2xl sm:rounded-3xl sm:p-8"
+        className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-4 shadow-2xl sm:rounded-3xl sm:p-8"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="mb-6 flex items-center justify-between">
@@ -424,28 +418,11 @@ export default function ServiceModal({
             Active (visible on the services page)
           </label>
 
-          <div>
-            <label className="mb-2 block text-sm font-semibold text-gray-700">
-              Card Layout *
-            </label>
-            <div className="flex flex-wrap gap-4">
-              {LAYOUT_OPTIONS.map((option) => (
-                <label key={option.value} className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="layout"
-                    value={option.value}
-                    checked={formData.layout === option.value}
-                    onChange={() =>
-                      setFormData({ ...formData, layout: option.value })
-                    }
-                    disabled={saving}
-                  />
-                  {option.label}
-                </label>
-              ))}
-            </div>
-          </div>
+          <ServiceCardLayoutPicker
+            value={formData.layout}
+            onChange={(layout) => setFormData({ ...formData, layout })}
+            disabled={saving}
+          />
 
           {isLayout1 && (
             <div className="border-t pt-6">

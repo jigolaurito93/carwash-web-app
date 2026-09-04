@@ -193,7 +193,7 @@ export default function ServicesAdmin({ categories, services }: Props) {
               </div>
 
               <div className="hidden overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-lg md:block">
-                <table className="w-full min-w-[40rem]">
+                <table className="w-full min-w-60">
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">

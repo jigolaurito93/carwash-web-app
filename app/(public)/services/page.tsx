@@ -3,8 +3,8 @@ import { Suspense } from "react";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { ServiceRow } from "@/lib/app.types";
-import { HiShieldCheck } from "react-icons/hi";
 import Image from "next/image";
+import ServiceCard from "@/components/services/ServiceCard";
 import ServiceCardsSkeleton from "@/components/services/ServiceCardsSkeleton";
 
 export default function ServicesPage() {
@@ -114,160 +114,13 @@ async function ServicesCatalog() {
             </div>
 
             <div className="mx-auto grid max-w-350 grid-cols-1 gap-8 sm:max-w-200 sm:grid-cols-2 lg:max-w-250 lg:grid-cols-3 xl:max-w-355 xl:grid-cols-4">
-              {categoryServices.map((service) => {
-                const isLayout1 = service.card_layout === "layout1";
-                const isLayout2 = service.card_layout === "layout2";
-                const isLayout3 = service.card_layout === "layout3";
-                const isLayout4 = service.card_layout === "layout4";
-
-                return (
-                  <div
-                    key={service.id}
-                    className="hover:shadow-3xl mx-auto grid w-full max-w-90 grid-rows-[96px_1fr] overflow-hidden rounded-2xl bg-[#1c1c1c] backdrop-blur-sm transition-all xl:max-w-250"
-                  >
-                    <div className="row-start-1 flex h-24 shrink-0 items-center justify-center bg-yellow-400 p-4">
-                      <div className="space-y-1 text-center">
-                        <h3 className="font-lexend text-xl leading-tight font-bold text-gray-900">
-                          {service.name}
-                        </h3>
-                        {service.description && (
-                          <p className="font-lexend text-xs leading-tight text-gray-700">
-                            {service.description}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="row-start-2 overflow-y-auto p-6">
-                      {isLayout1 && service.layout1_data && (
-                        <div className="mb-8 space-y-2">
-                          <h4 className="text-md mb-4 font-semibold tracking-wide text-yellow-400">
-                            What&apos;s included
-                          </h4>
-                          <ul className="space-y-2 text-sm text-white/90">
-                            {service.layout1_data.includes
-                              ?.filter((i: string) => i.trim())
-                              .map((item, idx) => (
-                                <div
-                                  key={idx}
-                                  className="flex items-start gap-2"
-                                >
-                                  <HiShieldCheck className="mt-1 h-4 w-4 shrink-0 text-green-400" />
-                                  <span className="leading-5">
-                                    {item.trim()}
-                                  </span>
-                                </div>
-                              ))}
-                          </ul>
-                          {service.notes && (
-                            <p className="mt-10 text-sm text-gray-400 italic">
-                              {service.notes}
-                            </p>
-                          )}
-                        </div>
-                      )}
-                      {isLayout2 && service.layout2_data && (
-                        <div className="mb-8 space-y-2">
-                          <h4 className="text-md mb-4 font-semibold tracking-wide text-yellow-400">
-                            Add-Ons & Upgrades
-                          </h4>
-                          <ul className="space-y-1 text-sm text-white/90">
-                            {Object.entries(
-                              service.layout2_data.items || {},
-                            ).map(([name, price]) => (
-                              <li key={name} className="flex items-start gap-2">
-                                <span className="leading-5">{name}</span>
-                                <span className="ml-auto font-medium">
-                                  {typeof price === "number" ? (
-                                    `$${price.toFixed(2)}`
-                                  ) : (
-                                    <span className="italic">{price}</span>
-                                  )}
-                                </span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-
-                      {isLayout3 && service.layout3_data && (
-                        <div className="mb-8 space-y-2">
-                          <p className="text-sm leading-7 whitespace-pre-wrap text-white/90">
-                            {service.layout3_data}
-                          </p>
-                          <button className="btnSaveYlw mt-14">
-                            <a
-                              href={`tel:${shopInfo?.phone}`}
-                              className="hover:text-white"
-                            >
-                              Call for Quote
-                            </a>
-                          </button>
-                        </div>
-                      )}
-
-                      {isLayout4 && service.layout4_data && (
-                        <div className="mb-8 space-y-2 text-sm">
-                          <p className="text-md whitespace-pre-wrap text-white/90">
-                            {service.layout4_data.info}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-
-                    {((isLayout1 && service.layout1_data) ||
-                      (isLayout4 && service.layout4_data)) && (
-                      <div className="row-start-3 flex flex-col justify-center space-y-1 border-t border-white/10 bg-gray-900/50 p-6 pt-4">
-                        <div className="flex justify-between text-sm">
-                          <span className="font-bold text-gray-400">
-                            Most Cars / Sedans:
-                          </span>
-                          <span className="font-bold text-white">
-                            $
-                            {(
-                              (isLayout1
-                                ? service.layout1_data?.small_car_price
-                                : service.layout4_data?.small_car_price) ?? 0
-                            )
-                              .toFixed(2)
-                              .replace(/\.?0+$/, "")}
-                          </span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="font-bold text-gray-400">
-                            Mid-Size / Crossover:
-                          </span>
-                          <span className="font-bold text-white">
-                            $
-                            {(
-                              (isLayout1
-                                ? service.layout1_data?.medium_car_price
-                                : service.layout4_data?.medium_car_price) ?? 0
-                            )
-                              .toFixed(2)
-                              .replace(/\.?0+$/, "")}
-                          </span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="font-bold text-gray-400">
-                            Full-Size / Large:
-                          </span>
-                          <span className="font-bold text-white">
-                            $
-                            {(
-                              (isLayout1
-                                ? service.layout1_data?.large_car_price
-                                : service.layout4_data?.large_car_price) ?? 0
-                            )
-                              .toFixed(2)
-                              .replace(/\.?0+$/, "")}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+              {categoryServices.map((service) => (
+                <ServiceCard
+                  key={service.id}
+                  service={service}
+                  phone={shopInfo?.phone}
+                />
+              ))}
             </div>
           </section>
         );
