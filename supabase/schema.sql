@@ -8,7 +8,7 @@
 -- Do not run this to "upgrade" an existing Onyx database. Existing projects
 -- already have these tables; use the feature patches in this folder instead:
 --   admin-profiles.sql, gallery.sql, faqs.sql, about.sql, welcome.sql,
---   legal.sql, appointments.sql
+--   legal.sql, appointments.sql, shop-info-drop-address.sql
 -- rename-catalog.sql is only for the original rename from categories1/services1.
 --
 -- Live tables: shop_info, shop_hours, categories, services, site_announcements,
@@ -27,7 +27,6 @@ create table if not exists public.shop_info (
   name text not null,
   phone text,
   email text,
-  address text,
   address1 text,
   address2 text,
   city text,

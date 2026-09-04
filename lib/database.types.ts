@@ -346,7 +346,6 @@ export type Database = {
       }
       shop_info: {
         Row: {
-          address: string | null
           address1: string | null
           address2: string | null
           city: string | null
@@ -366,7 +365,6 @@ export type Database = {
           zip: string | null
         }
         Insert: {
-          address?: string | null
           address1?: string | null
           address2?: string | null
           city?: string | null
@@ -386,7 +384,6 @@ export type Database = {
           zip?: string | null
         }
         Update: {
-          address?: string | null
           address1?: string | null
           address2?: string | null
           city?: string | null

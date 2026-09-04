@@ -5,6 +5,12 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import type { Database } from "@/lib/database.types";
 import { normalizeStateCode, US_STATE_CODES } from "@/lib/us-states";
+import { z } from "zod";
+
+const shopEmailSchema = z
+  .string()
+  .trim()
+  .email("Enter a valid shop email address.");
 
 async function getSupabase() {
   const cookieStore = await cookies();
@@ -28,6 +34,16 @@ async function getSupabase() {
 
 export async function handleAction(formData: FormData) {
   const phone = formData.get("phone") as string;
+  const emailResult = shopEmailSchema.safeParse(formData.get("email"));
+  if (!emailResult.success) {
+    return {
+      success: false,
+      error:
+        emailResult.error.issues[0]?.message ??
+        "Enter a valid shop email address.",
+    };
+  }
+  const email = emailResult.data;
   const address1 = formData.get("address1") as string;
   const address2 = formData.get("address2") as string;
   const city = formData.get("city") as string;
@@ -46,6 +62,7 @@ export async function handleAction(formData: FormData) {
     .from("shop_info")
     .update({
       phone,
+      email,
       address1,
       address2,
       city,

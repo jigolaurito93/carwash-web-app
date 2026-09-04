@@ -24,10 +24,6 @@ const ShopInfo = async () => {
     },
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
   const { data: shopInfo, error: shopInfoError } = await supabase
     .from("shop_info")
     .select("*")
@@ -44,9 +40,9 @@ const ShopInfo = async () => {
 
   return (
     <div>
-      <AdminPageHeader title="Account Settings" />
+      <AdminPageHeader title="Shop Information Settings" />
 
-      <ShopInfoForm shopInfo={shopInfo} userEmail={user?.email ?? ""} />
+      <ShopInfoForm shopInfo={shopInfo} />
 
       {shopHoursError || !shopHours ? (
         <div className="mt-12 text-red-500">Failed to load shop hours.</div>
