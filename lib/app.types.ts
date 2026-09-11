@@ -1,3 +1,4 @@
+import type { AnnouncementKind } from "@/lib/announcements";
 import type { Json as DbJson } from "@/lib/database.types";
 
 export type Json =
@@ -119,8 +120,15 @@ export type Faq = {
 
 export type SiteAnnouncement = {
   id: number;
+  title: string | null;
   message: string;
   link_url: string | null;
+  kind: AnnouncementKind;
+  show_in_banner: boolean;
+  show_as_modal: boolean;
+  starts_at: string | null;
+  expires_at: string | null;
+  closes_on: string | null;
   sort_order: number;
   is_active: boolean;
   created_at: string;

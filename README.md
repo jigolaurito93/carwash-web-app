@@ -27,7 +27,7 @@ Auth for `/admin/*` is gated in `proxy.ts` (Next.js 16). There is no `middleware
 **Public site**
 
 - Home, About, Services, Gallery, Contact, Privacy, and Terms
-- Sticky navbar with scroll-based background, rotating announcement banner, and footer
+- Sticky navbar with scroll-based background, rotating announcement banner, closable promo/closure popup, and footer
 - Services catalog from `categories` + `services` (card layouts `layout1`–`layout4`)
 - Shop hours, address, and Google Map from `shop_info` / `shop_hours`
 - Gallery images from Supabase Storage
@@ -87,7 +87,7 @@ Never commit `.env.local`. Never expose `SUPABASE_SERVICE_ROLE_KEY` to the clien
 
 On a **new** Supabase project, open **SQL Editor**, paste all of [`supabase/schema.sql`](supabase/schema.sql), and run it. That creates the live tables, Row Level Security, the public `gallery` storage bucket, and seed rows the site expects (shop info, hours, about/welcome/FAQ/legal placeholders, one `Washes` category).
 
-Other files in `supabase/` are **feature patches** for databases that already exist. Do not run `rename-catalog.sql` on a new project.
+Other files in `supabase/` are **feature patches** for databases that already exist (including [`announcements-popup.sql`](supabase/announcements-popup.sql) for promo/closure popups and expiry). Do not run `rename-catalog.sql` on a new project.
 
 Optional: [link the CLI](https://supabase.com/docs/reference/cli/supabase-link) so you can regenerate types after schema changes:
 
@@ -169,23 +169,23 @@ After deploy, create the first admin the same way as locally (or invite from an 
 
 **Admin** (protected except login)
 
-| Path                   | Page                                |
-| ---------------------- | ----------------------------------- |
-| `/admin/login`         | Sign in                             |
-| `/admin/set-password`  | First-time password (invited users) |
-| `/admin/onboarding`    | Profile onboarding                  |
-| `/admin/dashboard`     | Overview / schedule                 |
-| `/admin/appointment`   | Appointments                        |
-| `/admin/services`      | Categories and services             |
-| `/admin/shop-info`     | Shop name, address, hours           |
-| `/admin/welcome`       | Home welcome copy                   |
-| `/admin/about`         | About page copy                     |
-| `/admin/gallery`       | Gallery images                      |
-| `/admin/announcements` | Site banner announcements           |
-| `/admin/faq`           | FAQs                                |
-| `/admin/legal`         | Privacy and terms                   |
-| `/admin/profile`       | Account settings                    |
-| `/admin/invite`        | Invite an admin (master only)       |
+| Path                   | Page                                  |
+| ---------------------- | ------------------------------------- |
+| `/admin/login`         | Sign in                               |
+| `/admin/set-password`  | First-time password (invited users)   |
+| `/admin/onboarding`    | Profile onboarding                    |
+| `/admin/dashboard`     | Overview / schedule                   |
+| `/admin/appointment`   | Appointments                          |
+| `/admin/services`      | Categories and services               |
+| `/admin/shop-info`     | Shop name, address, hours             |
+| `/admin/welcome`       | Home welcome copy                     |
+| `/admin/about`         | About page copy                       |
+| `/admin/gallery`       | Gallery images                        |
+| `/admin/announcements` | Banner, popup, and closed-day notices |
+| `/admin/faq`           | FAQs                                  |
+| `/admin/legal`         | Privacy and terms                     |
+| `/admin/profile`       | Account settings                      |
+| `/admin/invite`        | Invite an admin (master only)         |
 
 ---
 

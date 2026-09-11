@@ -37,13 +37,31 @@ function revalidateAnnouncements() {
 
 function parseAnnouncementForm(formData: FormData) {
   return announcementSchema.safeParse({
+    title: String(formData.get("title") ?? ""),
     message: String(formData.get("message") ?? ""),
+    kind: String(formData.get("kind") ?? "notice"),
     link_url: String(formData.get("link_url") ?? ""),
     sort_order: Number(formData.get("sort_order")),
     is_active:
       formData.get("is_active") === "on" ||
       formData.get("is_active") === "true",
+    show_in_banner:
+      formData.get("show_in_banner") === "on" ||
+      formData.get("show_in_banner") === "true",
+    show_as_modal:
+      formData.get("show_as_modal") === "on" ||
+      formData.get("show_as_modal") === "true",
+    starts_at: String(formData.get("starts_at") ?? ""),
+    expires_at: String(formData.get("expires_at") ?? ""),
+    closes_on: String(formData.get("closes_on") ?? ""),
   });
+}
+
+function saveErrorMessage(message: string) {
+  if (/does not exist|schema cache|column/i.test(message)) {
+    return "Run supabase/announcements-popup.sql in the Supabase SQL editor, then try again.";
+  }
+  return message;
 }
 
 export async function createAnnouncement(formData: FormData) {
@@ -56,13 +74,14 @@ export async function createAnnouncement(formData: FormData) {
   }
 
   const supabase = await getSupabase();
-  const { error } = await supabase
-    .from("site_announcements")
-    .insert(parsed.data);
+  const { error } = await supabase.from("site_announcements").insert({
+    ...parsed.data,
+    closes_on: parsed.data.kind === "closure" ? parsed.data.closes_on : null,
+  });
 
   if (error) {
     console.error("Failed to create announcement:", error);
-    return { success: false, error: error.message };
+    return { success: false, error: saveErrorMessage(error.message) };
   }
 
   revalidateAnnouncements();
@@ -86,12 +105,15 @@ export async function updateAnnouncement(formData: FormData) {
   const supabase = await getSupabase();
   const { error } = await supabase
     .from("site_announcements")
-    .update(parsed.data)
+    .update({
+      ...parsed.data,
+      closes_on: parsed.data.kind === "closure" ? parsed.data.closes_on : null,
+    })
     .eq("id", id);
 
   if (error) {
     console.error("Failed to update announcement:", error);
-    return { success: false, error: error.message };
+    return { success: false, error: saveErrorMessage(error.message) };
   }
 
   revalidateAnnouncements();
@@ -111,7 +133,7 @@ export async function toggleAnnouncementActive(id: number, is_active: boolean) {
 
   if (error) {
     console.error("Failed to toggle announcement:", error);
-    return { success: false, error: error.message };
+    return { success: false, error: saveErrorMessage(error.message) };
   }
 
   revalidateAnnouncements();

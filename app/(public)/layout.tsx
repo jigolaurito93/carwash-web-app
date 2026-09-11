@@ -1,3 +1,4 @@
+import AnnouncementPopup from "@/components/AnnouncementPopup";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/navbar/Navbar";
 import TopBanner from "@/components/TopBanner";
@@ -13,6 +14,7 @@ export default function PublicLayout({
         <TopBanner />
         <Navbar />
       </div>
+      <AnnouncementPopup />
       {children}
       <Footer />
     </>

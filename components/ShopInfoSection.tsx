@@ -1,8 +1,11 @@
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
+import { format } from "date-fns";
 import { FaEnvelope, FaMapMarkerAlt, FaPhoneAlt } from "react-icons/fa";
 import type { Database } from "@/lib/database.types";
+import { liveClosureAnnouncements, parseYmdLocal } from "@/lib/announcements";
 import { formatShopAddress } from "@/lib/format-shop-address";
+import { getLiveAnnouncements } from "@/lib/load-announcements";
 import { cn } from "@/lib/utils";
 
 const DAY_ORDER = [
@@ -100,15 +103,23 @@ const ShopInfoSection = async ({
     },
   );
 
-  const { data: shop_hours, error } = await supabase
-    .from("shop_hours")
-    .select("day_name, open_time, close_time, is_closed")
-    .order("day_name", { ascending: true });
+  const [
+    { data: shop_hours, error },
+    { data: shopInfo, error: shopError },
+    announcements,
+  ] = await Promise.all([
+    supabase
+      .from("shop_hours")
+      .select("day_name, open_time, close_time, is_closed")
+      .order("day_name", { ascending: true }),
+    supabase
+      .from("shop_info")
+      .select("address1, address2, city, state, zip, phone, email")
+      .single(),
+    getLiveAnnouncements(),
+  ]);
 
-  const { data: shopInfo, error: shopError } = await supabase
-    .from("shop_info")
-    .select("address1, address2, city, state, zip, phone, email")
-    .single();
+  const closures = liveClosureAnnouncements(announcements);
 
   const isDark = variant === "dark";
 
@@ -168,6 +179,31 @@ const ShopInfoSection = async ({
             Operating Hours
           </h2>
           <div className="mt-3 h-0.5 w-12 bg-yellow-400" />
+
+          {closures.length > 0 ? (
+            <div
+              className={cn(
+                "mt-6 space-y-2 rounded-lg border px-4 py-3 font-questrial text-sm",
+                isDark
+                  ? "border-yellow-400/35 bg-yellow-400/10 text-yellow-400"
+                  : "border-yellow-500/40 bg-yellow-50 text-yellow-900",
+              )}
+            >
+              {closures.map((item) => {
+                const closedDate = item.closes_on
+                  ? parseYmdLocal(item.closes_on)
+                  : null;
+                return (
+                  <p key={item.id}>
+                    {closedDate
+                      ? `Closed ${format(closedDate, "EEE, MMM d")}`
+                      : "Temporary closure"}
+                    {item.title ? ` — ${item.title}` : ` — ${item.message}`}
+                  </p>
+                );
+              })}
+            </div>
+          ) : null}
 
           <ul className="mt-8 space-y-0 font-questrial text-sm md:text-base">
             {hourGroups.map((group) => (
