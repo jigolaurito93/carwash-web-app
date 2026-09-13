@@ -27,7 +27,7 @@ Auth for `/admin/*` is gated in `proxy.ts` (Next.js 16). There is no `middleware
 **Public site**
 
 - Home, About, Services, Gallery, Contact, Privacy, and Terms
-- Sticky navbar with scroll-based background, rotating announcement banner, closable promo/closure popup, and footer
+- Sticky navbar with scroll-based background, rotating announcement banner, closable popup from `popup_announcements`, and footer
 - Services catalog from `categories` + `services` (card layouts `layout1`–`layout4`)
 - Shop hours, address, and Google Map from `shop_info` / `shop_hours`
 - Gallery images from Supabase Storage
@@ -39,7 +39,7 @@ Auth for `/admin/*` is gated in `proxy.ts` (Next.js 16). There is no `middleware
 - Email/password login, invite-only accounts, set-password and onboarding
 - Dashboard schedule and appointments
 - Catalog: categories and services
-- Website: shop info, welcome, about, gallery, announcements, FAQ, legal pages
+- Website: shop info, welcome, about, gallery, announcements, popups, FAQ, legal pages
 - Account settings; **Invite Admin** is master-role only
 
 ---
@@ -87,7 +87,7 @@ Never commit `.env.local`. Never expose `SUPABASE_SERVICE_ROLE_KEY` to the clien
 
 On a **new** Supabase project, open **SQL Editor**, paste all of [`supabase/schema.sql`](supabase/schema.sql), and run it. That creates the live tables, Row Level Security, the public `gallery` storage bucket, and seed rows the site expects (shop info, hours, about/welcome/FAQ/legal placeholders, one `Washes` category).
 
-Other files in `supabase/` are **feature patches** for databases that already exist (including [`announcements-popup.sql`](supabase/announcements-popup.sql) for promo/closure popups and expiry). Do not run `rename-catalog.sql` on a new project.
+Other files in `supabase/` are **feature patches** for databases that already exist (including [`announcements-popup.sql`](supabase/announcements-popup.sql) for banner expiry fields and [`popup-announcements.sql`](supabase/popup-announcements.sql) for the homepage popup table). Do not run `rename-catalog.sql` on a new project.
 
 Optional: [link the CLI](https://supabase.com/docs/reference/cli/supabase-link) so you can regenerate types after schema changes:
 
@@ -169,23 +169,24 @@ After deploy, create the first admin the same way as locally (or invite from an 
 
 **Admin** (protected except login)
 
-| Path                   | Page                                  |
-| ---------------------- | ------------------------------------- |
-| `/admin/login`         | Sign in                               |
-| `/admin/set-password`  | First-time password (invited users)   |
-| `/admin/onboarding`    | Profile onboarding                    |
-| `/admin/dashboard`     | Overview / schedule                   |
-| `/admin/appointment`   | Appointments                          |
-| `/admin/services`      | Categories and services               |
-| `/admin/shop-info`     | Shop name, address, hours             |
-| `/admin/welcome`       | Home welcome copy                     |
-| `/admin/about`         | About page copy                       |
-| `/admin/gallery`       | Gallery images                        |
-| `/admin/announcements` | Banner, popup, and closed-day notices |
-| `/admin/faq`           | FAQs                                  |
-| `/admin/legal`         | Privacy and terms                     |
-| `/admin/profile`       | Account settings                      |
-| `/admin/invite`        | Invite an admin (master only)         |
+| Path                   | Page                                |
+| ---------------------- | ----------------------------------- |
+| `/admin/login`         | Sign in                             |
+| `/admin/set-password`  | First-time password (invited users) |
+| `/admin/onboarding`    | Profile onboarding                  |
+| `/admin/dashboard`     | Overview / schedule                 |
+| `/admin/appointment`   | Appointments                        |
+| `/admin/services`      | Categories and services             |
+| `/admin/shop-info`     | Shop name, address, hours           |
+| `/admin/welcome`       | Home welcome copy                   |
+| `/admin/about`         | About page copy                     |
+| `/admin/gallery`       | Gallery images                      |
+| `/admin/announcements` | Top banner and closed-day notices   |
+| `/admin/popups`        | Homepage popup (default or custom)  |
+| `/admin/faq`           | FAQs                                |
+| `/admin/legal`         | Privacy and terms                   |
+| `/admin/profile`       | Account settings                    |
+| `/admin/invite`        | Invite an admin (master only)       |
 
 ---
 
@@ -193,7 +194,7 @@ After deploy, create the first admin the same way as locally (or invite from an 
 
 Live tables used by the app:
 
-`categories`, `services`, `shop_info`, `shop_hours`, `site_announcements`, `gallery_images`, `faqs`, `admin_profiles`, `about_content`, `welcome_content`, `legal_documents`, `appointment`
+`categories`, `services`, `shop_info`, `shop_hours`, `site_announcements`, `popup_announcements`, `gallery_images`, `faqs`, `admin_profiles`, `about_content`, `welcome_content`, `legal_documents`, `appointment`
 
 Recreate them with [`supabase/schema.sql`](supabase/schema.sql). Catalog content is not hardcoded — edit it in `/admin/services` and `/admin/shop-info`.
 
@@ -230,6 +231,7 @@ Path alias: `@/*` → repo root.
 ## Customization
 
 - **Copy, hours, prices, gallery, FAQ, legal** — use the admin CMS.
+- **Homepage popups** — `/admin/popups`. Default uses the owner's title and message. Custom seasonal designs live in `components/announcements/layouts/` and must be registered there plus `lib/popup-layouts.ts`.
 - **Images** — `public/images/` for static assets; gallery uploads go to Supabase Storage.
 - **Brand** — dark surfaces, `yellow-400` accent, `font-lexend` headings, `font-questrial` body. Theme tokens live in `app/globals.css` (`@theme inline`).
 - **SEO** — `metadata` in `app/layout.tsx`.

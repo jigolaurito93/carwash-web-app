@@ -1,9 +1,9 @@
-import { pickModalAnnouncement } from "@/lib/announcements";
-import { getLiveAnnouncements } from "@/lib/load-announcements";
+import { pickLivePopup } from "@/lib/popup-announcements";
+import { getLivePopupAnnouncements } from "@/lib/load-popup-announcements";
 import AnnouncementPopupModal from "@/components/AnnouncementPopupModal";
 
 export default async function AnnouncementPopup() {
-  const announcement = pickModalAnnouncement(await getLiveAnnouncements());
+  const announcement = pickLivePopup(await getLivePopupAnnouncements());
   if (!announcement) return null;
 
   return <AnnouncementPopupModal announcement={announcement} />;

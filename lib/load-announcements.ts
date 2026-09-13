@@ -10,7 +10,7 @@ import {
 } from "@/lib/announcements";
 
 const FULL_SELECT =
-  "id, title, message, link_url, kind, show_in_banner, show_as_modal, starts_at, expires_at, closes_on, sort_order, is_active";
+  "id, title, message, link_url, kind, show_in_banner, starts_at, expires_at, closes_on, sort_order, is_active";
 
 type AnnouncementRow = {
   id: number;
@@ -19,7 +19,6 @@ type AnnouncementRow = {
   link_url: string | null;
   kind?: string | null;
   show_in_banner?: boolean | null;
-  show_as_modal?: boolean | null;
   starts_at?: string | null;
   expires_at?: string | null;
   closes_on?: string | null;
@@ -36,7 +35,6 @@ function mapRow(row: AnnouncementRow): PublicAnnouncement | null {
     link_url: row.link_url,
     kind: isAnnouncementKind(row.kind) ? row.kind : "notice",
     show_in_banner: row.show_in_banner ?? true,
-    show_as_modal: row.show_as_modal ?? false,
     starts_at: row.starts_at ?? null,
     expires_at: row.expires_at ?? null,
     closes_on: row.closes_on ?? null,

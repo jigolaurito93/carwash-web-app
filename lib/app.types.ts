@@ -1,5 +1,6 @@
 import type { AnnouncementKind } from "@/lib/announcements";
 import type { Json as DbJson } from "@/lib/database.types";
+import type { PopupAnnouncement as PopupAnnouncementRow } from "@/lib/popup-announcements";
 
 export type Json =
   | string
@@ -125,7 +126,6 @@ export type SiteAnnouncement = {
   link_url: string | null;
   kind: AnnouncementKind;
   show_in_banner: boolean;
-  show_as_modal: boolean;
   starts_at: string | null;
   expires_at: string | null;
   closes_on: string | null;
@@ -133,6 +133,8 @@ export type SiteAnnouncement = {
   is_active: boolean;
   created_at: string;
 };
+
+export type PopupAnnouncement = PopupAnnouncementRow;
 
 export type WhyChooseUsItem = {
   title: string;

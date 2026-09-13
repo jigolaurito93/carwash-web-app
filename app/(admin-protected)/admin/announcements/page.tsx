@@ -34,9 +34,9 @@ export default async function AdminAnnouncementsPage() {
   if (error) {
     return (
       <div className="p-8 font-questrial text-red-600">
-        Failed to load announcements. If you just added popup/expiry fields, run{" "}
-        <code>supabase/announcements-popup.sql</code> in the Supabase SQL
-        editor, then <code>pnpm gen:types</code>.
+        Failed to load announcements. Make sure the{" "}
+        <code>site_announcements</code> table exists, then run{" "}
+        <code>pnpm gen:types</code>.
       </div>
     );
   }
@@ -48,7 +48,6 @@ export default async function AdminAnnouncementsPage() {
     link_url: row.link_url,
     kind: isAnnouncementKind(row.kind) ? row.kind : "notice",
     show_in_banner: row.show_in_banner ?? true,
-    show_as_modal: row.show_as_modal ?? false,
     starts_at: row.starts_at,
     expires_at: row.expires_at,
     closes_on: row.closes_on,

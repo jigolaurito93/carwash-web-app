@@ -38,7 +38,6 @@ type FormState = {
   sort_order: number;
   is_active: boolean;
   show_in_banner: boolean;
-  show_as_modal: boolean;
   starts_at: string;
   expires_at: string;
   closes_on: string;
@@ -52,7 +51,6 @@ const emptyForm = (sortOrder: number): FormState => ({
   sort_order: sortOrder,
   is_active: true,
   show_in_banner: true,
-  show_as_modal: false,
   starts_at: "",
   expires_at: "",
   closes_on: "",
@@ -128,7 +126,6 @@ export default function AnnouncementsAdmin({ announcements }: Props) {
       sort_order: item.sort_order,
       is_active: item.is_active,
       show_in_banner: item.show_in_banner,
-      show_as_modal: item.show_as_modal,
       starts_at: isoToDatetimeLocalValue(item.starts_at),
       expires_at: isoToDatetimeLocalValue(item.expires_at),
       closes_on: item.closes_on ?? "",
@@ -150,7 +147,6 @@ export default function AnnouncementsAdmin({ announcements }: Props) {
         closes_on: kind === "closure" ? prev.closes_on : "",
       };
       if (modal === "create") {
-        next.show_as_modal = kind !== "notice";
         next.show_in_banner = true;
       }
       return next;
@@ -197,7 +193,6 @@ export default function AnnouncementsAdmin({ announcements }: Props) {
     formData.set("closes_on", form.kind === "closure" ? form.closes_on : "");
     if (form.is_active) formData.set("is_active", "on");
     if (form.show_in_banner) formData.set("show_in_banner", "on");
-    if (form.show_as_modal) formData.set("show_as_modal", "on");
 
     try {
       const result =
@@ -266,9 +261,8 @@ export default function AnnouncementsAdmin({ announcements }: Props) {
     <div>
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <p className="max-w-2xl font-questrial text-sm text-gray-500">
-          Use a popup for promos and closed days. Pick when it should stop
-          showing — 24 hours, the end of a holiday, or any date and time. It
-          hides itself after that, and visitors can close the popup.
+          Use the top banner for rotating alerts. Closed-day notices also show
+          on the hours section. Homepage popups are edited under Popups.
         </p>
         <button
           type="button"
@@ -344,7 +338,6 @@ export default function AnnouncementsAdmin({ announcements }: Props) {
                     <p className="mt-3 font-questrial text-xs tracking-wider text-gray-400 uppercase">
                       {[
                         item.show_in_banner ? "Banner" : null,
-                        item.show_as_modal ? "Popup" : null,
                         closedLabel ? `Closed ${closedLabel}` : null,
                         startsLabel && status === "scheduled"
                           ? `Starts ${startsLabel}`
@@ -405,7 +398,7 @@ export default function AnnouncementsAdmin({ announcements }: Props) {
           open
           onClose={closeModal}
           title={modal === "create" ? "Add announcement" : "Edit announcement"}
-          description="Promos and closed days can open as a popup. Set an expiration so it turns off on its own."
+          description="Banner alerts rotate at the top of the public site. Set an expiration so a notice turns off on its own."
           maxWidth="lg"
           closeDisabled={saving}
           asForm
@@ -502,7 +495,7 @@ export default function AnnouncementsAdmin({ announcements }: Props) {
                     ? "Closed Thursday for Thanksgiving. See you Friday."
                     : form.kind === "promo"
                       ? "Wash before 10 AM and save 15% this week."
-                      : "Short message for the banner or popup."
+                      : "Short message for the banner."
                 }
                 value={form.message}
                 onChange={(event) =>
@@ -531,7 +524,7 @@ export default function AnnouncementsAdmin({ announcements }: Props) {
                   disabled={saving}
                 />
                 <p className="mt-1 font-questrial text-xs text-gray-500">
-                  Shown on the hours section. The popup can start earlier using
+                  Shown on the hours section. The banner can start earlier using
                   Show from.
                 </p>
               </div>
@@ -552,21 +545,6 @@ export default function AnnouncementsAdmin({ announcements }: Props) {
                   disabled={saving}
                 />
                 Show in top banner
-              </label>
-              <label className="flex items-center gap-2 font-questrial text-sm text-gray-700">
-                <input
-                  type="checkbox"
-                  checked={form.show_as_modal}
-                  onChange={(event) =>
-                    setForm({
-                      ...form,
-                      show_as_modal: event.target.checked,
-                    })
-                  }
-                  className="h-4 w-4 accent-yellow-400"
-                  disabled={saving}
-                />
-                Show as popup
               </label>
             </div>
 

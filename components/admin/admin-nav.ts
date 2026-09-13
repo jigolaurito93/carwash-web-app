@@ -35,6 +35,7 @@ export const adminNavSections: AdminNavSection[] = [
       { href: "/admin/about", label: "About" },
       { href: "/admin/gallery", label: "Gallery" },
       { href: "/admin/announcements", label: "Announcements" },
+      { href: "/admin/popups", label: "Popups" },
       { href: "/admin/faq", label: "FAQ" },
       { href: "/admin/legal", label: "Legal Pages" },
     ],

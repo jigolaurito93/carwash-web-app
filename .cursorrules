@@ -29,9 +29,9 @@ These rules apply to every change in this repo. Follow existing patterns. Prefer
 **Env names only (never hardcode values):**
 `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`, `RESEND_API_KEY`, `OWNER_EMAIL`, `SUPABASE_SERVICE_ROLE_KEY`.
 
-**Live data (use these):** `categories`, `services`, `shop_info`, `shop_hours`, `site_announcements`, `gallery_images`, `faqs`, `admin_profiles`.
+**Live data (use these):** `categories`, `services`, `shop_info`, `shop_hours`, `site_announcements`, `popup_announcements`, `gallery_images`, `faqs`, `admin_profiles`.
 
-**Live admin CMS:** `/admin/shop-info`, `/admin/categories`, `/admin/services`, `/admin/gallery`, `/admin/faq`, `/admin/invite`.
+**Live admin CMS:** `/admin/shop-info`, `/admin/categories`, `/admin/services`, `/admin/gallery`, `/admin/announcements`, `/admin/popups`, `/admin/faq`, `/admin/invite`.
 
 **Public routes:** `/`, `/about`, `/services`, `/gallery`, `/contact`. Login is `/admin/login` (outside the protected group).
 
@@ -122,5 +122,7 @@ Treat as frozen scratch. Do not add features, new tables, or new routes here unl
 - Catalog → `categories` / `services` + `admin/categories` + `admin/services` + public `/services`.
 - Appointments → existing `appointment` table + `AppointmentsClient` / `AppointmentFormModal` (currently unwired).
 - Gallery → `gallery_images` + `admin/gallery` + public `/gallery`.
+- Banner alerts → `site_announcements` + `admin/announcements`.
+- Homepage popups → `popup_announcements` + `admin/popups`. Custom popup designs go in `components/announcements/layouts/` and must be registered in that folder plus `lib/popup-layouts.ts`.
 - FAQ → `faqs` + `admin/faq` + public contact FAQ section.
 - After schema changes: `pnpm gen:types` and commit `lib/database.types.ts`.

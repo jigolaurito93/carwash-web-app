@@ -9,18 +9,11 @@ export type PublicAnnouncement = {
   link_url: string | null;
   kind: AnnouncementKind;
   show_in_banner: boolean;
-  show_as_modal: boolean;
   starts_at: string | null;
   expires_at: string | null;
   closes_on: string | null;
   sort_order: number;
   is_active: boolean;
-};
-
-const KIND_RANK: Record<AnnouncementKind, number> = {
-  closure: 0,
-  promo: 1,
-  notice: 2,
 };
 
 export function isAnnouncementKind(
@@ -102,24 +95,6 @@ export function announcementStatus(
       return "expired";
   }
   return "live";
-}
-
-export function pickModalAnnouncement<T extends PublicAnnouncement>(
-  items: T[],
-  now = new Date(),
-): T | null {
-  const live = items.filter(
-    (item) => item.show_as_modal && isAnnouncementLive(item, now),
-  );
-
-  live.sort((a, b) => {
-    const rank = KIND_RANK[a.kind] - KIND_RANK[b.kind];
-    if (rank !== 0) return rank;
-    if (a.sort_order !== b.sort_order) return a.sort_order - b.sort_order;
-    return a.id - b.id;
-  });
-
-  return live[0] ?? null;
 }
 
 export function liveClosureAnnouncements<T extends PublicAnnouncement>(

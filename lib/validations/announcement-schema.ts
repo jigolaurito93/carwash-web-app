@@ -59,7 +59,6 @@ export const announcementSchema = z
     sort_order: z.number().int("Sort order must be a whole number"),
     is_active: z.boolean(),
     show_in_banner: z.boolean(),
-    show_as_modal: z.boolean(),
     starts_at: optionalIso,
     expires_at: optionalIso,
     closes_on: optionalYmd,
@@ -78,14 +77,6 @@ export const announcementSchema = z
         code: "custom",
         message: "Closed-on is only used for closed-day announcements.",
         path: ["closes_on"],
-      });
-    }
-
-    if (data.is_active && !data.show_in_banner && !data.show_as_modal) {
-      ctx.addIssue({
-        code: "custom",
-        message: "Turn on the banner, the popup, or both.",
-        path: ["show_as_modal"],
       });
     }
 

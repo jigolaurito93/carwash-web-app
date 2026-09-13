@@ -48,9 +48,6 @@ function parseAnnouncementForm(formData: FormData) {
     show_in_banner:
       formData.get("show_in_banner") === "on" ||
       formData.get("show_in_banner") === "true",
-    show_as_modal:
-      formData.get("show_as_modal") === "on" ||
-      formData.get("show_as_modal") === "true",
     starts_at: String(formData.get("starts_at") ?? ""),
     expires_at: String(formData.get("expires_at") ?? ""),
     closes_on: String(formData.get("closes_on") ?? ""),
